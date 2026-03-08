@@ -1,0 +1,1067 @@
+/* ================================================
+   PULSE TRACKER — MAIN STYLESHEET
+   ================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+
+/* ================= CSS VARIABLES ================= */
+:root {
+  --bg-color: rgba(255, 255, 255, 0.7);
+  --text-color: #070707;
+  --card-shadow: rgba(0, 0, 0, 0.12);
+  --primary-color: #86afd6;
+  --hover-bg: rgba(56, 111, 164, 0.15);
+  --soft-btn-bg: rgba(255, 255, 255, 0.7);
+  --gradient-bg: linear-gradient(-45deg, #c9ebff, #f1f9ff, #dff2ff, #daeeff);
+}
+
+
+/* ================= GLOBAL RESET ================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  overflow-x: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 100%;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Re-enable text selection and prevent zoom on inputs */
+input,
+textarea,
+select {
+  -webkit-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+  font-size: 16px; /* Prevents auto-zoom on Android/iOS */
+  font-family: 'Poppins', sans-serif;
+}
+
+button,
+a {
+  -webkit-touch-callout: none;
+}
+
+
+/* ================= APP LAYOUT ================= */
+.app {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+  width: 100%;
+}
+
+
+/* ================= SECTION SWITCHING ================= */
+.section {
+  display: none;
+  padding-bottom: 80px;
+}
+
+.section.active-section {
+  display: block;
+}
+
+
+/* ================= SIDEBAR / BOTTOM NAV ================= */
+.sidebar {
+  position: fixed;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 75px;
+  padding: 0 30px;
+  /* Solid fallback for WebViews that don't support backdrop-filter */
+  background: rgba(255, 255, 255, 0.92);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+  z-index: 1000;
+  /* Prevent sidebar from going wider than screen */
+  max-width: calc(100vw - 32px);
+}
+
+.sidebar-logo img,
+.sidebar-user img {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.sidebar-nav-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.sidebar-nav {
+  display: flex;
+  gap: 50px;
+}
+
+.sidebar-nav button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 12px;
+  border-radius: 14px;
+  opacity: 0.7;
+  transition: all 0.25s ease;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.sidebar-nav button:hover,
+.sidebar-nav button:active {
+  opacity: 1;
+  transform: translateY(-4px);
+  background: var(--hover-bg);
+}
+
+.sidebar-nav button.active {
+  opacity: 1;
+  background: rgba(56, 111, 164, 0.25);
+}
+
+.sidebar-nav button img {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.2s ease;
+}
+
+.sidebar-nav button:hover img {
+  transform: scale(1.1);
+}
+
+/* Active indicator underline dot */
+.sidebar-nav button::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 5%;
+  width: 90%;
+  height: 3px;
+  background-color: var(--primary-color);
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.sidebar-nav button.active::after {
+  opacity: 1;
+}
+
+.sidebar-user img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+
+/* ================= DASHBOARD ================= */
+.dashboard {
+  flex: 1;
+  padding: 40px 60px;
+  overflow-y: visible;
+  /* Prevent content from going under sidebar */
+  padding-bottom: 140px;
+  width: 100%;
+  min-width: 0;
+}
+
+.page-title {
+  text-align: center;
+  font-size: 34px;
+  margin: 17px;
+}
+
+.greeting-text {
+  text-align: center;
+  margin: 20px 40px;
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+.section-subtitle {
+  margin: 40px 0 20px 0;
+  font-size: 18px;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+
+/* ================= THREE-COLUMN HOME LAYOUT ================= */
+.dashboard-wrapper {
+  display: grid;
+  grid-template-columns: 0.8fr 2.6fr 0.8fr;
+  gap: 50px;
+  width: 100%;
+  max-width: 2400px;
+  margin: 40px auto;
+  align-items: start;
+}
+
+.left-column,
+.main-column,
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  min-width: 0;
+}
+
+
+/* ================= CARDS ================= */
+.card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease;
+  min-width: 0;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+.card-large {
+  grid-column: 1 / -1;
+}
+
+/* Gradient cards used across sections */
+.main-feed-card,
+.side-card,
+.card-full,
+.settings-card,
+.about-card {
+  background: var(--gradient-bg);
+  border-radius: 35px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+}
+
+.main-feed-card {
+  padding: 70px;
+}
+
+.side-card {
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.side-card .card {
+  padding: 30px;
+  border-radius: 25px;
+}
+
+.card-full {
+  padding: 50px 70px;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* ================= STAT CARDS ================= */
+.stat-card {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.stat-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5px;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+
+/* ================= CORE VITALS GRID ================= */
+.core-vitals-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.core-vitals-grid .stat-card {
+  height: 200px;
+  border-radius: 25px;
+}
+
+
+/* ================= LIFESTYLE METRICS GRID ================= */
+.lifestyle-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  margin-top: 25px;
+}
+
+
+/* ================= SOFT BUTTONS ================= */
+.soft-btn {
+  margin-top: 15px;
+  color: var(--text-color);
+  border: none;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: var(--soft-btn-bg);
+  box-shadow: 0 15px 30px var(--card-shadow);
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+  display: inline-block;
+  text-align: center;
+  /* Prevent button from shrinking weirdly on mobile */
+  white-space: nowrap;
+}
+
+.soft-btn:hover,
+.soft-btn:active {
+  transform: scale(1.02);
+  background: var(--primary-color);
+  color: #fff;
+  box-shadow: 0 25px 45px var(--card-shadow);
+}
+
+
+/* ================= PROGRESS CIRCLES ================= */
+.progress-circle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-circle svg {
+  transform: rotate(-90deg);
+}
+
+.progress-circle circle {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+}
+
+.progress-circle .bg {
+  stroke: rgba(0, 0, 0, 0.08);
+}
+
+.progress-circle .progress {
+  stroke: var(--primary-color);
+  stroke-dasharray: 283;
+  stroke-dashoffset: 283;
+  transition: stroke-dashoffset 0.8s ease;
+}
+
+.circle-number {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--primary-color);
+  transition: opacity 0.3s ease;
+  white-space: nowrap;
+}
+
+
+/* ================= LOGIN / REGISTER SCREENS ================= */
+.login-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(-45deg, #d0eeff, #aedcff, #d8efff, #abd8ff, #d8f1ff);
+  background-size: 400% 400%;
+  animation: gradientMove 7s ease infinite;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+@keyframes gradientMove {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.login-card {
+  width: 100%;
+  max-width: 500px;
+  min-height: 600px;
+  padding: 50px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.15);
+  -webkit-backdrop-filter: blur(25px);
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+.login-title {
+  font-size: 28px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.login-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.login-form input {
+  width: 85%;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid #d0e8ff;
+  background: #f7fbff;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.login-form input:focus {
+  border-color: #c5e2ff;
+  box-shadow: 0 0 0 3px rgba(77, 166, 255, 0.2);
+  outline: none;
+}
+
+.login-form button {
+  width: 85%;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: #4da6ff;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-form button:hover,
+.login-form button:active {
+  background: #3399ff;
+  transform: translateY(-2px);
+}
+
+.error-msg {
+  color: red;
+  font-size: 13px;
+  text-align: center;
+}
+
+
+/* ================= SETTINGS SECTION ================= */
+.settings-card {
+  padding: 70px 80px;
+  border-radius: 35px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.settings-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.settings-group input {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #cde7ff;
+  font-size: 16px;
+}
+
+.profile-img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+#profileUpload {
+  display: none;
+}
+
+.logout-btn {
+  margin-top: 20px;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: #ff6b6b;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.logout-btn:hover,
+.logout-btn:active {
+  background: #ff4d4d;
+}
+
+
+/* ================= STATS SECTION ================= */
+#statsSection .card-full:first-of-type {
+  height: auto;
+  min-height: 500px;
+}
+
+#statsSection .card-full:first-of-type .chart-container {
+  height: 450px;
+}
+
+#statsSection .info-card {
+  display: block;
+  margin-top: 50px;
+  min-height: unset;
+  height: auto;
+}
+
+#statsSection {
+  padding-top: 20px;
+}
+
+#statsSection .info-card .section-subtitle {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 35px;
+}
+
+.chart-container {
+  position: relative;
+  height: 300px;
+  width: 100%;
+}
+
+.info-card {
+  margin-top: 40px;
+}
+
+.vital-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.vital-info-grid .card {
+  padding: 30px;
+  border-radius: 25px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.vital-info-grid h3 {
+  margin-bottom: 12px;
+}
+
+.vital-info-grid p {
+  font-size: 14px;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+
+/* ================= ABOUT SECTION ================= */
+.about-card {
+  padding: 60px 80px;
+  border-radius: 35px;
+  max-width: 1000px;
+  margin: 0 auto 40px auto;
+}
+
+#about-section {
+  padding-bottom: 30px;
+}
+
+
+/* ================= METRIC MODAL ================= */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(240, 249, 255, 0.95);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  /* flex-start keeps modal visible when keyboard opens on Android */
+  align-items: flex-start;
+  padding: 60px 16px;
+  overflow-y: auto;
+  z-index: 2000;
+  -webkit-overflow-scrolling: touch;
+}
+
+.modal-content {
+  width: 420px;
+  max-width: 100%;
+  background: linear-gradient(-45deg, #d2eeff, #a2d7ff, #d9f0ff, #8ccbff, #c6f2ff);
+  background-size: 400% 400%;
+  animation: gradientMove 7s ease infinite;
+  color: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  margin: auto;
+}
+
+.modal-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: white;
+}
+
+.modal-field {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.modal-field input,
+.modal-field textarea,
+.modal-field select {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 15px;
+  border: none;
+  outline: none;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s;
+}
+
+.modal-field input:focus,
+.modal-field select:focus,
+.modal-field textarea:focus {
+  box-shadow: 0 0 0 3px rgba(134, 175, 214, 0.4);
+}
+
+.modal-field textarea {
+  resize: none;
+  height: 80px;
+}
+
+.modal-field select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+/* Custom dropdown arrow — only on fields that have a select */
+.modal-field:has(select)::after {
+  content: "▾";
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 14px;
+  color: #86afd6;
+}
+
+/* Sleep row: hours + minutes side by side */
+.sleep-row {
+  display: flex;
+  gap: 12px;
+}
+
+.sleep-row input {
+  flex: 1;
+}
+
+/* Modal buttons */
+#sleepModal .soft-btn {
+  background: white;
+  color: #6fbeff;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 10px 18px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.modal-actions .soft-btn {
+  flex: 1;
+  margin-top: 0;
+}
+
+
+/* ================= DETAILS POPUP ================= */
+.details-popup {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  background: linear-gradient(135deg, #aaddff, #a7e3ff, #c9e7ff);
+  color: white;
+  padding: 15px;
+  border-radius: 14px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  font-size: 14px;
+  text-align: center;
+  z-index: 10;
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+.details-popup h4 {
+  margin-bottom: 6px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(5px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+
+/* ================= UTILITY ================= */
+.hidden {
+  display: none !important;
+}
+
+
+/* ================================================
+   RESPONSIVE — TABLET (max-width: 1100px)
+   ================================================ */
+@media (max-width: 1100px) {
+
+  html, body {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Stack three columns into one */
+  .dashboard-wrapper {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin: 20px auto;
+  }
+
+  .left-column,
+  .right-column,
+  .main-column {
+    width: 100%;
+  }
+
+  /* Side cards go horizontal on tablet */
+  .left-column,
+  .right-column {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .left-column .side-card,
+  .right-column .side-card {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .core-vitals-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .lifestyle-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .vital-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card-full,
+  .settings-card,
+  .about-card,
+  .main-feed-card,
+  .side-card {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .main-feed-card {
+    padding: 40px;
+  }
+
+  .side-card {
+    padding: 30px;
+  }
+}
+
+
+/* ================================================
+   RESPONSIVE — MOBILE (max-width: 768px)
+   ================================================ */
+@media (max-width: 768px) {
+
+  .dashboard {
+    padding: 16px 16px 180px 16px;
+  }
+
+  .dashboard-wrapper {
+    gap: 16px;
+    margin: 16px auto;
+    padding: 0;
+  }
+
+  /* Reduce all large card padding on mobile */
+  .main-feed-card,
+  .side-card,
+  .card-full,
+  .settings-card,
+  .about-card {
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  /* Smaller page title */
+  .page-title {
+    font-size: 22px;
+    margin: 12px;
+  }
+
+  /* Smaller greeting */
+  .greeting-text {
+    margin: 8px 0 16px 0;
+    font-size: 14px;
+  }
+
+  .section-subtitle {
+    font-size: 16px;
+    margin: 24px 0 14px 0;
+  }
+
+  /* Stat value size */
+  .stat-value {
+    font-size: 22px;
+  }
+
+  /* Vitals: stack to 1 column on small phones */
+  .core-vitals-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  /* Vitals card height auto on mobile */
+  .core-vitals-grid .stat-card {
+    height: auto;
+    padding: 20px;
+  }
+
+  /* Lifestyle: 2 columns on mobile */
+  .lifestyle-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  /* Side columns stack vertically */
+  .left-column,
+  .right-column {
+    flex-direction: column;
+  }
+
+  /* Bottom nav bar fits screen width */
+  .sidebar {
+    width: calc(100% - 24px);
+    max-width: calc(100% - 24px);
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 12px;
+    border-radius: 28px;
+    padding: 0 20px;
+    height: 70px;
+    gap: 16px;
+  }
+
+  .sidebar-logo img,
+  .sidebar-user img {
+    width: 34px;
+    height: 34px;
+  }
+
+  .sidebar-nav {
+    gap: 18px;
+  }
+
+  .sidebar-nav button {
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sidebar-nav button img {
+    width: 26px;
+    height: 26px;
+  }
+
+  /* Modal fits screen, stays above keyboard */
+  .modal {
+    padding: 24px 12px;
+    align-items: flex-start;
+  }
+
+  .modal-content {
+    max-width: 100%;
+    padding: 20px;
+    border-radius: 16px;
+  }
+
+  /* Settings */
+  .settings-card {
+    padding: 20px;
+  }
+
+  .settings-group {
+    margin-bottom: 20px;
+  }
+
+  /* Stats chart shorter on mobile */
+  #statsSection .card-full:first-of-type {
+    min-height: unset;
+  }
+
+  #statsSection .card-full:first-of-type .chart-container {
+    height: 220px;
+  }
+
+  .chart-container {
+    height: 220px;
+  }
+
+  /* Vital info grid: 1 column on mobile */
+  .vital-info-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  /* About section */
+  .about-card {
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+
+  /* Login card */
+  .login-card {
+    padding: 30px 20px;
+    min-height: auto;
+    border-radius: 20px;
+  }
+
+  .login-form input,
+  .login-form button {
+    width: 95%;
+  }
+
+  /* Details popup — make sure it doesn't overflow screen */
+  .details-popup {
+    width: 180px;
+    font-size: 12px;
+  }
+}
+
+
+/* ================================================
+   RESPONSIVE — SMALL PHONES (max-width: 380px)
+   ================================================ */
+@media (max-width: 380px) {
+
+  .lifestyle-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar-nav {
+    gap: 4px;
+  }
+
+  .sidebar {
+    padding: 0 10px;
+    gap: 6px;
+  }
+
+  .page-title {
+    font-size: 20px;
+  }
+}
