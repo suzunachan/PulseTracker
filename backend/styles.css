@@ -914,7 +914,11 @@ a {
 
   /* Tighter dashboard padding, extra bottom for nav bar */
   .dashboard {
-    padding: 16px 16px 2px 16px;
+    padding: 16px 16px 2px 16px !important;
+  }
+
+  .section {
+    padding-bottom: 0 !important;
   }
 
   .dashboard-wrapper {
