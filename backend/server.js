@@ -1,18 +1,12 @@
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
-const path = require("path");
 const { createClient } = require("@supabase/supabase-js");
 
 const app = express();
 
-app.use(cors({
-  origin: '*',
-  credentials: true
-}));
+app.use(cors({ origin: "*", credentials: true }));
 app.use(express.json());
-app.use("/uploads", express.static("uploads"));
-
 
 // ================= SUPABASE =================
 const SUPABASE_URL = "https://misvuvddshojtqxokbsc.supabase.co";
@@ -20,22 +14,14 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-
-// ================= FILE UPLOAD =================
-const storage = multer.diskStorage({
-  destination: "uploads/",
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  }
-});
-const upload = multer({ storage });
+// Use memory storage — no local disk, upload straight to Supabase Storage
+const upload = multer({ storage: multer.memoryStorage() });
 
 
 // ================= REGISTER =================
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
 
-  // Check if username already exists
   const { data: existing } = await supabase
     .from("users")
     .select("user_id")
@@ -46,11 +32,9 @@ app.post("/register", async (req, res) => {
     return res.json({ success: false, message: "Username already taken" });
   }
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("users")
-    .insert([{ username, password_hash: password }])
-    .select()
-    .single();
+    .insert([{ username, password_hash: password }]);
 
   if (error) {
     console.log("Register error:", error);
@@ -97,7 +81,6 @@ app.get("/user/:id", async (req, res) => {
 app.put("/update-username", async (req, res) => {
   const { id, newUsername } = req.body;
 
-  // Check if username already taken
   const { data: existing } = await supabase
     .from("users")
     .select("user_id")
@@ -140,19 +123,42 @@ app.post("/upload-profile-pic", upload.single("profilePic"), async (req, res) =>
     return res.json({ success: false, message: "No file received" });
   }
 
-  const imagePath = "/uploads/" + req.file.filename;
+  // Use user_id as filename so each user always overwrites their own pic
+  const fileExt  = req.file.originalname.split(".").pop();
+  const fileName = `user_${id}.${fileExt}`;
 
-  const { error } = await supabase
+  // Upload to Supabase Storage bucket "pulse-tracker"
+  const { error: uploadError } = await supabase.storage
+    .from("pulse-tracker")
+    .upload(fileName, req.file.buffer, {
+      contentType: req.file.mimetype,
+      upsert: true  // overwrite if exists
+    });
+
+  if (uploadError) {
+    console.log("Storage upload error:", uploadError);
+    return res.json({ success: false, message: "Upload failed" });
+  }
+
+  // Get the public URL
+  const { data: urlData } = supabase.storage
+    .from("pulse-tracker")
+    .getPublicUrl(fileName);
+
+  const publicUrl = urlData.publicUrl;
+
+  // Save public URL to users table
+  const { error: dbError } = await supabase
     .from("users")
-    .update({ profilePic: imagePath })
+    .update({ profilePic: publicUrl })
     .eq("user_id", id);
 
-  if (error) {
-    console.log("DB error:", error);
+  if (dbError) {
+    console.log("DB update error:", dbError);
     return res.json({ success: false });
   }
 
-  res.json({ success: true, imagePath });
+  res.json({ success: true, imagePath: publicUrl });
 });
 
 
@@ -162,14 +168,7 @@ app.post("/add-metric", async (req, res) => {
 
   const { error } = await supabase
     .from("metrics_data")
-    .insert([{
-      user_id: userId,
-      metric_type: metricType,
-      value1,
-      value2,
-      unit,
-      notes
-    }]);
+    .insert([{ user_id: userId, metric_type: metricType, value1, value2, unit, notes }]);
 
   if (error) {
     console.log("Metric insert error:", error);

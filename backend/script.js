@@ -3,60 +3,55 @@
    ================================================ */
 
 
+/* ================= SERVER URL ================= */
+
+const SERVER = "https://pulsetracker-7g11.onrender.com";
+
+
 /* ================= DOM REFERENCES ================= */
 
-// Screens
 const loginScreen    = document.getElementById("loginScreen");
 const registerScreen = document.getElementById("registerScreen");
 const mainApp        = document.getElementById("mainApp");
 
-// Login form
 const usernameInput = document.getElementById("usernameInput");
 const passwordInput = document.getElementById("passwordInput");
 const loginBtn      = document.getElementById("loginBtn");
 const loginError    = document.getElementById("loginError");
 
-// Register form
 const registerBtn             = document.getElementById("registerBtn");
 const registerUsername        = document.getElementById("registerUsername");
 const registerPassword        = document.getElementById("registerPassword");
 const registerConfirmPassword = document.getElementById("registerConfirmPassword");
 const registerError           = document.getElementById("registerError");
 
-// Navigation buttons
 const homeLink     = document.getElementById("homeLink");
 const statsLink    = document.getElementById("statsLink");
 const settingsLink = document.getElementById("settingsLink");
 const infoLink     = document.getElementById("infoLink");
 
-// Sections
 const homeSection     = document.getElementById("homeSection");
 const statsSection    = document.getElementById("statsSection");
 const settingsSection = document.getElementById("settingsSection");
 const aboutSection    = document.getElementById("about-section");
 
-// User info
 const logoutBtn    = document.getElementById("logoutBtn");
 const userGreeting = document.getElementById("userGreeting");
 
-// Settings inputs
 const newUsernameInput  = document.getElementById("newUsername");
 const newPasswordInput  = document.getElementById("newPassword");
 const updateUsernameBtn = document.getElementById("updateUsernameBtn");
 const updatePasswordBtn = document.getElementById("updatePasswordBtn");
 
-// Profile picture
 const profileUpload  = document.getElementById("profileUpload");
 const profilePreview = document.getElementById("profilePreview");
 const sidebarProfile = document.getElementById("sidebarProfile");
 
-// Modal elements
 const addInfoBtn     = document.getElementById("addInfoBtn");
 const sleepModal     = document.getElementById("sleepModal");
 const cancelSleepBtn = document.getElementById("cancelSleepBtn");
 const saveSleepBtn   = document.getElementById("saveSleepBtn");
 
-// Metric modal fields
 const metricType       = document.getElementById("metricType");
 const metricUnit       = document.getElementById("metricUnit");
 const unitField        = document.getElementById("unitField");
@@ -67,52 +62,59 @@ const sleepFields      = document.getElementById("sleepFields");
 const sleepHours       = document.getElementById("sleepHours");
 const sleepMinutes     = document.getElementById("sleepMinutes");
 
-// Lifestyle metric display values
 const sleepValue    = document.getElementById("sleepValue");
 const waterValue    = document.getElementById("waterValue");
 const caloriesValue = document.getElementById("caloriesValue");
 const stepsValue    = document.getElementById("stepsValue");
 const stressValue   = document.getElementById("stressValue");
 
-// Global user state
+// Global user state — never trust localStorage for profile data
 let currentUser = null;
 
 
 /* ================= HELPER — APPLY PROFILE PIC ================= */
 
-function applyProfilePic(picPath) {
-  if (!picPath) return;
-
-  // If already a full URL use as-is, otherwise prepend server address
-  const src = picPath.startsWith("http")
-    ? picPath
-    : "http://localhost:3000" + picPath;
+function applyProfilePic(picUrl) {
+  // picUrl is now always a full https:// URL from Supabase Storage
+  const src = (picUrl && picUrl.startsWith("http"))
+    ? picUrl
+    : "default-profile.png";
 
   profilePreview.src = src;
   sidebarProfile.src = src;
 }
 
 
-/* ================= SESSION RESTORE ON LOAD ================= */
+/* ================= HELPER — FETCH FRESH USER ================= */
 
-window.addEventListener("DOMContentLoaded", async () => {
-  const savedUser = localStorage.getItem("user");
-  if (!savedUser) return;
-
-  currentUser = JSON.parse(savedUser);
-
+async function fetchFreshUser(userId) {
   try {
-    // Fetch fresh user data from DB so each user gets their own profile pic
-    const res  = await fetch(`http://localhost:3000/user/${currentUser.user_id}`);
+    const res  = await fetch(`${SERVER}/user/${userId}`);
     const data = await res.json();
-
-    if (data.success) {
-      currentUser = data.user;
-      localStorage.setItem("user", JSON.stringify(currentUser));
-    }
+    if (data.success) return data.user;
   } catch (err) {
-    console.error("Could not refresh user data:", err);
+    console.error("Could not fetch user:", err);
   }
+  return null;
+}
+
+
+/* ================= HELPER — START SESSION ================= */
+
+async function startSession(userId) {
+  // Always pull fresh data from server — profile pic is always per-user from Supabase
+  const freshUser = await fetchFreshUser(userId);
+
+  if (!freshUser) {
+    localStorage.removeItem("pulse_user_id");
+    loginScreen.style.display = "flex";
+    return;
+  }
+
+  currentUser = freshUser;
+
+  // Only store the ID — never the full user object with profilePic
+  localStorage.setItem("pulse_user_id", String(currentUser.user_id));
 
   loginScreen.style.display    = "none";
   registerScreen.style.display = "none";
@@ -120,9 +122,19 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   userGreeting.textContent = "Welcome, " + currentUser.username + "!";
 
+  // Always apply pic from fresh server data
   applyProfilePic(currentUser.profilePic);
 
   await loadMetrics();
+}
+
+
+/* ================= SESSION RESTORE ON LOAD ================= */
+
+window.addEventListener("DOMContentLoaded", async () => {
+  const savedUserId = localStorage.getItem("pulse_user_id");
+  if (!savedUserId) return;
+  await startSession(savedUserId);
 });
 
 
@@ -138,7 +150,7 @@ loginBtn.addEventListener("click", async () => {
   }
 
   try {
-    const res  = await fetch("http://localhost:3000/login", {
+    const res  = await fetch(`${SERVER}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password })
@@ -151,20 +163,10 @@ loginBtn.addEventListener("click", async () => {
       return;
     }
 
-    currentUser = data.user;
-    localStorage.setItem("user", JSON.stringify(currentUser));
-
-    loginScreen.style.display = "none";
-    mainApp.style.display     = "flex";
-
-    userGreeting.textContent = "Welcome, " + currentUser.username + "!";
-
-    applyProfilePic(currentUser.profilePic);
-
-    await loadMetrics();
+    await startSession(data.user.user_id);
 
   } catch (err) {
-    loginError.textContent = "Server not running.";
+    loginError.textContent = "Server not reachable.";
   }
 });
 
@@ -187,7 +189,7 @@ registerBtn.addEventListener("click", async () => {
   }
 
   try {
-    const res  = await fetch("http://localhost:3000/register", {
+    const res  = await fetch(`${SERVER}/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password })
@@ -200,17 +202,17 @@ registerBtn.addEventListener("click", async () => {
       return;
     }
 
-    alert("Account created successfully! Please login.");
+    alert("Account created! Please login.");
     registerScreen.style.display = "none";
     loginScreen.style.display    = "flex";
 
   } catch {
-    registerError.textContent = "Server not running.";
+    registerError.textContent = "Server not reachable.";
   }
 });
 
 
-/* ================= SCREEN SWITCHING (Login ↔ Register) ================= */
+/* ================= SCREEN SWITCHING ================= */
 
 document.getElementById("goToRegister").addEventListener("click", () => {
   loginScreen.style.display    = "none";
@@ -220,7 +222,6 @@ document.getElementById("goToRegister").addEventListener("click", () => {
 document.getElementById("goToLogin").addEventListener("click", () => {
   registerScreen.style.display  = "none";
   loginScreen.style.display     = "flex";
-
   registerUsername.value        = "";
   registerPassword.value        = "";
   registerConfirmPassword.value = "";
@@ -230,24 +231,25 @@ document.getElementById("goToLogin").addEventListener("click", () => {
 /* ================= LOGOUT ================= */
 
 logoutBtn.addEventListener("click", () => {
-  localStorage.removeItem("user");
+  localStorage.removeItem("pulse_user_id");
   currentUser = null;
+
+  // Always reset pics to default on logout so no pic bleeds into next user
+  profilePreview.src = "default-profile.png";
+  sidebarProfile.src = "default-profile.png";
 
   mainApp.style.display     = "none";
   loginScreen.style.display = "flex";
 
-  // Clear all inputs
   usernameInput.value           = "";
   passwordInput.value           = "";
   registerUsername.value        = "";
   registerPassword.value        = "";
   registerConfirmPassword.value = "";
 
-  // Reset to home section
   document.querySelectorAll(".section").forEach(s => s.classList.remove("active-section"));
   homeSection.classList.add("active-section");
 
-  // Reset sidebar active state
   document.querySelectorAll(".sidebar-nav button").forEach(b => b.classList.remove("active"));
   homeLink.classList.add("active");
 });
@@ -274,7 +276,7 @@ profileUpload.addEventListener("change", async () => {
   const file = profileUpload.files[0];
   if (!file) return;
 
-  // Show preview immediately while uploading
+  // Show local preview immediately while uploading
   const reader = new FileReader();
   reader.onload = (e) => {
     profilePreview.src = e.target.result;
@@ -282,13 +284,12 @@ profileUpload.addEventListener("change", async () => {
   };
   reader.readAsDataURL(file);
 
-  // Upload file to server
   const formData = new FormData();
   formData.append("profilePic", file);
   formData.append("id", currentUser.user_id);
 
   try {
-    const res  = await fetch("http://localhost:3000/upload-profile-pic", {
+    const res  = await fetch(`${SERVER}/upload-profile-pic`, {
       method: "POST",
       body: formData
     });
@@ -296,9 +297,10 @@ profileUpload.addEventListener("change", async () => {
     const data = await res.json();
 
     if (data.success) {
-      // Store relative path — applyProfilePic will prepend server URL
+      // Update in-memory user with new full https:// URL from Supabase Storage
       currentUser.profilePic = data.imagePath;
-      localStorage.setItem("user", JSON.stringify(currentUser));
+      // Apply the real URL (replaces the local blob preview)
+      applyProfilePic(currentUser.profilePic);
     } else {
       console.error("Upload failed:", data.message);
     }
@@ -314,7 +316,7 @@ updateUsernameBtn.addEventListener("click", async () => {
   const newUsername = newUsernameInput.value.trim();
   if (!newUsername) return alert("Enter a username");
 
-  const res  = await fetch("http://localhost:3000/update-username", {
+  const res  = await fetch(`${SERVER}/update-username`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id: currentUser.user_id, newUsername })
@@ -328,9 +330,7 @@ updateUsernameBtn.addEventListener("click", async () => {
   }
 
   currentUser.username = newUsername;
-  localStorage.setItem("user", JSON.stringify(currentUser));
   userGreeting.textContent = "Welcome, " + newUsername + "!";
-
   alert("Username updated!");
   newUsernameInput.value = "";
 });
@@ -342,7 +342,7 @@ updatePasswordBtn.addEventListener("click", async () => {
   const newPassword = newPasswordInput.value.trim();
   if (!newPassword) return alert("Enter a password");
 
-  await fetch("http://localhost:3000/update-password", {
+  await fetch(`${SERVER}/update-password`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id: currentUser.user_id, newPassword })
@@ -359,7 +359,6 @@ document.querySelectorAll(".lifestyle-grid .soft-btn").forEach(button => {
   button.addEventListener("click", (e) => {
     e.stopPropagation();
 
-    // Remove any existing popups
     document.querySelectorAll(".details-popup").forEach(p => p.remove());
 
     const card        = button.closest(".stat-card");
@@ -387,7 +386,6 @@ document.querySelectorAll(".lifestyle-grid .soft-btn").forEach(button => {
   });
 });
 
-// Close popup when tapping anywhere else
 document.addEventListener("click", () => {
   document.querySelectorAll(".details-popup").forEach(p => p.remove());
 });
@@ -404,7 +402,6 @@ cancelSleepBtn.addEventListener("click", () => {
   sleepModal.classList.add("hidden");
 });
 
-// Close when tapping the backdrop
 sleepModal.addEventListener("click", (e) => {
   if (e.target === sleepModal) sleepModal.classList.add("hidden");
 });
@@ -415,7 +412,6 @@ sleepModal.addEventListener("click", (e) => {
 metricType.addEventListener("change", function () {
   const type = metricType.value;
 
-  // Hide all conditional fields first
   singleValueField.classList.add("hidden");
   sleepFields.classList.add("hidden");
   unitField.classList.add("hidden");
@@ -460,13 +456,12 @@ metricType.addEventListener("change", function () {
 /* ================= METRIC MODAL — RESET ================= */
 
 function resetMetricModal() {
-  metricType.value  = "";
-  metricValue.value = "";
-  metricNotes.value = "";
+  metricType.value     = "";
+  metricValue.value    = "";
+  metricNotes.value    = "";
   metricUnit.innerHTML = '<option value="" disabled selected hidden>Select Unit</option>';
-
-  sleepHours.value   = "";
-  sleepMinutes.value = "";
+  sleepHours.value     = "";
+  sleepMinutes.value   = "";
 
   sleepFields.classList.add("hidden");
   singleValueField.classList.add("hidden");
@@ -479,10 +474,7 @@ function resetMetricModal() {
 saveSleepBtn.addEventListener("click", async () => {
   const type = metricType.value;
 
-  if (!type) {
-    alert("Select a metric.");
-    return;
-  }
+  if (!type) { alert("Select a metric."); return; }
 
   let value1 = null;
   let value2 = null;
@@ -491,33 +483,22 @@ saveSleepBtn.addEventListener("click", async () => {
   if (type === "sleep") {
     const h = parseInt(sleepHours.value)   || 0;
     const m = parseInt(sleepMinutes.value) || 0;
-
-    if (h === 0 && m === 0) {
-      alert("Enter sleep hours or minutes.");
-      return;
-    }
-
+    if (h === 0 && m === 0) { alert("Enter sleep hours or minutes."); return; }
     value1 = h;
     value2 = m;
 
   } else if (type === "stress") {
-    if (!metricUnit.value) {
-      alert("Select stress level.");
-      return;
-    }
+    if (!metricUnit.value) { alert("Select stress level."); return; }
     unit = metricUnit.value;
 
   } else {
-    if (!metricValue.value || !metricUnit.value) {
-      alert("Enter value and unit.");
-      return;
-    }
+    if (!metricValue.value || !metricUnit.value) { alert("Enter value and unit."); return; }
     value1 = metricValue.value;
     unit   = metricUnit.value;
   }
 
   try {
-    await fetch("hhttp://localhost:3000/add-metric", {
+    await fetch(`${SERVER}/add-metric`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -543,17 +524,15 @@ saveSleepBtn.addEventListener("click", async () => {
 
 async function loadMetrics() {
   try {
-    const res  = await fetch(`http://localhost:3000/metrics/${currentUser.user_id}`);
+    const res  = await fetch(`${SERVER}/metrics/${currentUser.user_id}`);
     const data = await res.json();
 
-    // Reset all to placeholder
     sleepValue.textContent    = "--";
     waterValue.textContent    = "--";
     caloriesValue.textContent = "--";
     stepsValue.textContent    = "--";
     stressValue.textContent   = "--";
 
-    // Data comes newest-first from server; skip older duplicates per type
     const seen = {};
 
     data.forEach(metric => {
@@ -578,8 +557,8 @@ async function loadMetrics() {
 function updateProgressCircle(element, value, maxValue) {
   if (!element) return;
 
-  const circle        = element.querySelector(".progress");
-  const circleNumber  = element.querySelector(".circle-number");
+  const circle       = element.querySelector(".progress");
+  const circleNumber = element.querySelector(".circle-number");
   if (!circle || !circleNumber) return;
 
   const radius        = circle.r.baseVal.value;
@@ -608,12 +587,10 @@ function simulateVitals() {
 
   if (!bpmEl || !oxygenEl || !rrEl) return;
 
-  // Set initial values immediately so circles aren't empty on load
   updateProgressCircle(bpmEl,    72, 180);
   updateProgressCircle(oxygenEl, 98, 100);
   updateProgressCircle(rrEl,     16,  30);
 
-  // Then randomize on interval
   setInterval(() => {
     updateProgressCircle(bpmEl,    Math.floor(Math.random() * 41) + 60,  180);
     updateProgressCircle(oxygenEl, Math.floor(Math.random() * 6)  + 95,  100);
@@ -669,21 +646,10 @@ if (ctx) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      animation: {
-        duration: 1500,
-        easing: "easeInOutQuart"
-      },
-      interaction: {
-        mode: "index",
-        intersect: false
-      },
+      animation: { duration: 1500, easing: "easeInOutQuart" },
+      interaction: { mode: "index", intersect: false },
       plugins: {
-        legend: {
-          labels: {
-            color: "#333",
-            font: { size: 13 }
-          }
-        }
+        legend: { labels: { color: "#333", font: { size: 13 } } }
       },
       scales: {
         x: { grid: { display: false } },
