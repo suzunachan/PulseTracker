@@ -687,6 +687,15 @@ a {
   margin: 0 auto 40px auto;
 }
 
+.about-card ul {
+  padding-left: 20px;
+  margin-top: 8px;
+}
+
+.about-card li {
+  margin-bottom: 6px;
+}
+
 
 /* ================================================
    18. METRIC MODAL
