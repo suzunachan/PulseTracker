@@ -987,12 +987,13 @@ a {
     padding: 0 16px;
     height: 70px;
     gap: 8px;
+    justify-content: center;
   }
 
   .sidebar-logo img,
   .sidebar-user img {
-    width: 30px;
-    height: 30px;
+    width: 38px;
+    height: 38px;
   }
 
   .sidebar-nav {
