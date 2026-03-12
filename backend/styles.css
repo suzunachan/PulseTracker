@@ -914,17 +914,18 @@ a {
 
   /* Tighter dashboard padding, extra bottom for nav bar */
   .dashboard {
-    padding: 16px 16px 90px 16px !important;
+    padding: 0px 16px 90px 16px !important;
   }
 
   .section {
     padding-bottom: 0 !important;
   }
 
-  #statsSection,
+ #statsSection,
   #settingsSection,
   #about-section {
-    padding-top: 16px;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
   }
 
   .dashboard-wrapper {
