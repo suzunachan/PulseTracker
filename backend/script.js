@@ -86,7 +86,7 @@ function applyProfilePic(picPath) {
   // If already a full URL use as-is, otherwise prepend server address
   const src = picPath.startsWith("http")
     ? picPath
-    : "http://192.168.1.7:3000" + picPath;
+    : "http://localhost:3000" + picPath;
 
   profilePreview.src = src;
   sidebarProfile.src = src;
@@ -103,7 +103,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   try {
     // Fetch fresh user data from DB so each user gets their own profile pic
-    const res  = await fetch(`https://pulsetracker-7g11.onrender.com/user/${currentUser.user_id}`);
+    const res  = await fetch(`http://localhost:3000/user/${currentUser.user_id}`);
     const data = await res.json();
 
     if (data.success) {
@@ -138,7 +138,7 @@ loginBtn.addEventListener("click", async () => {
   }
 
   try {
-    const res  = await fetch("https://pulsetracker-7g11.onrender.com/login", {
+    const res  = await fetch("http://localhost:3000/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password })
@@ -187,7 +187,7 @@ registerBtn.addEventListener("click", async () => {
   }
 
   try {
-    const res  = await fetch("https://pulsetracker-7g11.onrender.com/register", {
+    const res  = await fetch("http://localhost:3000/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password })
@@ -288,7 +288,7 @@ profileUpload.addEventListener("change", async () => {
   formData.append("id", currentUser.user_id);
 
   try {
-    const res  = await fetch("https://pulsetracker-7g11.onrender.com/upload-profile-pic", {
+    const res  = await fetch("http://localhost:3000/upload-profile-pic", {
       method: "POST",
       body: formData
     });
@@ -314,7 +314,7 @@ updateUsernameBtn.addEventListener("click", async () => {
   const newUsername = newUsernameInput.value.trim();
   if (!newUsername) return alert("Enter a username");
 
-  const res  = await fetch("https://pulsetracker-7g11.onrender.com/update-username", {
+  const res  = await fetch("http://localhost:3000/update-username", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id: currentUser.user_id, newUsername })
@@ -342,7 +342,7 @@ updatePasswordBtn.addEventListener("click", async () => {
   const newPassword = newPasswordInput.value.trim();
   if (!newPassword) return alert("Enter a password");
 
-  await fetch("https://pulsetracker-7g11.onrender.com/update-password", {
+  await fetch("http://localhost:3000/update-password", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id: currentUser.user_id, newPassword })
@@ -517,7 +517,7 @@ saveSleepBtn.addEventListener("click", async () => {
   }
 
   try {
-    await fetch("https://pulsetracker-7g11.onrender.com/add-metric", {
+    await fetch("hhttp://localhost:3000/add-metric", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -543,7 +543,7 @@ saveSleepBtn.addEventListener("click", async () => {
 
 async function loadMetrics() {
   try {
-    const res  = await fetch(`https://pulsetracker-7g11.onrender.com/metrics/${currentUser.user_id}`);
+    const res  = await fetch(`http://localhost:3000/metrics/${currentUser.user_id}`);
     const data = await res.json();
 
     // Reset all to placeholder
