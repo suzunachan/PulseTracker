@@ -1,23 +1,24 @@
 /* ================================================
-   PULSE TRACKER — MAIN STYLESHEET
+   1. CSS VARIABLES
    ================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 
-
-/* ================= CSS VARIABLES ================= */
 :root {
-  --bg-color: rgba(255, 255, 255, 0.7);
-  --text-color: #070707;
-  --card-shadow: rgba(0, 0, 0, 0.12);
-  --primary-color: #86afd6;
-  --hover-bg: rgba(56, 111, 164, 0.15);
-  --soft-btn-bg: rgba(255, 255, 255, 0.7);
-  --gradient-bg: linear-gradient(-45deg, #c9ebff, #f1f9ff, #dff2ff, #daeeff);
+  --bg-color:       rgba(255, 255, 255, 0.7);
+  --text-color:     #070707;
+  --card-shadow:    rgba(0, 0, 0, 0.12);
+  --primary-color:  #86afd6;
+  --hover-bg:       rgba(56, 111, 164, 0.15);
+  --soft-btn-bg:    rgba(255, 255, 255, 0.7);
+  --gradient-bg:    linear-gradient(-45deg, #c9ebff, #f1f9ff, #dff2ff, #daeeff);
 }
 
 
-/* ================= GLOBAL RESET ================= */
+/* ================================================
+   2. GLOBAL RESET
+   ================================================ */
+
 *,
 *::before,
 *::after {
@@ -42,7 +43,6 @@ body {
   overflow-y: auto;
   width: 100%;
   -webkit-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
 
@@ -52,14 +52,13 @@ img {
   display: block;
 }
 
-/* Re-enable text selection and prevent zoom on inputs */
+/* Re-enable text selection on inputs and prevent zoom on mobile */
 input,
 textarea,
 select {
   -webkit-user-select: text;
-  -ms-user-select: text;
   user-select: text;
-  font-size: 16px; /* Prevents auto-zoom on Android/iOS */
+  font-size: 16px;
   font-family: 'Poppins', sans-serif;
 }
 
@@ -69,7 +68,10 @@ a {
 }
 
 
-/* ================= APP LAYOUT ================= */
+/* ================================================
+   3. APP LAYOUT
+   ================================================ */
+
 .app {
   display: flex;
   flex-direction: row;
@@ -78,10 +80,13 @@ a {
 }
 
 
-/* ================= SECTION SWITCHING ================= */
+/* ================================================
+   4. SECTION SWITCHING
+   ================================================ */
+
 .section {
   display: none;
-  padding-bottom: 80px;
+  padding-bottom: 120px;
 }
 
 .section.active-section {
@@ -89,7 +94,10 @@ a {
 }
 
 
-/* ================= SIDEBAR / BOTTOM NAV ================= */
+/* ================================================
+   5. SIDEBAR / BOTTOM NAV
+   ================================================ */
+
 .sidebar {
   position: fixed;
   bottom: 25px;
@@ -97,7 +105,6 @@ a {
   transform: translateX(-50%);
   height: 75px;
   padding: 0 30px;
-  /* Solid fallback for WebViews that don't support backdrop-filter */
   background: rgba(255, 255, 255, 0.92);
   -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
@@ -108,10 +115,10 @@ a {
   gap: 40px;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
   z-index: 1000;
-  /* Prevent sidebar from going wider than screen */
   max-width: calc(100vw - 32px);
 }
 
+/* Logo and profile pic in sidebar */
 .sidebar-logo img,
 .sidebar-user img {
   height: 40px;
@@ -121,11 +128,17 @@ a {
   flex-shrink: 0;
 }
 
+.sidebar-user img {
+  width: 45px;
+  height: 45px;
+}
+
 .sidebar-nav-wrapper {
   display: flex;
   align-items: center;
 }
 
+/* Nav icon buttons */
 .sidebar-nav {
   display: flex;
   gap: 50px;
@@ -165,7 +178,7 @@ a {
   transform: scale(1.1);
 }
 
-/* Active indicator underline dot */
+/* Active indicator dot under nav button */
 .sidebar-nav button::after {
   content: "";
   position: absolute;
@@ -183,23 +196,18 @@ a {
   opacity: 1;
 }
 
-.sidebar-user img {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  object-fit: cover;
-}
 
+/* ================================================
+   6. DASHBOARD & PAGE TITLES
+   ================================================ */
 
-/* ================= DASHBOARD ================= */
 .dashboard {
   flex: 1;
   padding: 40px 60px;
-  overflow-y: visible;
-  /* Prevent content from going under sidebar */
   padding-bottom: 140px;
   width: 100%;
   min-width: 0;
+  overflow-y: visible;
 }
 
 .page-title {
@@ -223,7 +231,10 @@ a {
 }
 
 
-/* ================= THREE-COLUMN HOME LAYOUT ================= */
+/* ================================================
+   7. THREE-COLUMN HOME LAYOUT
+   ================================================ */
+
 .dashboard-wrapper {
   display: grid;
   grid-template-columns: 0.8fr 2.6fr 0.8fr;
@@ -234,17 +245,12 @@ a {
   align-items: start;
 }
 
-.left-column,
-.main-column,
-.right-column {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  min-width: 0;
-}
 
+/* ================================================
+   8. CARDS
+   ================================================ */
 
-/* ================= CARDS ================= */
+/* --- Base card --- */
 .card {
   background: #ffffff;
   border-radius: 20px;
@@ -262,7 +268,7 @@ a {
   grid-column: 1 / -1;
 }
 
-/* Gradient cards used across sections */
+/* --- Gradient container cards --- */
 .main-feed-card,
 .side-card,
 .card-full,
@@ -273,10 +279,12 @@ a {
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
 }
 
+/* Main center feed card */
 .main-feed-card {
   padding: 70px;
 }
 
+/* Left/right sidebar cards */
 .side-card {
   padding: 50px;
   display: flex;
@@ -289,6 +297,7 @@ a {
   border-radius: 25px;
 }
 
+/* Full-width section cards (stats, about) */
 .card-full {
   padding: 50px 70px;
   max-width: 1400px;
@@ -299,7 +308,11 @@ a {
   align-items: flex-start;
 }
 
-/* ================= STAT CARDS ================= */
+
+/* ================================================
+   9. STAT CARDS
+   ================================================ */
+
 .stat-card {
   text-align: center;
   display: flex;
@@ -325,7 +338,10 @@ a {
 }
 
 
-/* ================= CORE VITALS GRID ================= */
+/* ================================================
+   10. CORE VITALS GRID
+   ================================================ */
+
 .core-vitals-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -338,7 +354,10 @@ a {
 }
 
 
-/* ================= LIFESTYLE METRICS GRID ================= */
+/* ================================================
+   11. LIFESTYLE METRICS GRID
+   ================================================ */
+
 .lifestyle-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -347,35 +366,10 @@ a {
 }
 
 
-/* ================= SOFT BUTTONS ================= */
-.soft-btn {
-  margin-top: 15px;
-  color: var(--text-color);
-  border: none;
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  padding: 10px 20px;
-  border-radius: 10px;
-  background: var(--soft-btn-bg);
-  box-shadow: 0 15px 30px var(--card-shadow);
-  cursor: pointer;
-  transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
-  display: inline-block;
-  text-align: center;
-  /* Prevent button from shrinking weirdly on mobile */
-  white-space: nowrap;
-}
+/* ================================================
+   12. PROGRESS CIRCLES
+   ================================================ */
 
-.soft-btn:hover,
-.soft-btn:active {
-  transform: scale(1.02);
-  background: var(--primary-color);
-  color: #fff;
-  box-shadow: 0 25px 45px var(--card-shadow);
-}
-
-
-/* ================= PROGRESS CIRCLES ================= */
 .progress-circle {
   position: relative;
   display: flex;
@@ -417,7 +411,40 @@ a {
 }
 
 
-/* ================= LOGIN / REGISTER SCREENS ================= */
+/* ================================================
+   13. SOFT BUTTONS
+   ================================================ */
+
+.soft-btn {
+  margin-top: 15px;
+  color: var(--text-color);
+  border: none;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: var(--soft-btn-bg);
+  box-shadow: 0 15px 30px var(--card-shadow);
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+  display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.soft-btn:hover,
+.soft-btn:active {
+  transform: scale(1.02);
+  background: var(--primary-color);
+  color: #fff;
+  box-shadow: 0 25px 45px var(--card-shadow);
+}
+
+
+/* ================================================
+   14. LOGIN / REGISTER SCREENS
+   ================================================ */
+
 .login-screen {
   position: fixed;
   inset: 0;
@@ -443,11 +470,11 @@ a {
   min-height: 600px;
   padding: 50px;
   border-radius: 30px;
-  background: rgba(255, 255, 255, 0.15);
-  -webkit-backdrop-filter: blur(25px);
+  background: rgba(90, 90, 90, 0.10);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(25px);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 32px rgba(34, 34, 34, 0.15);
   display: flex;
   flex-direction: column;
 }
@@ -511,7 +538,10 @@ a {
 }
 
 
-/* ================= SETTINGS SECTION ================= */
+/* ================================================
+   15. SETTINGS SECTION
+   ================================================ */
+
 .settings-card {
   padding: 70px 80px;
   border-radius: 35px;
@@ -533,6 +563,7 @@ a {
   font-size: 16px;
 }
 
+/* Profile picture preview */
 .profile-img {
   width: 90px;
   height: 90px;
@@ -540,10 +571,12 @@ a {
   object-fit: cover;
 }
 
+/* Hide default file input — triggered by label */
 #profileUpload {
   display: none;
 }
 
+/* Logout button */
 .logout-btn {
   margin-top: 20px;
   padding: 12px;
@@ -565,7 +598,15 @@ a {
 }
 
 
-/* ================= STATS SECTION ================= */
+/* ================================================
+   16. STATS SECTION & CHART
+   ================================================ */
+
+#statsSection {
+  padding-top: 20px;
+}
+
+/* Chart wrapper card */
 #statsSection .card-full:first-of-type {
   height: auto;
   min-height: 500px;
@@ -575,15 +616,12 @@ a {
   height: 450px;
 }
 
+/* Info card below chart */
 #statsSection .info-card {
   display: block;
   margin-top: 50px;
   min-height: unset;
   height: auto;
-}
-
-#statsSection {
-  padding-top: 20px;
 }
 
 #statsSection .info-card .section-subtitle {
@@ -603,6 +641,7 @@ a {
   margin-top: 40px;
 }
 
+/* Vital info cards grid inside stats */
 .vital-info-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -632,7 +671,14 @@ a {
 }
 
 
-/* ================= ABOUT SECTION ================= */
+/* ================================================
+   17. ABOUT SECTION
+   ================================================ */
+
+#about-section {
+  padding-bottom: 30px;
+}
+
 .about-card {
   padding: 60px 80px;
   border-radius: 35px;
@@ -640,12 +686,11 @@ a {
   margin: 0 auto 40px auto;
 }
 
-#about-section {
-  padding-bottom: 30px;
-}
 
+/* ================================================
+   18. METRIC MODAL
+   ================================================ */
 
-/* ================= METRIC MODAL ================= */
 .modal {
   position: fixed;
   inset: 0;
@@ -654,7 +699,6 @@ a {
   backdrop-filter: blur(4px);
   display: flex;
   justify-content: center;
-  /* flex-start keeps modal visible when keyboard opens on Android */
   align-items: flex-start;
   padding: 60px 16px;
   overflow-y: auto;
@@ -662,6 +706,7 @@ a {
   -webkit-overflow-scrolling: touch;
 }
 
+/* Modal content box */
 .modal-content {
   width: 420px;
   max-width: 100%;
@@ -675,13 +720,7 @@ a {
   margin: auto;
 }
 
-.modal-title {
-  text-align: center;
-  margin-bottom: 20px;
-  font-weight: 600;
-  color: white;
-}
-
+/* Modal input fields */
 .modal-field {
   position: relative;
   margin-bottom: 15px;
@@ -717,11 +756,10 @@ a {
 .modal-field select {
   appearance: none;
   -webkit-appearance: none;
-  -moz-appearance: none;
   cursor: pointer;
 }
 
-/* Custom dropdown arrow — only on fields that have a select */
+/* Custom dropdown arrow */
 .modal-field:has(select)::after {
   content: "▾";
   position: absolute;
@@ -733,7 +771,7 @@ a {
   color: #86afd6;
 }
 
-/* Sleep row: hours + minutes side by side */
+/* Sleep hours + minutes side by side */
 .sleep-row {
   display: flex;
   gap: 12px;
@@ -743,15 +781,7 @@ a {
   flex: 1;
 }
 
-/* Modal buttons */
-#sleepModal .soft-btn {
-  background: white;
-  color: #6fbeff;
-  font-weight: 600;
-  border-radius: 12px;
-  padding: 10px 18px;
-}
-
+/* Modal action buttons */
 .modal-actions {
   display: flex;
   justify-content: space-between;
@@ -764,8 +794,19 @@ a {
   margin-top: 0;
 }
 
+#sleepModal .soft-btn {
+  background: white;
+  color: #6fbeff;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 10px 18px;
+}
 
-/* ================= DETAILS POPUP ================= */
+
+/* ================================================
+   19. DETAILS POPUP
+   ================================================ */
+
 .details-popup {
   position: absolute;
   bottom: 60px;
@@ -793,46 +834,42 @@ a {
 }
 
 
-/* ================= UTILITY ================= */
+/* ================================================
+   20. UTILITY CLASSES
+   ================================================ */
+
 .hidden {
   display: none !important;
 }
 
 
 /* ================================================
-   RESPONSIVE — TABLET (max-width: 1100px)
+   21. RESPONSIVE — TABLET (max-width: 1300px)
    ================================================ */
-@media (max-width: 1100px) {
+
+@media (max-width: 1300px) {
 
   html, body {
     width: 100%;
     overflow-x: hidden;
   }
 
-  /* Stack three columns into one */
+  /* Collapse three columns into one */
   .dashboard-wrapper {
     grid-template-columns: 1fr;
     gap: 24px;
     margin: 20px auto;
   }
 
-  .left-column,
-  .right-column,
-  .main-column {
-    width: 100%;
-  }
-
   /* Side cards go horizontal on tablet */
-  .left-column,
-  .right-column {
+  .side-card {
     flex-direction: row;
     flex-wrap: wrap;
   }
 
-  .left-column .side-card,
-  .right-column .side-card {
+  .side-card .card {
     flex: 1;
-    min-width: 0;
+    min-width: 200px;
   }
 
   .core-vitals-grid {
@@ -869,12 +906,14 @@ a {
 
 
 /* ================================================
-   RESPONSIVE — MOBILE (max-width: 768px)
+   22. RESPONSIVE — MOBILE (max-width: 768px)
    ================================================ */
+
 @media (max-width: 768px) {
 
+  /* Tighter dashboard padding, extra bottom for nav bar */
   .dashboard {
-    padding: 16px 16px 180px 16px;
+    padding: 16px 16px 160px 16px;
   }
 
   .dashboard-wrapper {
@@ -883,7 +922,7 @@ a {
     padding: 0;
   }
 
-  /* Reduce all large card padding on mobile */
+  /* Reduce all large card padding */
   .main-feed-card,
   .side-card,
   .card-full,
@@ -893,13 +932,17 @@ a {
     border-radius: 20px;
   }
 
-  /* Smaller page title */
+  /* Side cards stack vertically on mobile */
+  .side-card {
+    flex-direction: column;
+  }
+
+  /* Titles */
   .page-title {
     font-size: 22px;
     margin: 12px;
   }
 
-  /* Smaller greeting */
   .greeting-text {
     margin: 8px 0 16px 0;
     font-size: 14px;
@@ -915,13 +958,12 @@ a {
     font-size: 22px;
   }
 
-  /* Vitals: stack to 1 column on small phones */
+  /* Vitals: 1 column on mobile */
   .core-vitals-grid {
     grid-template-columns: 1fr;
     gap: 14px;
   }
 
-  /* Vitals card height auto on mobile */
   .core-vitals-grid .stat-card {
     height: auto;
     padding: 20px;
@@ -933,29 +975,23 @@ a {
     gap: 12px;
   }
 
-  /* Side columns stack vertically */
-  .left-column,
-  .right-column {
-    flex-direction: column;
-  }
-
-  /* Bottom nav bar fits screen width */
+  /* Bottom nav fits screen */
   .sidebar {
-    width: calc(100% - 24px);
-    max-width: calc(100% - 24px);
+    width: calc(100% - 40px);
+    max-width: calc(100% - 40px);
     left: 50%;
     transform: translateX(-50%);
     bottom: 12px;
     border-radius: 28px;
-    padding: 0 20px;
+    padding: 0 16px;
     height: 70px;
-    gap: 16px;
+    gap: 8px;
   }
 
   .sidebar-logo img,
   .sidebar-user img {
-    width: 34px;
-    height: 34px;
+    width: 30px;
+    height: 30px;
   }
 
   .sidebar-nav {
@@ -976,7 +1012,7 @@ a {
     height: 26px;
   }
 
-  /* Modal fits screen, stays above keyboard */
+  /* Modal fits screen */
   .modal {
     padding: 24px 12px;
     align-items: flex-start;
@@ -997,7 +1033,7 @@ a {
     margin-bottom: 20px;
   }
 
-  /* Stats chart shorter on mobile */
+  /* Chart shorter on mobile */
   #statsSection .card-full:first-of-type {
     min-height: unset;
   }
@@ -1010,13 +1046,13 @@ a {
     height: 220px;
   }
 
-  /* Vital info grid: 1 column on mobile */
+  /* Vital info: 1 column on mobile */
   .vital-info-grid {
     grid-template-columns: 1fr;
     gap: 14px;
   }
 
-  /* About section */
+  /* About */
   .about-card {
     padding: 20px;
     border-radius: 20px;
@@ -1035,19 +1071,65 @@ a {
     width: 95%;
   }
 
-  /* Details popup — make sure it doesn't overflow screen */
+  /* Details popup */
   .details-popup {
     width: 180px;
     font-size: 12px;
   }
 }
 
+/* Home header with logo + title + profile pic */
+.home-header {
+  display: none; /* hidden on desktop */
+}
+
+@media (max-width: 768px) {
+  .home-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+    margin-bottom: 8px;
+  }
+
+  .home-header .page-title {
+    font-size: 18px;
+    margin: 0;
+    flex: 1;
+    text-align: center;
+  }
+
+  .home-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .home-profile-pic {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  /* Hide logo and profile from sidebar on mobile */
+  .sidebar-logo,
+  .sidebar-user {
+    display: none;
+  }
+}
+
 
 /* ================================================
-   RESPONSIVE — SMALL PHONES (max-width: 380px)
+   23. RESPONSIVE — SMALL PHONES (max-width: 380px)
    ================================================ */
+
 @media (max-width: 380px) {
 
+  /* Stack lifestyle to 1 column on tiny screens */
   .lifestyle-grid {
     grid-template-columns: 1fr;
   }
