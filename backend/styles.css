@@ -928,6 +928,14 @@ a {
     margin-top: 0 !important;
   }
 
+  #statsSection .info-card {
+    margin-top: 16px;
+  }
+
+  .info-card {
+    margin-top: 16px;
+  }
+
   .dashboard-wrapper {
     gap: 16px;
     margin: 16px auto;
