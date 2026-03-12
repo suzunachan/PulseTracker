@@ -918,7 +918,7 @@ a {
   }
 
   .section {
-    padding-bottom: 1 !important;
+    padding-bottom: 0 !important;
   }
 
   .dashboard-wrapper {
