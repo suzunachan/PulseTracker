@@ -921,6 +921,12 @@ a {
     padding-bottom: 0 !important;
   }
 
+  #statsSection,
+  #settingsSection,
+  #about-section {
+    padding-top: 16px;
+  }
+
   .dashboard-wrapper {
     gap: 16px;
     margin: 16px auto;
