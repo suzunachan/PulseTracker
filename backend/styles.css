@@ -112,7 +112,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 40px;
+  gap: 35px;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
   z-index: 1000;
   max-width: calc(100vw - 32px);
@@ -470,8 +470,8 @@ a {
   min-height: 600px;
   padding: 50px;
   border-radius: 30px;
-  background: rgba(90, 90, 90, 0.10);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(25px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 8px 32px rgba(34, 34, 34, 0.15);
@@ -484,6 +484,7 @@ a {
   font-weight: 600;
   text-align: center;
   margin-bottom: 30px;
+  color: #ffffff;
 }
 
 .login-form {

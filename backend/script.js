@@ -82,6 +82,8 @@ function applyProfilePic(picUrl) {
 
   profilePreview.src = src;
   sidebarProfile.src = src;
+  const homePic = document.getElementById("homeProfilePic");
+  if (homePic) homePic.src = src;
 }
 
 
