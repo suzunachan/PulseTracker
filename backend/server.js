@@ -20,7 +20,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 // ================= REGISTER =================
 app.post("/register", async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, first_name, middle_name, last_name } = req.body;
 
   const { data: existing } = await supabase
     .from("users")
@@ -34,7 +34,7 @@ app.post("/register", async (req, res) => {
 
   const { error } = await supabase
     .from("users")
-    .insert([{ username, password_hash: password }]);
+    .insert([{ username, password_hash: password, first_name, middle_name, last_name }]);
 
   if (error) {
     console.log("Register error:", error);
@@ -94,6 +94,20 @@ app.put("/update-username", async (req, res) => {
   const { error } = await supabase
     .from("users")
     .update({ username: newUsername })
+    .eq("user_id", id);
+
+  if (error) return res.json({ success: false });
+  res.json({ success: true });
+});
+
+
+// ================= UPDATE FULL NAME =================
+app.put("/update-name", async (req, res) => {
+  const { id, first_name, middle_name, last_name } = req.body;
+
+  const { error } = await supabase
+    .from("users")
+    .update({ first_name, middle_name, last_name })
     .eq("user_id", id);
 
   if (error) return res.json({ success: false });
