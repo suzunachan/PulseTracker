@@ -13,23 +13,22 @@
    7.  Dashboard & Main Content
    8.  Home Layout (Feed + Right Panel)
    9.  Right Panel
-   10. Section Headers
-   11. Cards (Base, Hero, Full-Width)
-   12. Stat Cards
-   13. Core Vitals Grid
-   14. Lifestyle Metrics Grid
-   15. Progress Circles
-   16. Soft Buttons
-   17. Login / Register Screens
-   18. Settings Section
-   19. Stats Section & Chart
-   20. About Section
-   21. Metric Modal
-   22. Details Popup
-   23. Utility Classes
-   24. Responsive — Tablet (max-width: 1100px)
-   25. Responsive — Mobile (max-width: 768px)
-   26. Responsive — Small Phones (max-width: 380px)
+   10. Cards (Base, Hero, Full-Width)
+   11. Stat Cards & Metric Notes
+   12. Core Vitals Grid
+   13. Lifestyle Metrics Grid
+   14. Progress Circles
+   15. Soft Buttons & Add Button
+   16. Login / Register Screens
+   17. Settings Section
+   18. Stats Section & Chart
+   19. About Section
+   20. Metric Modal
+   21. Details Popup
+   22. Utility Classes
+   23. Responsive — Tablet (max-width: 1100px)
+   24. Responsive — Mobile (max-width: 768px)
+   25. Responsive — Small Phones (max-width: 380px)
 
    ================================================ */
 
@@ -150,7 +149,7 @@ button, a {
   align-items: center;
   gap: 10px;
   padding: 0 8px 20px 8px;
-  border-bottom: 1px solid rgba(91, 155, 213, 0.2);
+  border-bottom: 1px solid rgba(91, 155, 213, 0.15);
   margin-bottom: 16px;
 }
 
@@ -162,7 +161,7 @@ button, a {
 }
 
 .sidebar-brand {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
   color: var(--primary-color);
   letter-spacing: 0.5px;
@@ -209,7 +208,7 @@ button, a {
 
 .nav-btn.active {
   opacity: 1;
-  background: rgba(91, 155, 213, 0.2);
+  background: rgba(91, 155, 213, 0.15);
   color: var(--primary-color);
   font-weight: 600;
 }
@@ -218,9 +217,9 @@ button, a {
 .sidebar-user {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   padding: 16px 8px 0 8px;
-  border-top: 1px solid rgba(91, 155, 213, 0.2);
+  border-top: 1px solid rgba(91, 155, 213, 0.15);
   margin-top: auto;
 }
 
@@ -230,17 +229,18 @@ button, a {
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid var(--primary-light);
+  flex-shrink: 0;
 }
 
 .sidebar-username {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
   color: var(--text-color);
   opacity: 0.8;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 140px;
+  max-width: 160px;
 }
 
 
@@ -381,6 +381,7 @@ button, a {
   opacity: 0.85;
 }
 
+/* Desktop section header */
 .desktop-header {
   display: flex;
   align-items: flex-start;
@@ -388,19 +389,27 @@ button, a {
   margin-bottom: 8px;
 }
 
+/* Subtitle row with label + add button side by side */
+.subtitle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 30px 0 16px 0;
+}
+
+/* Add info button */
 .add-btn {
-  padding: 10px 20px;
+  padding: 9px 18px;
   border: none;
   border-radius: 12px;
   background: var(--primary-color);
   color: white;
   font-family: 'Poppins', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
-  margin-top: 4px;
 }
 
 .add-btn:hover {
@@ -482,9 +491,10 @@ button, a {
 
 
 /* ================================================
-   11. CARDS
+   10. CARDS (BASE, HERO, FULL-WIDTH)
    ================================================ */
 
+/* Base white card */
 .card {
   background: var(--card-bg);
   border-radius: 18px;
@@ -499,6 +509,7 @@ button, a {
   box-shadow: 0 8px 24px var(--card-shadow);
 }
 
+/* Hero card */
 .hero-card {
   background: var(--gradient-card);
   border-radius: 20px;
@@ -513,10 +524,12 @@ button, a {
   gap: 20px;
 }
 
-.hero-icon {
-  font-size: 42px;
+/* Hero icon image */
+.hero-icon img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
   flex-shrink: 0;
-  line-height: 1;
 }
 
 .hero-card h3 {
@@ -531,14 +544,7 @@ button, a {
   line-height: 1.6;
 }
 
-/* Subtitle row with label + button side by side */
-.subtitle-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 30px 0 16px 0;
-}
-
+/* Full width cards */
 .card-full {
   background: var(--card-bg);
   border-radius: 20px;
@@ -548,6 +554,7 @@ button, a {
   width: 100%;
 }
 
+/* Settings card */
 .settings-card {
   background: var(--card-bg);
   border-radius: 20px;
@@ -556,6 +563,7 @@ button, a {
   box-shadow: 0 4px 16px var(--card-shadow);
 }
 
+/* About cards */
 .about-card {
   background: var(--card-bg);
   border-radius: 20px;
@@ -590,7 +598,7 @@ button, a {
 
 
 /* ================================================
-   12. STAT CARDS
+   11. STAT CARDS & METRIC NOTES
    ================================================ */
 
 .stat-card {
@@ -615,9 +623,34 @@ button, a {
   font-weight: 500;
 }
 
+/* Notes shown below metric value */
+.metric-notes {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--primary-color);
+  opacity: 0.85;
+  margin-top: 6px;
+  font-style: italic;
+  text-align: center;
+  min-height: 16px;
+  max-width: 100%;
+  word-break: break-word;
+  justify-content: center;
+}
+
+/* Note icon image */
+.note-icon {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 
 /* ================================================
-   13. CORE VITALS GRID
+   12. CORE VITALS GRID
    ================================================ */
 
 .core-vitals-grid {
@@ -634,7 +667,7 @@ button, a {
 
 
 /* ================================================
-   14. LIFESTYLE METRICS GRID
+   13. LIFESTYLE METRICS GRID
    ================================================ */
 
 .lifestyle-grid {
@@ -646,7 +679,7 @@ button, a {
 
 
 /* ================================================
-   15. PROGRESS CIRCLES
+   14. PROGRESS CIRCLES
    ================================================ */
 
 .progress-circle {
@@ -691,7 +724,7 @@ button, a {
 
 
 /* ================================================
-   16. SOFT BUTTONS
+   15. SOFT BUTTONS & ADD BUTTON
    ================================================ */
 
 .soft-btn {
@@ -720,7 +753,7 @@ button, a {
 
 
 /* ================================================
-   17. LOGIN / REGISTER SCREENS
+   16. LOGIN / REGISTER SCREENS
    ================================================ */
 
 .login-screen {
@@ -850,7 +883,7 @@ button, a {
 
 
 /* ================================================
-   18. SETTINGS SECTION
+   17. SETTINGS SECTION
    ================================================ */
 
 .settings-group {
@@ -910,24 +943,49 @@ button, a {
 
 
 /* ================================================
-   19. STATS SECTION & CHART
+   18. STATS SECTION & CHART
    ================================================ */
 
-.chart-container {
-  position: relative;
-  height: 350px;
+/* Chart card wrapper */
+.card-full {
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 16px var(--card-shadow);
   width: 100%;
 }
 
-.info-card {
-  display: block !important;
+/* Chart canvas container */
+.chart-container {
+  position: relative;
+  height: 320px;
+  width: 100%;
+  background: linear-gradient(135deg, #f5faff, #eaf4ff);
+  border-radius: 14px;
+  padding: 16px;
 }
 
+/* Info card — Understanding Your Vitals */
+.info-card {
+  display: block !important;
+  padding-top: 30px !important;
+}
+
+/* Title inside info card — pinned to top */
+.info-card-title {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  margin: 0 0 24px 0;
+  color: var(--text-color);
+}
+
+/* Vitals info grid */
 .vital-info-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  margin-top: 20px;
   width: 100%;
 }
 
@@ -952,7 +1010,7 @@ button, a {
 
 
 /* ================================================
-   20. ABOUT SECTION
+   19. ABOUT SECTION
    ================================================ */
 
 #about-section {
@@ -961,7 +1019,7 @@ button, a {
 
 
 /* ================================================
-   21. METRIC MODAL
+   20. METRIC MODAL
    ================================================ */
 
 .modal {
@@ -1073,7 +1131,7 @@ button, a {
 
 
 /* ================================================
-   22. DETAILS POPUP
+   21. DETAILS POPUP
    ================================================ */
 
 .details-popup {
@@ -1105,7 +1163,7 @@ button, a {
 
 
 /* ================================================
-   23. UTILITY CLASSES
+   22. UTILITY CLASSES
    ================================================ */
 
 .hidden {
@@ -1114,7 +1172,7 @@ button, a {
 
 
 /* ================================================
-   24. RESPONSIVE — TABLET (max-width: 1100px)
+   23. RESPONSIVE — TABLET (max-width: 1100px)
    ================================================ */
 
 @media (max-width: 1100px) {
@@ -1144,7 +1202,7 @@ button, a {
 
 
 /* ================================================
-   25. RESPONSIVE — MOBILE (max-width: 768px)
+   24. RESPONSIVE — MOBILE (max-width: 768px)
    ================================================ */
 
 @media (max-width: 768px) {
@@ -1258,6 +1316,7 @@ button, a {
   /* Chart */
   .chart-container {
     height: 220px;
+    padding: 10px;
   }
 
   /* Vital info */
@@ -1299,11 +1358,17 @@ button, a {
   .settings-group {
     margin-bottom: 20px;
   }
+
+  /* Info card title on mobile */
+  .info-card-title {
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
 }
 
 
 /* ================================================
-   26. RESPONSIVE — SMALL PHONES (max-width: 380px)
+   25. RESPONSIVE — SMALL PHONES (max-width: 380px)
    ================================================ */
 
 @media (max-width: 380px) {
@@ -1323,23 +1388,4 @@ button, a {
   .mobile-nav-btn {
     padding: 8px 10px;
   }
-}
-
-/* ================================================
-   27. IMAGES
-   ================================================ */
-   
-.note-icon {
-  width: 14px;
-  height: 14px;
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 4px;
-}
-
-/* Hero icon image */
-.hero-icon img {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
 }
