@@ -608,12 +608,13 @@ saveSleepBtn.addEventListener("click", async () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        userId: currentUser.user_id,
-        metricType: type,
-        value1,
-        value2,
-        unit
-      })
+      userId: currentUser.user_id,
+      metricType: type,
+      value1,
+      value2,
+      unit,
+      notes: metricNotes.value.trim() || null
+    })
     });
 
     await loadMetrics();
