@@ -11,43 +11,93 @@
 <body>
 
 <!-- ================= LOGIN SCREEN ================= -->
-<div id="loginScreen" class="login-screen">
-  <div class="login-card">
-    <div class="login-logo">
-      <img src="Blue and Green Modern Charity Foundation Logo.png" alt="Logo">
-    </div>
-    <h2 class="login-title">Welcome Back</h2>
-    <p class="login-subtitle">Sign in to your Pulse account</p>
-    <div class="login-form">
-      <input id="usernameInput" type="text" placeholder="Username">
-      <input id="passwordInput" type="password" placeholder="Password">
-      <button id="loginBtn">Login</button>
-      <button id="goToRegister" class="switch-btn">Don't have an account? Create one</button>
-      <p id="loginError" class="error-msg"></p>
+<div id="loginScreen" class="auth-screen">
+
+  <!-- Left: Form -->
+  <div class="auth-form-side">
+    <div class="auth-inner">
+      <div class="auth-logo">
+        <img src="Blue and Green Modern Charity Foundation Logo.png" alt="Logo">
+      </div>
+      <h2 class="auth-title">Welcome back!</h2>
+      <p class="auth-subtitle">Don't have an account? <button id="goToRegister" class="auth-link">Sign up now</button></p>
+      <div class="auth-form">
+        <div class="auth-field">
+          <input id="usernameInput" type="text" placeholder="Username">
+        </div>
+        <div class="auth-field">
+          <input id="passwordInput" type="password" placeholder="Password">
+        </div>
+        <button id="loginBtn" class="auth-btn">Log in</button>
+        <p id="loginError" class="error-msg"></p>
+      </div>
     </div>
   </div>
+
+  <!-- Right: Decorative panel -->
+  <div class="auth-deco-side">
+    <div class="auth-deco-pattern">
+      <div class="deco-grid">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ================= REGISTER SCREEN ================= -->
-<div id="registerScreen" class="login-screen" style="display:none;">
-  <div class="login-card">
-    <div class="login-logo">
-      <img src="Blue and Green Modern Charity Foundation Logo.png" alt="Logo">
-    </div>
-    <h2 class="login-title">Create Account</h2>
-    <p class="login-subtitle">Join Pulse and start tracking your health</p>
-    <div class="login-form">
-      <input id="registerFirstName" type="text" placeholder="First Name">
-      <input id="registerMiddleName" type="text" placeholder="Middle Name (optional)">
-      <input id="registerLastName" type="text" placeholder="Last Name">
-      <input id="registerUsername" type="text" placeholder="Username">
-      <input id="registerPassword" type="password" placeholder="Password">
-      <input id="registerConfirmPassword" type="password" placeholder="Confirm Password">
-      <button id="registerBtn">Create Account</button>
-      <button id="goToLogin" class="switch-btn">Already have an account? Login</button>
-      <p id="registerError" class="error-msg"></p>
+<div id="registerScreen" class="auth-screen" style="display:none;">
+
+  <!-- Left: Form -->
+  <div class="auth-form-side">
+    <div class="auth-inner">
+      <div class="auth-logo">
+        <img src="Blue and Green Modern Charity Foundation Logo.png" alt="Logo">
+      </div>
+      <h2 class="auth-title">Create Account</h2>
+      <p class="auth-subtitle">Already have an account? <button id="goToLogin" class="auth-link">Log in</button></p>
+      <div class="auth-form">
+        <div class="auth-field">
+          <input id="registerFirstName" type="text" placeholder="First Name">
+        </div>
+        <div class="auth-field">
+          <input id="registerMiddleName" type="text" placeholder="Middle Name (optional)">
+        </div>
+        <div class="auth-field">
+          <input id="registerLastName" type="text" placeholder="Last Name">
+        </div>
+        <div class="auth-field">
+          <input id="registerUsername" type="text" placeholder="Username">
+        </div>
+        <div class="auth-field">
+          <input id="registerPassword" type="password" placeholder="Password">
+        </div>
+        <div class="auth-field">
+          <input id="registerConfirmPassword" type="password" placeholder="Confirm Password">
+        </div>
+        <button id="registerBtn" class="auth-btn">Create Account</button>
+        <p id="registerError" class="error-msg"></p>
+      </div>
     </div>
   </div>
+
+  <!-- Right: Decorative panel -->
+  <div class="auth-deco-side">
+    <div class="auth-deco-pattern">
+      <div class="deco-grid">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ================= MAIN APP ================= -->
