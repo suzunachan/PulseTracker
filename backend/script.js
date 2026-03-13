@@ -668,7 +668,7 @@ async function loadMetrics() {
       };
 
       const notesEl = document.getElementById(notesMap[metric.metric_type]);
-      if (notesEl && metric.notes) notesEl.textContent = `📝 ${metric.notes}`;
+      if (notesEl && metric.notes) notesEl.innerHTML = `<img src="write.png" alt="note" class="note-icon"> ${metric.notes}`;
     });
 
   } catch (err) {

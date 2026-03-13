@@ -1,17 +1,58 @@
 /* ================================================
+   PULSE TRACKER — MAIN STYLESHEET
+   ================================================
+
+   TABLE OF CONTENTS
+   -----------------
+   1.  CSS Variables
+   2.  Global Reset
+   3.  App Layout
+   4.  Left Sidebar (Desktop)
+   5.  Mobile Bottom Nav
+   6.  Mobile Header
+   7.  Dashboard & Main Content
+   8.  Home Layout (Feed + Right Panel)
+   9.  Right Panel
+   10. Section Headers
+   11. Cards (Base, Hero, Full-Width)
+   12. Stat Cards
+   13. Core Vitals Grid
+   14. Lifestyle Metrics Grid
+   15. Progress Circles
+   16. Soft Buttons
+   17. Login / Register Screens
+   18. Settings Section
+   19. Stats Section & Chart
+   20. About Section
+   21. Metric Modal
+   22. Details Popup
+   23. Utility Classes
+   24. Responsive — Tablet (max-width: 1100px)
+   25. Responsive — Mobile (max-width: 768px)
+   26. Responsive — Small Phones (max-width: 380px)
+
+   ================================================ */
+
+
+/* ================================================
    1. CSS VARIABLES
    ================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 
 :root {
-  --bg-color:       rgba(255, 255, 255, 0.7);
-  --text-color:     #070707;
-  --card-shadow:    rgba(0, 0, 0, 0.12);
-  --primary-color:  #86afd6;
-  --hover-bg:       rgba(56, 111, 164, 0.15);
-  --soft-btn-bg:    rgba(255, 255, 255, 0.7);
-  --gradient-bg:    linear-gradient(-45deg, #c9ebff, #f1f9ff, #dff2ff, #daeeff);
+  --bg-color:         #f0f7ff;
+  --text-color:       #1a1a2e;
+  --card-bg:          #ffffff;
+  --card-shadow:      rgba(0, 0, 0, 0.08);
+  --primary-color:    #5b9bd5;
+  --primary-light:    #86afd6;
+  --hover-bg:         rgba(91, 155, 213, 0.12);
+  --soft-btn-bg:      rgba(255, 255, 255, 0.85);
+  --sidebar-bg:       #ffffff;
+  --gradient-card:    linear-gradient(-45deg, #c9ebff, #f1f9ff, #dff2ff, #daeeff);
+  --sidebar-width:    270px;
+  --mobile-nav-h:     70px;
 }
 
 
@@ -40,7 +81,6 @@ body {
   color: var(--text-color);
   min-height: 100%;
   overflow-x: hidden;
-  overflow-y: auto;
   width: 100%;
   -webkit-user-select: none;
   user-select: none;
@@ -52,7 +92,6 @@ img {
   display: block;
 }
 
-/* Re-enable text selection on inputs and prevent zoom on mobile */
 input,
 textarea,
 select {
@@ -62,8 +101,7 @@ select {
   font-family: 'Poppins', sans-serif;
 }
 
-button,
-a {
+button, a {
   -webkit-touch-callout: none;
 }
 
@@ -79,14 +117,8 @@ a {
   width: 100%;
 }
 
-
-/* ================================================
-   4. SECTION SWITCHING
-   ================================================ */
-
 .section {
   display: none;
-  padding-bottom: 120px;
 }
 
 .section.active-section {
@@ -95,222 +127,470 @@ a {
 
 
 /* ================================================
-   5. SIDEBAR / BOTTOM NAV
+   4. LEFT SIDEBAR (DESKTOP)
    ================================================ */
 
 .sidebar {
   position: fixed;
-  bottom: 25px;
-  left: 50%;
-  transform: translateX(-50%);
-  height: 75px;
-  padding: 0 30px;
-  background: rgba(255, 255, 255, 0.92);
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
-  border-radius: 40px;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  background: var(--sidebar-bg);
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 35px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
-  z-index: 1000;
-  max-width: calc(100vw - 32px);
+  flex-direction: column;
+  padding: 30px 20px;
+  box-shadow: 2px 0 20px rgba(0, 0, 0, 0.08);
+  z-index: 100;
 }
 
-/* Logo and profile pic in sidebar */
-.sidebar-logo img,
+/* Logo + brand name */
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px 20px 8px;
+  border-bottom: 1px solid rgba(91, 155, 213, 0.2);
+  margin-bottom: 16px;
+}
+
+.sidebar-logo img {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.sidebar-brand {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--primary-color);
+  letter-spacing: 0.5px;
+}
+
+/* Nav buttons */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 14px;
+  background: transparent;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color);
+  opacity: 0.65;
+  transition: all 0.2s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.nav-btn img {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.nav-btn:hover {
+  opacity: 1;
+  background: var(--hover-bg);
+  transform: translateX(3px);
+}
+
+.nav-btn.active {
+  opacity: 1;
+  background: rgba(91, 155, 213, 0.2);
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* User profile at bottom of sidebar */
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 8px 0 8px;
+  border-top: 1px solid rgba(91, 155, 213, 0.2);
+  margin-top: auto;
+}
+
 .sidebar-user img {
-  height: 40px;
-  width: 40px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary-light);
+}
+
+.sidebar-username {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-color);
+  opacity: 0.8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+
+/* ================================================
+   5. MOBILE BOTTOM NAV
+   ================================================ */
+
+.mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 32px);
+  height: var(--mobile-nav-h);
+  background: rgba(255, 255, 255, 0.95);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-radius: 28px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 10px;
+}
+
+.mobile-nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 8px 14px;
+  border-radius: 16px;
+  opacity: 0.55;
+  transition: all 0.2s ease;
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  color: var(--text-color);
+  position: relative;
+}
+
+.mobile-nav-btn img {
+  width: 22px;
+  height: 22px;
+}
+
+.mobile-nav-btn.active {
+  opacity: 1;
+  color: var(--primary-color);
+  background: rgba(91, 155, 213, 0.12);
+}
+
+.mobile-nav-btn.active::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--primary-color);
+}
+
+
+/* ================================================
+   6. MOBILE HEADER
+   ================================================ */
+
+.mobile-header {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px 16px 4px;
+}
+
+.mobile-logo {
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
 }
 
-.sidebar-user img {
-  width: 45px;
-  height: 45px;
-}
-
-.sidebar-nav-wrapper {
-  display: flex;
-  align-items: center;
-}
-
-/* Nav icon buttons */
-.sidebar-nav {
-  display: flex;
-  gap: 50px;
-}
-
-.sidebar-nav button {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 12px;
-  border-radius: 14px;
-  opacity: 0.7;
-  transition: all 0.25s ease;
-  position: relative;
+.mobile-profile {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
   flex-shrink: 0;
+  border: 2px solid var(--primary-light);
 }
 
-.sidebar-nav button:hover,
-.sidebar-nav button:active {
-  opacity: 1;
-  transform: translateY(-4px);
-  background: var(--hover-bg);
+.mobile-header .page-title {
+  font-size: 18px;
+  margin: 0;
+  flex: 1;
+  text-align: center;
 }
 
-.sidebar-nav button.active {
-  opacity: 1;
-  background: rgba(56, 111, 164, 0.25);
-}
-
-.sidebar-nav button img {
-  width: 24px;
-  height: 24px;
-  transition: transform 0.2s ease;
-}
-
-.sidebar-nav button:hover img {
-  transform: scale(1.1);
-}
-
-/* Active indicator dot under nav button */
-.sidebar-nav button::after {
-  content: "";
-  position: absolute;
-  bottom: -6px;
-  left: 5%;
-  width: 90%;
-  height: 3px;
-  background-color: var(--primary-color);
-  border-radius: 3px;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.sidebar-nav button.active::after {
-  opacity: 1;
+.mobile-only {
+  display: none;
 }
 
 
 /* ================================================
-   6. DASHBOARD & PAGE TITLES
+   7. DASHBOARD & MAIN CONTENT
    ================================================ */
 
 .dashboard {
   flex: 1;
-  padding: 40px 60px;
-  padding-bottom: 140px;
-  width: 100%;
+  margin-left: var(--sidebar-width);
+  padding: 40px 40px 60px 40px;
   min-width: 0;
-  overflow-y: visible;
+  width: calc(100% - var(--sidebar-width));
 }
 
 .page-title {
-  text-align: center;
-  font-size: 34px;
-  margin: 17px;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 4px;
 }
 
 .greeting-text {
-  text-align: center;
-  margin: 20px 40px;
-  font-size: 16px;
-  opacity: 0.8;
+  font-size: 14px;
+  opacity: 0.6;
+  margin-bottom: 24px;
 }
 
 .section-subtitle {
-  margin: 40px 0 20px 0;
-  font-size: 18px;
+  margin: 30px 0 16px 0;
+  font-size: 16px;
   font-weight: 600;
   opacity: 0.85;
 }
 
+.desktop-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
 
-/* ================================================
-   7. THREE-COLUMN HOME LAYOUT
-   ================================================ */
+.add-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 12px;
+  background: var(--primary-color);
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  margin-top: 4px;
+}
 
-.dashboard-wrapper {
-  display: grid;
-  grid-template-columns: 0.8fr 2.6fr 0.8fr;
-  gap: 50px;
-  width: 100%;
-  max-width: 2400px;
-  margin: 40px auto;
-  align-items: start;
+.add-btn:hover {
+  background: #4a8bc4;
+  transform: translateY(-1px);
 }
 
 
 /* ================================================
-   8. CARDS
+   8. HOME LAYOUT (FEED + RIGHT PANEL)
    ================================================ */
 
-/* --- Base card --- */
+.home-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 30px;
+  align-items: start;
+}
+
+.main-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+
+/* ================================================
+   9. RIGHT PANEL
+   ================================================ */
+
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 30px;
+}
+
+.panel-card {
+  background: var(--card-bg);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 4px 16px var(--card-shadow);
+}
+
+.panel-card h4 {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.panel-card p {
+  font-size: 13px;
+  opacity: 0.7;
+  line-height: 1.5;
+}
+
+.goal-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  font-size: 13px;
+}
+
+.goal-item:last-child {
+  border-bottom: none;
+}
+
+.goal-value {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+
+/* ================================================
+   11. CARDS
+   ================================================ */
+
 .card {
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 25px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-  transition: transform 0.2s ease;
+  background: var(--card-bg);
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 4px 16px var(--card-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   min-width: 0;
 }
 
 .card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px var(--card-shadow);
 }
 
-.card-large {
-  grid-column: 1 / -1;
+.hero-card {
+  background: var(--gradient-card);
+  border-radius: 20px;
+  padding: 28px 30px;
+  margin-bottom: 8px;
+  box-shadow: 0 8px 24px var(--card-shadow);
 }
 
-/* --- Gradient container cards --- */
-.main-feed-card,
-.side-card,
-.card-full,
-.settings-card,
-.about-card {
-  background: var(--gradient-bg);
-  border-radius: 35px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
-}
-
-/* Main center feed card */
-.main-feed-card {
-  padding: 70px;
-}
-
-/* Left/right sidebar cards */
-.side-card {
-  padding: 50px;
+.hero-content {
   display: flex;
-  flex-direction: column;
-  gap: 30px;
+  align-items: center;
+  gap: 20px;
 }
 
-.side-card .card {
-  padding: 30px;
-  border-radius: 25px;
+.hero-icon {
+  font-size: 42px;
+  flex-shrink: 0;
+  line-height: 1;
 }
 
-/* Full-width section cards (stats, about) */
+.hero-card h3 {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.hero-card p {
+  font-size: 13px;
+  opacity: 0.7;
+  line-height: 1.6;
+}
+
+/* Subtitle row with label + button side by side */
+.subtitle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 30px 0 16px 0;
+}
+
 .card-full {
-  padding: 50px 70px;
-  max-width: 1400px;
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 16px var(--card-shadow);
   width: 100%;
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
+}
+
+.settings-card {
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 700px;
+  box-shadow: 0 4px 16px var(--card-shadow);
+}
+
+.about-card {
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 30px 36px;
+  max-width: 900px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 16px var(--card-shadow);
+}
+
+.about-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--primary-color);
+}
+
+.about-card p,
+.about-card li {
+  font-size: 14px;
+  line-height: 1.7;
+  opacity: 0.8;
+}
+
+.about-card ul {
+  padding-left: 20px;
+  margin-top: 8px;
+}
+
+.about-card li {
+  margin-bottom: 6px;
 }
 
 
 /* ================================================
-   9. STAT CARDS
+   12. STAT CARDS
    ================================================ */
 
 .stat-card {
@@ -323,51 +603,50 @@ a {
 }
 
 .stat-value {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 600;
   color: var(--primary-color);
 }
 
 .stat-label {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 5px;
-  opacity: 0.9;
+  font-size: 13px;
+  margin-top: 4px;
+  opacity: 0.75;
   font-weight: 500;
 }
 
 
 /* ================================================
-   10. CORE VITALS GRID
+   13. CORE VITALS GRID
    ================================================ */
 
 .core-vitals-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
+  gap: 20px;
+  margin-bottom: 8px;
 }
 
 .core-vitals-grid .stat-card {
-  height: 200px;
-  border-radius: 25px;
+  height: 180px;
+  border-radius: 18px;
 }
 
 
 /* ================================================
-   11. LIFESTYLE METRICS GRID
+   14. LIFESTYLE METRICS GRID
    ================================================ */
 
 .lifestyle-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 30px;
-  margin-top: 25px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 8px;
 }
 
 
 /* ================================================
-   12. PROGRESS CIRCLES
+   15. PROGRESS CIRCLES
    ================================================ */
 
 .progress-circle {
@@ -412,21 +691,21 @@ a {
 
 
 /* ================================================
-   13. SOFT BUTTONS
+   16. SOFT BUTTONS
    ================================================ */
 
 .soft-btn {
-  margin-top: 15px;
+  margin-top: 12px;
   color: var(--text-color);
   border: none;
   font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  padding: 10px 20px;
+  font-size: 13px;
+  padding: 9px 18px;
   border-radius: 10px;
   background: var(--soft-btn-bg);
-  box-shadow: 0 15px 30px var(--card-shadow);
+  box-shadow: 0 4px 12px var(--card-shadow);
   cursor: pointer;
-  transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+  transition: all 0.2s ease;
   display: inline-block;
   text-align: center;
   white-space: nowrap;
@@ -437,12 +716,11 @@ a {
   transform: scale(1.02);
   background: var(--primary-color);
   color: #fff;
-  box-shadow: 0 25px 45px var(--card-shadow);
 }
 
 
 /* ================================================
-   14. LOGIN / REGISTER SCREENS
+   17. LOGIN / REGISTER SCREENS
    ================================================ */
 
 .login-screen {
@@ -466,274 +744,261 @@ a {
 
 .login-card {
   width: 100%;
-  max-width: 500px;
-  min-height: 600px;
+  max-width: 460px;
   padding: 50px;
   border-radius: 30px;
-  background: rgba(255, 255, 255, 0.1);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.25);
+  -webkit-backdrop-filter: blur(25px);
   backdrop-filter: blur(25px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 32px rgba(34, 34, 34, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
+  align-items: center;
+}
+
+.login-logo {
+  margin-bottom: 20px;
+}
+
+.login-logo img {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  margin: 0 auto;
 }
 
 .login-title {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 600;
   text-align: center;
-  margin-bottom: 30px;
-  color: #ffffff;
+  margin-bottom: 6px;
+  color: #1a3a5c;
+}
+
+.login-subtitle {
+  font-size: 14px;
+  opacity: 0.6;
+  text-align: center;
+  margin-bottom: 24px;
 }
 
 .login-form {
-  flex: 1;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 14px;
 }
 
 .login-form input {
-  width: 85%;
-  padding: 14px;
+  width: 90%;
+  padding: 14px 18px;
   border-radius: 14px;
-  border: 1px solid #d0e8ff;
-  background: #f7fbff;
-  font-size: 16px;
+  border: 1px solid rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.8);
+  font-size: 15px;
   transition: 0.3s;
+  color: var(--text-color);
 }
 
 .login-form input:focus {
-  border-color: #c5e2ff;
-  box-shadow: 0 0 0 3px rgba(77, 166, 255, 0.2);
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 3px rgba(91, 155, 213, 0.2);
   outline: none;
+  background: #fff;
 }
 
 .login-form button {
-  width: 85%;
+  width: 90%;
   padding: 14px;
   border-radius: 14px;
   border: none;
-  background: #4da6ff;
+  background: var(--primary-color);
   color: white;
   font-family: 'Poppins', sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: 0.3s;
 }
 
-.login-form button:hover,
-.login-form button:active {
-  background: #3399ff;
+.login-form button:hover {
+  background: #4a8bc4;
   transform: translateY(-2px);
 }
 
+.switch-btn {
+  background: none !important;
+  border: none !important;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  color: #1a3a5c !important;
+  opacity: 0.7;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0 !important;
+  width: auto !important;
+  transform: none !important;
+}
+
 .error-msg {
-  color: red;
+  color: #e05252;
   font-size: 13px;
   text-align: center;
 }
 
 
 /* ================================================
-   15. SETTINGS SECTION
+   18. SETTINGS SECTION
    ================================================ */
-
-.settings-card {
-  padding: 70px 80px;
-  border-radius: 35px;
-  max-width: 900px;
-  margin: 0 auto;
-}
 
 .settings-group {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-bottom: 30px;
+  margin-bottom: 28px;
+}
+
+.settings-group h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .settings-group input {
-  padding: 12px;
-  border-radius: 10px;
-  border: 1px solid #cde7ff;
-  font-size: 16px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #d0e8ff;
+  font-size: 15px;
+  background: var(--bg-color);
+  color: var(--text-color);
 }
 
-/* Profile picture preview */
 .profile-img {
-  width: 90px;
-  height: 90px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
+  border: 3px solid var(--primary-light);
 }
 
-/* Hide default file input — triggered by label */
 #profileUpload {
   display: none;
 }
 
-/* Logout button */
 .logout-btn {
-  margin-top: 20px;
-  padding: 12px;
+  margin-top: 10px;
+  padding: 13px;
   border-radius: 12px;
   border: none;
   background: #ff6b6b;
   color: white;
   font-family: 'Poppins', sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   width: 100%;
   transition: background 0.2s;
 }
 
-.logout-btn:hover,
-.logout-btn:active {
+.logout-btn:hover {
   background: #ff4d4d;
 }
 
 
 /* ================================================
-   16. STATS SECTION & CHART
+   19. STATS SECTION & CHART
    ================================================ */
-
-#statsSection {
-  padding-top: 20px;
-}
-
-/* Chart wrapper card */
-#statsSection .card-full:first-of-type {
-  height: auto;
-  min-height: 500px;
-}
-
-#statsSection .card-full:first-of-type .chart-container {
-  height: 450px;
-}
-
-/* Info card below chart */
-#statsSection .info-card {
-  display: block;
-  margin-top: 50px;
-  min-height: unset;
-  height: auto;
-}
-
-#statsSection .info-card .section-subtitle {
-  text-align: center;
-  font-size: 22px;
-  font-weight: 600;
-  margin-bottom: 35px;
-}
 
 .chart-container {
   position: relative;
-  height: 300px;
+  height: 350px;
   width: 100%;
 }
 
 .info-card {
-  margin-top: 40px;
+  display: block !important;
 }
 
-/* Vital info cards grid inside stats */
 .vital-info-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
+  gap: 20px;
   margin-top: 20px;
   width: 100%;
 }
 
 .vital-info-grid .card {
-  padding: 30px;
-  border-radius: 25px;
+  padding: 24px;
+  border-radius: 16px;
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
 
 .vital-info-grid h3 {
-  margin-bottom: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--primary-color);
 }
 
 .vital-info-grid p {
-  font-size: 14px;
-  opacity: 0.9;
-  line-height: 1.5;
+  font-size: 13px;
+  opacity: 0.8;
+  line-height: 1.6;
 }
 
 
 /* ================================================
-   17. ABOUT SECTION
+   20. ABOUT SECTION
    ================================================ */
 
 #about-section {
-  padding-bottom: 30px;
-}
-
-.about-card {
-  padding: 60px 80px;
-  border-radius: 35px;
-  max-width: 1000px;
-  margin: 0 auto 40px auto;
-}
-
-.about-card ul {
-  padding-left: 20px;
-  margin-top: 8px;
-}
-
-.about-card li {
-  margin-bottom: 6px;
+  padding-bottom: 40px;
 }
 
 
 /* ================================================
-   18. METRIC MODAL
+   21. METRIC MODAL
    ================================================ */
 
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(240, 249, 255, 0.95);
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
+  background: rgba(220, 240, 255, 0.92);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  padding: 60px 16px;
-  overflow-y: auto;
+  align-items: center;
+  padding: 20px;
   z-index: 2000;
-  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
 }
 
-/* Modal content box */
 .modal-content {
   width: 420px;
   max-width: 100%;
   background: linear-gradient(-45deg, #d2eeff, #a2d7ff, #d9f0ff, #8ccbff, #c6f2ff);
   background-size: 400% 400%;
   animation: gradientMove 7s ease infinite;
-  color: white;
-  border-radius: 20px;
-  padding: 30px;
+  border-radius: 24px;
+  padding: 32px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-  margin: auto;
 }
 
-/* Modal input fields */
+.modal-content h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 20px;
+}
+
 .modal-field {
   position: relative;
-  margin-bottom: 15px;
+  margin-bottom: 14px;
 }
 
 .modal-field input,
@@ -741,14 +1006,14 @@ a {
 .modal-field select {
   width: 100%;
   padding: 12px 16px;
-  border-radius: 15px;
+  border-radius: 14px;
   border: none;
   outline: none;
   font-family: 'Poppins', sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   background: rgba(255, 255, 255, 0.95);
   color: #333;
-  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
   transition: box-shadow 0.3s;
 }
 
@@ -769,11 +1034,10 @@ a {
   cursor: pointer;
 }
 
-/* Custom dropdown arrow */
 .modal-field:has(select)::after {
   content: "▾";
   position: absolute;
-  right: 18px;
+  right: 16px;
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
@@ -781,7 +1045,6 @@ a {
   color: #86afd6;
 }
 
-/* Sleep hours + minutes side by side */
 .sleep-row {
   display: flex;
   gap: 12px;
@@ -791,12 +1054,10 @@ a {
   flex: 1;
 }
 
-/* Modal action buttons */
 .modal-actions {
   display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
   gap: 10px;
+  margin-top: 12px;
 }
 
 .modal-actions .soft-btn {
@@ -806,46 +1067,45 @@ a {
 
 #sleepModal .soft-btn {
   background: white;
-  color: #6fbeff;
+  color: #5b9bd5;
   font-weight: 600;
-  border-radius: 12px;
-  padding: 10px 18px;
 }
 
 
 /* ================================================
-   19. DETAILS POPUP
+   22. DETAILS POPUP
    ================================================ */
 
 .details-popup {
   position: absolute;
-  bottom: 60px;
+  bottom: 65px;
   left: 50%;
   transform: translateX(-50%);
-  width: 220px;
-  background: linear-gradient(135deg, #aaddff, #a7e3ff, #c9e7ff);
+  width: 210px;
+  background: linear-gradient(135deg, #aaddff, #c9e7ff);
   color: white;
-  padding: 15px;
+  padding: 14px;
   border-radius: 14px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-  font-size: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  font-size: 13px;
   text-align: center;
   z-index: 10;
-  animation: fadeIn 0.25s ease-in-out;
+  animation: fadeIn 0.2s ease-in-out;
 }
 
 .details-popup h4 {
-  margin-bottom: 6px;
+  margin-bottom: 5px;
+  font-size: 14px;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateX(-50%) translateY(5px); }
+  from { opacity: 0; transform: translateX(-50%) translateY(6px); }
   to   { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
 
 /* ================================================
-   20. UTILITY CLASSES
+   23. UTILITY CLASSES
    ================================================ */
 
 .hidden {
@@ -854,143 +1114,92 @@ a {
 
 
 /* ================================================
-   21. RESPONSIVE — TABLET (max-width: 1300px)
+   24. RESPONSIVE — TABLET (max-width: 1100px)
    ================================================ */
 
-@media (max-width: 1300px) {
+@media (max-width: 1100px) {
 
-  html, body {
-    width: 100%;
-    overflow-x: hidden;
-  }
-
-  /* Collapse three columns into one */
-  .dashboard-wrapper {
+  .home-layout {
     grid-template-columns: 1fr;
-    gap: 24px;
-    margin: 20px auto;
   }
 
-  /* Side cards go horizontal on tablet */
-  .side-card {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .side-card .card {
-    flex: 1;
-    min-width: 200px;
-  }
-
-  .core-vitals-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+  .right-panel {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    position: static;
   }
 
   .lifestyle-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
   }
 
   .vital-info-grid {
     grid-template-columns: 1fr;
   }
 
-  .card-full,
-  .settings-card,
-  .about-card,
-  .main-feed-card,
-  .side-card {
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .main-feed-card {
-    padding: 40px;
-  }
-
-  .side-card {
-    padding: 30px;
+  .dashboard {
+    padding: 30px 30px 40px 30px;
   }
 }
 
 
 /* ================================================
-   22. RESPONSIVE — MOBILE (max-width: 768px)
+   25. RESPONSIVE — MOBILE (max-width: 768px)
    ================================================ */
 
 @media (max-width: 768px) {
 
-  /* Tighter dashboard padding, extra bottom for nav bar */
+  /* Hide left sidebar, show mobile nav */
+  .sidebar {
+    display: none;
+  }
+
+  .mobile-nav {
+    display: flex;
+  }
+
+  /* Show mobile header, hide desktop header */
+  .mobile-header {
+    display: flex;
+  }
+
+  .desktop-header {
+    display: none;
+  }
+
+  .mobile-only {
+    display: block;
+  }
+
+  /* Dashboard full width */
   .dashboard {
-    padding: 10px 16px 90px 16px !important;
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding: 16px 16px 0 16px !important;
   }
 
   .section {
-    padding-bottom: 0 !important;
+    padding-bottom: 90px !important;
   }
 
- #statsSection,
-  #settingsSection,
-  #about-section {
-    padding-top: 0 !important;
-    margin-top: 0 !important;
-  }
-
-  #statsSection .info-card {
-    margin-top: 16px;
-  }
-
-  .info-card {
-    margin-top: 16px;
-  }
-
-  .dashboard-wrapper {
+  /* Single column */
+  .home-layout {
+    grid-template-columns: 1fr;
     gap: 16px;
-    margin: 16px auto;
-    padding: 0;
   }
 
-  /* Reduce all large card padding */
-  .main-feed-card,
-  .side-card,
-  .card-full,
-  .settings-card,
-  .about-card {
-    padding: 20px;
-    border-radius: 20px;
+  /* Right panel 2 columns on mobile */
+  .right-panel {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    position: static;
   }
 
-  /* Side cards stack vertically on mobile */
-  .side-card {
-    flex-direction: column;
-  }
-
-  /* Titles */
-  .page-title {
-    font-size: 22px;
-    margin: 4px 12px;
-  }
-
-  .greeting-text {
-    margin: 8px 0 16px 0;
-    font-size: 14px;
-  }
-
-  .section-subtitle {
-    font-size: 16px;
-    margin: 24px 0 14px 0;
-  }
-
-  /* Stat value size */
-  .stat-value {
-    font-size: 22px;
-  }
-
-  /* Vitals: 1 column on mobile */
+  /* Vitals 1 column */
   .core-vitals-grid {
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: 12px;
   }
 
   .core-vitals-grid .stat-card {
@@ -998,101 +1207,68 @@ a {
     padding: 20px;
   }
 
-  /* Lifestyle: 2 columns on mobile */
+  /* Lifestyle 2 columns */
   .lifestyle-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
 
-  /* Bottom nav fits screen */
-  .sidebar {
-    width: calc(100% - 40px);
-    max-width: calc(100% - 40px);
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: 12px;
-    border-radius: 28px;
-    padding: 0 16px;
-    height: 70px;
-    gap: 8px;
-    justify-content: center;
+  /* Cards */
+  .card {
+    padding: 18px;
+    border-radius: 16px;
   }
 
-  .sidebar-logo img,
-  .sidebar-user img {
-    width: 38px;
-    height: 38px;
-  }
-
-  .sidebar-nav {
-    gap: 48px;
-  }
-
-  .sidebar-nav button {
-    width: 48px;
-    height: 48px;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .sidebar-nav button img {
-    width: 26px;
-    height: 26px;
-  }
-
-  /* Modal fits screen */
-  .modal {
-    padding: 24px 12px;
-    align-items: flex-start;
-  }
-
-  .modal-content {
-    max-width: 100%;
+  .hero-card {
     padding: 20px;
     border-radius: 16px;
   }
 
-  /* Settings */
+  .card-full {
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 16px;
+  }
+
   .settings-card {
     padding: 20px;
+    border-radius: 16px;
   }
 
-  .settings-group {
-    margin-bottom: 20px;
+  .about-card {
+    padding: 20px 22px;
+    border-radius: 16px;
+    margin-bottom: 14px;
   }
 
-  /* Chart shorter on mobile */
-  #statsSection .card-full:first-of-type {
-    min-height: unset;
+  /* Titles */
+  .page-title {
+    font-size: 20px;
   }
 
-  #statsSection .card-full:first-of-type .chart-container {
-    height: 220px;
+  .section-subtitle {
+    font-size: 15px;
+    margin: 20px 0 12px 0;
   }
 
+  .stat-value {
+    font-size: 22px;
+  }
+
+  /* Chart */
   .chart-container {
     height: 220px;
   }
 
-  /* Vital info: 1 column on mobile */
+  /* Vital info */
   .vital-info-grid {
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: 12px;
   }
 
-  /* About */
-  .about-card {
-    padding: 20px;
-    border-radius: 20px;
-    margin-bottom: 16px;
-  }
-
-  /* Login card */
+  /* Login */
   .login-card {
     padding: 30px 20px;
-    min-height: auto;
     border-radius: 20px;
   }
 
@@ -1101,79 +1277,69 @@ a {
     width: 95%;
   }
 
+  /* Modal slides up from bottom */
+  .modal {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal-content {
+    border-radius: 24px 24px 0 0;
+    padding: 24px 20px;
+    width: 100%;
+  }
+
   /* Details popup */
   .details-popup {
-    width: 180px;
+    width: 175px;
     font-size: 12px;
   }
-}
 
-/* Home header with logo + title + profile pic */
-.home-header {
-  display: none; /* hidden on desktop */
-}
-
-@media (max-width: 768px) {
-  .home-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 8px;
-    margin-bottom: 8px;
-  }
-
-  .home-header .page-title {
-    font-size: 18px;
-    margin: 0;
-    flex: 1;
-    text-align: center;
-  }
-
-  .home-logo {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-  }
-
-  .home-profile-pic {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-  }
-
-  /* Hide logo and profile from sidebar on mobile */
-  .sidebar-logo,
-  .sidebar-user {
-    display: none;
+  /* Settings */
+  .settings-group {
+    margin-bottom: 20px;
   }
 }
 
 
 /* ================================================
-   23. RESPONSIVE — SMALL PHONES (max-width: 380px)
+   26. RESPONSIVE — SMALL PHONES (max-width: 380px)
    ================================================ */
 
 @media (max-width: 380px) {
 
-  /* Stack lifestyle to 1 column on tiny screens */
   .lifestyle-grid {
     grid-template-columns: 1fr;
   }
 
-  .sidebar-nav {
-    gap: 28px;
+  .right-panel {
+    grid-template-columns: 1fr;
   }
 
-  .sidebar {
-    padding: 0 10px;
-    gap: 6px;
+  .mobile-nav {
+    padding: 0 6px;
   }
 
-  .page-title {
-    font-size: 20px;
+  .mobile-nav-btn {
+    padding: 8px 10px;
   }
+}
+
+/* ================================================
+   27. IMAGES
+   ================================================ */
+   
+.note-icon {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+/* Hero icon image */
+.hero-icon img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
 }
