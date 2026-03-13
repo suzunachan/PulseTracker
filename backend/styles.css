@@ -779,6 +779,10 @@ button, a {
 .auth-inner {
   width: 100%;
   max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 /* Logo */
@@ -829,6 +833,7 @@ button, a {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  width: 100%;
 }
 
 .auth-field input {
