@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no"/>
   <title>Pulse Tracker</title>
-
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js" defer></script>
@@ -14,14 +13,16 @@
 <!-- ================= LOGIN SCREEN ================= -->
 <div id="loginScreen" class="login-screen">
   <div class="login-card">
-    <h2 class="login-title">Login</h2>
+    <div class="login-logo">
+      <img src="Blue and Green Modern Charity Foundation Logo.png" alt="Logo">
+    </div>
+    <h2 class="login-title">Welcome Back</h2>
+    <p class="login-subtitle">Sign in to your Pulse account</p>
     <div class="login-form">
       <input id="usernameInput" type="text" placeholder="Username">
       <input id="passwordInput" type="password" placeholder="Password">
       <button id="loginBtn">Login</button>
-      <button id="goToRegister" style="cursor:pointer; background:none; border:none; font-family:'Poppins',sans-serif; font-size:14px; text-decoration:underline;">
-        Don't have an account? Create one
-      </button>
+      <button id="goToRegister" class="switch-btn">Don't have an account? Create one</button>
       <p id="loginError" class="error-msg"></p>
     </div>
   </div>
@@ -30,314 +31,395 @@
 <!-- ================= REGISTER SCREEN ================= -->
 <div id="registerScreen" class="login-screen" style="display:none;">
   <div class="login-card">
+    <div class="login-logo">
+      <img src="Blue and Green Modern Charity Foundation Logo.png" alt="Logo">
+    </div>
     <h2 class="login-title">Create Account</h2>
+    <p class="login-subtitle">Join Pulse and start tracking your health</p>
     <div class="login-form">
+      <input id="registerFirstName" type="text" placeholder="First Name">
+      <input id="registerMiddleName" type="text" placeholder="Middle Name (optional)">
+      <input id="registerLastName" type="text" placeholder="Last Name">
       <input id="registerUsername" type="text" placeholder="Username">
       <input id="registerPassword" type="password" placeholder="Password">
       <input id="registerConfirmPassword" type="password" placeholder="Confirm Password">
       <button id="registerBtn">Create Account</button>
-      <button id="goToLogin" style="cursor:pointer; background:none; border:none; font-family:'Poppins',sans-serif; font-size:14px; text-decoration:underline;">
-        Already have an account? Login
-      </button>
+      <button id="goToLogin" class="switch-btn">Already have an account? Login</button>
       <p id="registerError" class="error-msg"></p>
     </div>
   </div>
 </div>
 
 <!-- ================= MAIN APP ================= -->
-<div class="app login-mode" id="mainApp" style="display:none;">
+<div class="app" id="mainApp" style="display:none;">
 
-  <!-- ===== SIDEBAR ===== -->
+  <!-- ===== LEFT SIDEBAR (desktop) ===== -->
   <aside class="sidebar">
 
+    <!-- Logo -->
     <div class="sidebar-logo">
       <img src="Blue and Green Modern Charity Foundation Logo.png" alt="Logo">
+      <span class="sidebar-brand">Pulse</span>
     </div>
 
-    <div class="sidebar-nav-wrapper">
-      <nav class="sidebar-nav">
-        <button id="homeLink" class="active">
-          <img src="home.png" alt="Home">
-        </button>
-        <button id="statsLink">
-          <img src="stats.png" alt="Stats">
-        </button>
-        <button id="settingsLink">
-          <img src="settings-sliders.png" alt="Settings">
-        </button>
-        <button id="infoLink">
-          <img src="info.png" alt="About">
-        </button>
-      </nav>
-    </div>
+    <!-- Nav Links -->
+    <nav class="sidebar-nav">
+      <button id="homeLink" class="nav-btn active">
+        <img src="home.png" alt="Home">
+        <span>Home</span>
+      </button>
+      <button id="statsLink" class="nav-btn">
+        <img src="stats.png" alt="Stats">
+        <span>Statistics</span>
+      </button>
+      <button id="settingsLink" class="nav-btn">
+        <img src="settings-sliders.png" alt="Settings">
+        <span>Settings</span>
+      </button>
+      <button id="infoLink" class="nav-btn">
+        <img src="info.png" alt="About">
+        <span>About</span>
+      </button>
+    </nav>
 
+    <!-- User Profile at bottom -->
     <div class="sidebar-user">
       <img id="sidebarProfile" src="default-profile.png" alt="Profile">
+      <span id="sidebarUsername" class="sidebar-username"></span>
     </div>
 
   </aside>
 
-<!-- ===== DASHBOARD ===== -->
-<main class="dashboard">
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="dashboard">
 
-<!-- ================= HOME SECTION ================= -->
-<section id="homeSection" class="section active-section">
+    <!-- ================= HOME SECTION ================= -->
+    <section id="homeSection" class="section active-section">
 
-  <div class="home-header">
-    <img id="homeLogo" src="Blue and Green Modern Charity Foundation Logo.png" alt="Logo" class="home-logo">
-    <h1 class="page-title">Heart Health Overview</h1>
-    <img id="homeProfilePic" src="default-profile.png" alt="Profile" class="home-profile-pic">
-  </div>
-  <p id="userGreeting" class="greeting-text"></p>
-
-  <div class="dashboard-wrapper">
-
-    <div class="side-card">
-      <div class="card">
-          <h4>Upcoming Checkup</h4>
-          <p>No upcoming appointments scheduled.</p>
+      <!-- Mobile header -->
+      <div class="mobile-header">
+        <img src="Blue and Green Modern Charity Foundation Logo.png" alt="Logo" class="mobile-logo">
+        <h1 class="page-title">Heart Health Overview</h1>
+        <img id="homeProfilePic" src="default-profile.png" alt="Profile" class="mobile-profile">
       </div>
 
-      <div class="card">
-          <h4>Health Tips</h4>
-          <p>Drink water regularly and aim for 7–8 hours of sleep daily.</p>
+      <!-- Desktop header -->
+      <div class="desktop-header">
+        <div>
+          <h1 class="page-title">Heart Health Overview</h1>
+          <p id="userGreeting" class="greeting-text"></p>
+        </div>
       </div>
-    </div>
 
-    <!-- ===== CENTER COLUMN (MAIN FEED) ===== -->
-    <div class="main-column">
+      <!-- Mobile greeting -->
+      <p id="userGreetingMobile" class="greeting-text mobile-only"></p>
 
-      <div class="card main-feed-card">
+      <div class="home-layout">
 
-        <!-- HERO CARD -->
-        <div class="card card-large">
-          <h3>Not enough information about sleep</h3>
-          <p>The secret to a healthy heart is proper rest and monitoring.</p>
-          <button id="addInfoBtn" class="soft-btn" type="button">Add Info</button>
+        <!-- ===== MAIN FEED ===== -->
+        <div class="main-feed">
+
+          <!-- HERO CARD -->
+          <div class="hero-card">
+            <div class="hero-content">
+              <div class="hero-icon">💓</div>
+              <div class="hero-text">
+                <h3>Stay on top of your health</h3>
+                <p>Log your daily metrics to get a full picture of your heart health and lifestyle habits.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- CORE VITALS -->
+          <h2 class="section-subtitle">Core Vitals</h2>
+          <div class="core-vitals-grid">
+
+            <div id="bpmCircle" class="card stat-card">
+              <div class="progress-circle" data-value="72" data-max="180">
+                <svg width="110" height="110">
+                  <circle class="bg" cx="55" cy="55" r="45"></circle>
+                  <circle class="progress" cx="55" cy="55" r="45"></circle>
+                </svg>
+                <div class="circle-number">72</div>
+              </div>
+              <span>BPM</span>
+            </div>
+
+            <div id="oxygenCircle" class="card stat-card">
+              <div class="progress-circle" data-value="98" data-max="100">
+                <svg width="110" height="110">
+                  <circle class="bg" cx="55" cy="55" r="45"></circle>
+                  <circle class="progress" cx="55" cy="55" r="45"></circle>
+                </svg>
+                <div class="circle-number">98</div>
+              </div>
+              <span>Oxygen</span>
+            </div>
+
+            <div id="rrCircle" class="card stat-card">
+              <div class="progress-circle" data-value="16" data-max="30">
+                <svg width="110" height="110">
+                  <circle class="bg" cx="55" cy="55" r="45"></circle>
+                  <circle class="progress" cx="55" cy="55" r="45"></circle>
+                </svg>
+                <div class="circle-number">16</div>
+              </div>
+              <span>Resp. Rate</span>
+            </div>
+
+          </div>
+
+          <!-- LIFESTYLE METRICS -->
+          <div class="subtitle-row">
+            <h2 class="section-subtitle" style="margin:0;">Lifestyle Metrics</h2>
+            <button id="addInfoBtn" class="add-btn" type="button">+ Add Info</button>
+            <button id="addInfoBtnMobile" class="add-btn mobile-only" type="button">+ Add Info</button>
+          </div>
+          <div class="lifestyle-grid">
+
+            <div class="card stat-card">
+              <span id="sleepValue" class="stat-value">--</span>
+              <div class="stat-label">Sleep Duration</div>
+              <div id="sleepNotes" class="metric-notes"></div>
+              <button class="soft-btn">View Details</button>
+            </div>
+
+            <div class="card stat-card">
+              <span id="waterValue" class="stat-value">--</span>
+              <div class="stat-label">Water Intake</div>
+              <div id="waterNotes" class="metric-notes"></div>
+              <button class="soft-btn">View Details</button>
+            </div>
+
+            <div class="card stat-card">
+              <span id="caloriesValue" class="stat-value">--</span>
+              <div class="stat-label">Calories Burned</div>
+              <div id="caloriesNotes" class="metric-notes"></div>
+              <button class="soft-btn">View Details</button>
+            </div>
+
+            <div class="card stat-card">
+              <span id="stepsValue" class="stat-value">--</span>
+              <div class="stat-label">Steps Today</div>
+              <div id="stepsNotes" class="metric-notes"></div>
+              <button class="soft-btn">View Details</button>
+            </div>
+
+            <div class="card stat-card">
+              <span id="stressValue" class="stat-value">--</span>
+              <div class="stat-label">Stress Level</div>
+              <div id="stressNotes" class="metric-notes"></div>
+              <button class="soft-btn">View Details</button>
+            </div>
+
+          </div>
         </div>
 
-        <!-- CORE VITALS -->
-        <h2 class="section-subtitle">Core Vitals</h2>
+        <!-- ===== RIGHT PANEL ===== -->
+        <aside class="right-panel">
 
-        <div class="core-vitals-grid">
-
-          <!-- BPM -->
-          <div id="bpmCircle" class="card stat-card">
-            <div class="progress-circle" data-value="72" data-max="180">
-              <svg width="110" height="110">
-                <circle class="bg" cx="55" cy="55" r="45"></circle>
-                <circle class="progress" cx="55" cy="55" r="45"></circle>
-              </svg>
-              <div class="circle-number">72</div>
-            </div>
-            <span>BPM</span>
+          <div class="panel-card">
+            <h4>Upcoming Checkup</h4>
+            <p>No upcoming appointments scheduled.</p>
           </div>
 
-          <!-- Oxygen -->
-          <div id="oxygenCircle" class="card stat-card">
-            <div class="progress-circle" data-value="98" data-max="100">
-              <svg width="110" height="110">
-                <circle class="bg" cx="55" cy="55" r="45"></circle>
-                <circle class="progress" cx="55" cy="55" r="45"></circle>
-              </svg>
-              <div class="circle-number">98</div>
-            </div>
-            <span>Oxygen</span>
+          <div class="panel-card">
+            <h4>Recent Activity</h4>
+            <p>No recent alerts detected.</p>
           </div>
 
-          <!-- Respiratory Rate -->
-          <div id="rrCircle" class="card stat-card">
-            <div class="progress-circle" data-value="16" data-max="30">
-              <svg width="110" height="110">
-                <circle class="bg" cx="55" cy="55" r="45"></circle>
-                <circle class="progress" cx="55" cy="55" r="45"></circle>
-              </svg>
-              <div class="circle-number">16</div>
+          <div class="panel-card">
+            <h4>Daily Goals</h4>
+            <div class="goal-item">
+              <span>Steps</span>
+              <span class="goal-value">10,000</span>
             </div>
-            <span>Resp. Rate</span>
+            <div class="goal-item">
+              <span>Water</span>
+              <span class="goal-value">2L</span>
+            </div>
+            <div class="goal-item">
+              <span>Sleep</span>
+              <span class="goal-value">8h</span>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <h4>Health Tips</h4>
+            <p>Drink water regularly and aim for 7–8 hours of sleep daily.</p>
+          </div>
+
+        </aside>
+
+      </div>
+    </section>
+
+    <!-- ================= STATS SECTION ================= -->
+    <section id="statsSection" class="section">
+
+      <div class="desktop-header">
+        <div>
+          <h1 class="page-title">Pulse History</h1>
+          <p class="greeting-text">Your vitals over the past week</p>
+        </div>
+      </div>
+
+      <div class="mobile-header">
+        <img src="Blue and Green Modern Charity Foundation Logo.png" alt="Logo" class="mobile-logo">
+        <h1 class="page-title">Pulse History</h1>
+        <img id="homeProfilePic2" src="default-profile.png" alt="Profile" class="mobile-profile">
+      </div>
+
+      <div class="card-full">
+        <div class="chart-container">
+          <canvas id="pulseChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card-full info-card">
+        <h2 class="section-subtitle" style="text-align:center;">Understanding Your Vitals</h2>
+        <div class="vital-info-grid">
+
+          <div class="card stat-card">
+            <h3>Heart Rate (BPM)</h3>
+            <p>Your heart rate measures how many times your heart beats per minute.</p>
+            <p><strong>Normal resting range:</strong> 60 – 100 BPM</p>
+          </div>
+
+          <div class="card stat-card">
+            <h3>Oxygen Saturation</h3>
+            <p>Oxygen level shows how much oxygen your blood is carrying.</p>
+            <p><strong>Normal range:</strong> 95% – 100%</p>
+          </div>
+
+          <div class="card stat-card">
+            <h3>Respiratory Rate</h3>
+            <p>Respiratory rate measures how many breaths you take per minute.</p>
+            <p><strong>Normal resting range:</strong> 12 – 20 breaths/min</p>
           </div>
 
         </div>
+      </div>
+    </section>
 
-        <!-- LIFESTYLE METRICS -->
-        <h2 class="section-subtitle">Lifestyle Metrics</h2>
+    <!-- ================= SETTINGS SECTION ================= -->
+    <section id="settingsSection" class="section">
 
-        <div class="lifestyle-grid">
+      <div class="desktop-header">
+        <div>
+          <h1 class="page-title">Settings</h1>
+          <p class="greeting-text">Manage your account</p>
+        </div>
+      </div>
 
-          <div class="card stat-card">
-            <span id="sleepValue" class="stat-value">--</span>
-            <div class="stat-label">Sleep Duration</div>
-            <button class="soft-btn">View Details</button>
-          </div>
+      <div class="mobile-header">
+        <img src="Blue and Green Modern Charity Foundation Logo.png" alt="Logo" class="mobile-logo">
+        <h1 class="page-title">Settings</h1>
+        <img id="homeProfilePic3" src="default-profile.png" alt="Profile" class="mobile-profile">
+      </div>
 
-          <div class="card stat-card">
-            <span id="waterValue" class="stat-value">--</span>
-            <div class="stat-label">Water Intake</div>
-            <button class="soft-btn">View Details</button>
-          </div>
+      <div class="settings-card">
 
-          <div class="card stat-card">
-            <span id="caloriesValue" class="stat-value">--</span>
-            <div class="stat-label">Calories Burned</div>
-            <button class="soft-btn">View Details</button>
-          </div>
-
-          <div class="card stat-card">
-            <span id="stepsValue" class="stat-value">--</span>
-            <div class="stat-label">Steps Today</div>
-            <button class="soft-btn">View Details</button>
-          </div>
-
-          <div class="card stat-card">
-            <span id="stressValue" class="stat-value">--</span>
-            <div class="stat-label">Stress Level</div>
-            <button class="soft-btn">View Details</button>
-          </div>
-
+        <div class="settings-group">
+          <h3>Profile Picture</h3>
+          <img id="profilePreview" src="default-profile.png" class="profile-img">
+          <label class="soft-btn" for="profileUpload">Choose Profile Picture</label>
+          <input type="file" id="profileUpload" accept="image/*">
         </div>
 
+        <div class="settings-group">
+          <h3>Full Name</h3>
+          <input type="text" id="updateFirstName" placeholder="First Name">
+          <input type="text" id="updateMiddleName" placeholder="Middle Name (optional)">
+          <input type="text" id="updateLastName" placeholder="Last Name">
+          <button id="updateNameBtn" class="soft-btn">Update Name</button>
+        </div>
+
+        <div class="settings-group">
+          <h3>Change Username</h3>
+          <input type="text" id="newUsername" placeholder="New Username">
+          <button id="updateUsernameBtn" class="soft-btn">Update Username</button>
+        </div>
+
+        <div class="settings-group">
+          <h3>Change Password</h3>
+          <input type="password" id="newPassword" placeholder="New Password">
+          <button id="updatePasswordBtn" class="soft-btn">Update Password</button>
+        </div>
+
+        <button id="logoutBtn" class="logout-btn">Logout</button>
+
+      </div>
+    </section>
+
+    <!-- ================= ABOUT SECTION ================= -->
+    <section id="about-section" class="section">
+
+      <div class="desktop-header">
+        <div>
+          <h1 class="page-title">About Pulse</h1>
+          <p class="greeting-text">Learn more about this app</p>
+        </div>
       </div>
 
-    </div>
-
-    <div class="side-card">
-      <div class="card">
-          <h4>Recent Activity</h4>
-          <p>No recent alerts detected.</p>
+      <div class="mobile-header">
+        <img src="Blue and Green Modern Charity Foundation Logo.png" alt="Logo" class="mobile-logo">
+        <h1 class="page-title">About Pulse</h1>
+        <img id="homeProfilePic4" src="default-profile.png" alt="Profile" class="mobile-profile">
       </div>
 
-      <div class="card">
-          <h4>Goals</h4>
-          <p>Daily steps goal: 10,000</p>
-      </div>
-    </div>
-
-</section>
-
-<!-- ================= STATS SECTION ================= -->
-<section id="statsSection" class="section">
-  <h1 class="page-title">Pulse History</h1>
-
-  <div class="card-full">
-    <div class="chart-container">
-      <canvas id="pulseChart"></canvas>
-    </div>
-  </div>
-
-  <!-- ===== Vital Information Card ===== -->
-  <div class="card-full info-card">
-
-    <h2 class="section-subtitle">Understanding Your Vitals</h2>
-
-    <div class="vital-info-grid">
-
-      <div class="card stat-card">
-        <h3>Heart Rate (BPM)</h3>
-        <p>
-          Your heart rate measures how many times your heart beats per minute.
-        </p>
-        <p><strong>Normal resting range:</strong> 60 – 100 BPM</p>
+      <div class="about-card">
+        <h3>What is Pulse?</h3>
+        <p>Pulse is a heart monitoring dashboard designed to help users track their cardiovascular health including BPM, oxygen levels, and respiratory rate.</p>
       </div>
 
-      <div class="card stat-card">
-        <h3>Oxygen Saturation</h3>
-        <p>
-          Oxygen level shows how much oxygen your blood is carrying.
-        </p>
-        <p><strong>Normal range:</strong> 95% – 100%</p>
+      <div class="about-card">
+        <h3>Features</h3>
+        <ul>
+          <li>Real-time BPM tracking</li>
+          <li>Pulse history graph with Chart.js</li>
+          <li>Oxygen & respiratory rate overview</li>
+          <li>Custom profile management</li>
+          <li>Secure login system</li>
+        </ul>
       </div>
 
-      <div class="card stat-card">
-        <h3>Respiratory Rate</h3>
-        <p>
-          Respiratory rate measures how many breaths you take per minute.
-        </p>
-        <p><strong>Normal resting range:</strong> 12 – 20 breaths/min</p>
+      <div class="about-card">
+        <h3>Technology Used</h3>
+        <p>Built using HTML, CSS, JavaScript, and Chart.js for data visualization.</p>
       </div>
 
-    </div>
-
-  </div>
-</section>
-
-<!-- ================= SETTINGS SECTION ================= -->
-<section id="settingsSection" class="section">
-  <h1 class="page-title">Settings</h1>
-
-  <div class="settings-card">
-
-    <div class="settings-group">
-      <h3>Profile</h3>
-      <img id="profilePreview" src="default-profile.png" class="profile-img">
-
-      <label class="soft-btn" for="profileUpload" capture="user">
-        Choose Profile Picture
-      </label>
-
-      <input type="file" id="profileUpload" accept="image/*">
-    </div>
-
-    <div class="settings-group">
-      <h3>Change Username</h3>
-      <input type="text" id="newUsername" placeholder="New Username">
-      <button id="updateUsernameBtn" class="soft-btn">Update Username</button>
-    </div>
-
-    <div class="settings-group">
-      <h3>Change Password</h3>
-      <input type="password" id="newPassword" placeholder="New Password">
-      <button id="updatePasswordBtn" class="soft-btn">Update Password</button>
-    </div>
-
-    <button id="logoutBtn" class="logout-btn">Logout</button>
-
-  </div>
-</section>
-
-<!-- ================= ABOUT SECTION ================= -->
-<section id="about-section" class="section">
-  <h1 class="page-title">About Pulse</h1>
-
-  <div class="about-card">
-    <h3>What is Pulse Tracker?</h3>
-    <p>
-      Pulse Tracker is a heart monitoring dashboard designed to help users track
-      their cardiovascular health including BPM, oxygen levels,
-      and respiratory rate.
-    </p>
-  </div>
-
-  <div class="about-card">
-    <h3>Features</h3>
-    <ul>
-      <li>Real-time BPM tracking</li>
-      <li>Pulse history graph with Chart.js</li>
-      <li>Oxygen & respiratory rate overview</li>
-      <li>Custom profile management</li>
-      <li>Secure login system</li>
-    </ul>
-  </div>
-
-  <div class="about-card">
-    <h3>Technology Used</h3>
-    <p>
-      Built using HTML, CSS, JavaScript, and Chart.js for data visualization.
-    </p>
-  </div>
-</section>
+    </section>
 
   </main>
+
+  <!-- ===== MOBILE BOTTOM NAV ===== -->
+  <nav class="mobile-nav">
+    <button id="homeLinkMobile" class="mobile-nav-btn active">
+      <img src="home.png" alt="Home">
+      <span>Home</span>
+    </button>
+    <button id="statsLinkMobile" class="mobile-nav-btn">
+      <img src="stats.png" alt="Stats">
+      <span>Stats</span>
+    </button>
+    <button id="settingsLinkMobile" class="mobile-nav-btn">
+      <img src="settings-sliders.png" alt="Settings">
+      <span>Settings</span>
+    </button>
+    <button id="infoLinkMobile" class="mobile-nav-btn">
+      <img src="info.png" alt="About">
+      <span>About</span>
+    </button>
+  </nav>
 
 </div>
 
 <!-- ================= METRIC MODAL ================= -->
 <div id="sleepModal" class="modal hidden">
-
   <div class="modal-content">
-
     <h2>Add Lifestyle Metric</h2>
 
-    <!-- Metric Type -->
     <div class="modal-field">
       <select id="metricType" required>
         <option value="" disabled selected hidden>Select Metric</option>
@@ -349,37 +431,30 @@
       </select>
     </div>
 
-    <!-- SINGLE VALUE INPUT (for water, calories, steps, etc.) -->
     <div class="modal-field" id="singleValueField">
       <input type="number" id="metricValue" placeholder="Enter value">
     </div>
 
-    <!-- SLEEP FIELDS (hours + minutes) -->
     <div class="modal-field hidden sleep-row" id="sleepFields">
       <input type="number" id="sleepHours" placeholder="Hours" min="0">
       <input type="number" id="sleepMinutes" placeholder="Minutes" min="0" max="59">
     </div>
 
-    <!-- Unit Selector -->
     <div class="modal-field" id="unitField">
       <select id="metricUnit">
         <option value="" disabled selected hidden>Select Unit</option>
       </select>
     </div>
 
-    <!-- Notes -->
     <div class="modal-field">
       <textarea id="metricNotes" placeholder="Notes (optional)"></textarea>
     </div>
 
-    <!-- Buttons -->
     <div class="modal-actions">
       <button id="cancelSleepBtn" class="soft-btn" type="button">Cancel</button>
       <button id="saveSleepBtn" class="soft-btn" type="button">Save</button>
     </div>
-
   </div>
-
 </div>
 
 </body>

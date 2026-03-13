@@ -2,11 +2,7 @@
    PULSE TRACKER — MAIN SCRIPT
    ================================================ */
 
-
-/* ================= SERVER URL ================= */
-
 const SERVER = "https://pulsetracker-7g11.onrender.com";
-
 
 /* ================= DOM REFERENCES ================= */
 
@@ -20,16 +16,27 @@ const loginBtn      = document.getElementById("loginBtn");
 const loginError    = document.getElementById("loginError");
 
 const registerBtn             = document.getElementById("registerBtn");
+const registerFirstName       = document.getElementById("registerFirstName");
+const registerMiddleName      = document.getElementById("registerMiddleName");
+const registerLastName        = document.getElementById("registerLastName");
 const registerUsername        = document.getElementById("registerUsername");
 const registerPassword        = document.getElementById("registerPassword");
 const registerConfirmPassword = document.getElementById("registerConfirmPassword");
 const registerError           = document.getElementById("registerError");
 
+// Desktop sidebar nav
 const homeLink     = document.getElementById("homeLink");
 const statsLink    = document.getElementById("statsLink");
 const settingsLink = document.getElementById("settingsLink");
 const infoLink     = document.getElementById("infoLink");
 
+// Mobile bottom nav
+const homeLinkMobile     = document.getElementById("homeLinkMobile");
+const statsLinkMobile    = document.getElementById("statsLinkMobile");
+const settingsLinkMobile = document.getElementById("settingsLinkMobile");
+const infoLinkMobile     = document.getElementById("infoLinkMobile");
+
+// Sections
 const homeSection     = document.getElementById("homeSection");
 const statsSection    = document.getElementById("statsSection");
 const settingsSection = document.getElementById("settingsSection");
@@ -42,12 +49,18 @@ const newUsernameInput  = document.getElementById("newUsername");
 const newPasswordInput  = document.getElementById("newPassword");
 const updateUsernameBtn = document.getElementById("updateUsernameBtn");
 const updatePasswordBtn = document.getElementById("updatePasswordBtn");
+const updateFirstName   = document.getElementById("updateFirstName");
+const updateMiddleName  = document.getElementById("updateMiddleName");
+const updateLastName    = document.getElementById("updateLastName");
+const updateNameBtn     = document.getElementById("updateNameBtn");
 
 const profileUpload  = document.getElementById("profileUpload");
 const profilePreview = document.getElementById("profilePreview");
 const sidebarProfile = document.getElementById("sidebarProfile");
 
+// Modal
 const addInfoBtn     = document.getElementById("addInfoBtn");
+const addInfoBtnMobile = document.getElementById("addInfoBtnMobile");
 const sleepModal     = document.getElementById("sleepModal");
 const cancelSleepBtn = document.getElementById("cancelSleepBtn");
 const saveSleepBtn   = document.getElementById("saveSleepBtn");
@@ -68,22 +81,25 @@ const caloriesValue = document.getElementById("caloriesValue");
 const stepsValue    = document.getElementById("stepsValue");
 const stressValue   = document.getElementById("stressValue");
 
-// Global user state — never trust localStorage for profile data
 let currentUser = null;
 
 
 /* ================= HELPER — APPLY PROFILE PIC ================= */
 
 function applyProfilePic(picUrl) {
-  // picUrl is now always a full https:// URL from Supabase Storage
   const src = (picUrl && picUrl.startsWith("http"))
     ? picUrl
     : "default-profile.png";
 
-  profilePreview.src = src;
-  sidebarProfile.src = src;
-  const homePic = document.getElementById("homeProfilePic");
-  if (homePic) homePic.src = src;
+  // Sidebar profile pic
+  if (profilePreview) profilePreview.src = src;
+  if (sidebarProfile) sidebarProfile.src = src;
+
+  // Mobile header profile pics (on each section)
+  ["homeProfilePic", "homeProfilePic2", "homeProfilePic3", "homeProfilePic4"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.src = src;
+  });
 }
 
 
@@ -104,7 +120,6 @@ async function fetchFreshUser(userId) {
 /* ================= HELPER — START SESSION ================= */
 
 async function startSession(userId) {
-  // Always pull fresh data from server — profile pic is always per-user from Supabase
   const freshUser = await fetchFreshUser(userId);
 
   if (!freshUser) {
@@ -114,18 +129,32 @@ async function startSession(userId) {
   }
 
   currentUser = freshUser;
-
-  // Only store the ID — never the full user object with profilePic
   localStorage.setItem("pulse_user_id", String(currentUser.user_id));
 
   loginScreen.style.display    = "none";
   registerScreen.style.display = "none";
   mainApp.style.display        = "flex";
 
-  userGreeting.textContent = "Welcome, " + currentUser.username + "!";
+  // Set greeting
+  if (userGreeting) userGreeting.textContent = "Welcome back, " + currentUser.username + "!";
+  const greetingMobile = document.getElementById("userGreetingMobile");
+  if (greetingMobile) greetingMobile.textContent = "Welcome back, " + currentUser.username + "!";
 
-  // Always apply pic from fresh server data
+  // Set sidebar full name
+  const sidebarUsername = document.getElementById("sidebarUsername");
+  if (sidebarUsername) {
+    const fullName = [currentUser.first_name, currentUser.middle_name, currentUser.last_name]
+      .filter(Boolean)
+      .join(" ");
+    sidebarUsername.textContent = fullName || currentUser.username;
+  }
+
   applyProfilePic(currentUser.profilePic);
+
+  // Pre-fill name fields in settings with current values
+  if (updateFirstName)  updateFirstName.value  = currentUser.first_name  || "";
+  if (updateMiddleName) updateMiddleName.value = currentUser.middle_name || "";
+  if (updateLastName)   updateLastName.value   = currentUser.last_name   || "";
 
   await loadMetrics();
 }
@@ -176,12 +205,15 @@ loginBtn.addEventListener("click", async () => {
 /* ================= REGISTER ================= */
 
 registerBtn.addEventListener("click", async () => {
+  const firstName       = registerFirstName.value.trim();
+  const middleName      = registerMiddleName.value.trim();
+  const lastName        = registerLastName.value.trim();
   const username        = registerUsername.value.trim();
   const password        = registerPassword.value.trim();
   const confirmPassword = registerConfirmPassword.value.trim();
 
-  if (!username || !password || !confirmPassword) {
-    registerError.textContent = "Please fill all fields.";
+  if (!firstName || !lastName || !username || !password || !confirmPassword) {
+    registerError.textContent = "Please fill all required fields.";
     return;
   }
 
@@ -194,7 +226,13 @@ registerBtn.addEventListener("click", async () => {
     const res  = await fetch(`${SERVER}/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify({
+        username,
+        password,
+        first_name: firstName,
+        middle_name: middleName || null,
+        last_name: lastName
+      })
     });
 
     const data = await res.json();
@@ -236,40 +274,56 @@ logoutBtn.addEventListener("click", () => {
   localStorage.removeItem("pulse_user_id");
   currentUser = null;
 
-  // Always reset pics to default on logout so no pic bleeds into next user
-  profilePreview.src = "default-profile.png";
-  sidebarProfile.src = "default-profile.png";
+  applyProfilePic(null);
 
   mainApp.style.display     = "none";
   loginScreen.style.display = "flex";
 
   usernameInput.value           = "";
   passwordInput.value           = "";
+  registerFirstName.value       = "";
+  registerMiddleName.value      = "";
+  registerLastName.value        = "";
   registerUsername.value        = "";
   registerPassword.value        = "";
   registerConfirmPassword.value = "";
 
+  // Reset sections
   document.querySelectorAll(".section").forEach(s => s.classList.remove("active-section"));
   homeSection.classList.add("active-section");
 
-  document.querySelectorAll(".sidebar-nav button").forEach(b => b.classList.remove("active"));
+  // Reset all nav buttons
+  document.querySelectorAll(".nav-btn, .mobile-nav-btn").forEach(b => b.classList.remove("active"));
   homeLink.classList.add("active");
+  homeLinkMobile.classList.add("active");
 });
 
 
 /* ================= NAVIGATION ================= */
 
-function showSection(section, button) {
+function showSection(section, desktopBtn, mobileBtn) {
   document.querySelectorAll(".section").forEach(s => s.classList.remove("active-section"));
-  document.querySelectorAll(".sidebar-nav button").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".nav-btn, .mobile-nav-btn").forEach(b => b.classList.remove("active"));
+
   section.classList.add("active-section");
-  button.classList.add("active");
+  if (desktopBtn) desktopBtn.classList.add("active");
+  if (mobileBtn)  mobileBtn.classList.add("active");
+
+  // Scroll to top when switching sections
+  window.scrollTo(0, 0);
 }
 
-homeLink.addEventListener("click",     () => showSection(homeSection,     homeLink));
-statsLink.addEventListener("click",    () => showSection(statsSection,    statsLink));
-settingsLink.addEventListener("click", () => showSection(settingsSection, settingsLink));
-infoLink.addEventListener("click",     () => showSection(aboutSection,    infoLink));
+// Desktop nav
+homeLink.addEventListener("click",     () => showSection(homeSection,     homeLink,     homeLinkMobile));
+statsLink.addEventListener("click",    () => showSection(statsSection,    statsLink,    statsLinkMobile));
+settingsLink.addEventListener("click", () => showSection(settingsSection, settingsLink, settingsLinkMobile));
+infoLink.addEventListener("click",     () => showSection(aboutSection,    infoLink,     infoLinkMobile));
+
+// Mobile nav
+homeLinkMobile.addEventListener("click",     () => showSection(homeSection,     homeLink,     homeLinkMobile));
+statsLinkMobile.addEventListener("click",    () => showSection(statsSection,    statsLink,    statsLinkMobile));
+settingsLinkMobile.addEventListener("click", () => showSection(settingsSection, settingsLink, settingsLinkMobile));
+infoLinkMobile.addEventListener("click",     () => showSection(aboutSection,    infoLink,     infoLinkMobile));
 
 
 /* ================= PROFILE PICTURE UPLOAD ================= */
@@ -278,12 +332,9 @@ profileUpload.addEventListener("change", async () => {
   const file = profileUpload.files[0];
   if (!file) return;
 
-  // Show local preview immediately while uploading
+  // Show preview immediately
   const reader = new FileReader();
-  reader.onload = (e) => {
-    profilePreview.src = e.target.result;
-    sidebarProfile.src = e.target.result;
-  };
+  reader.onload = (e) => applyProfilePic(e.target.result);
   reader.readAsDataURL(file);
 
   const formData = new FormData();
@@ -299,9 +350,7 @@ profileUpload.addEventListener("change", async () => {
     const data = await res.json();
 
     if (data.success) {
-      // Update in-memory user with new full https:// URL from Supabase Storage
       currentUser.profilePic = data.imagePath;
-      // Apply the real URL (replaces the local blob preview)
       applyProfilePic(currentUser.profilePic);
     } else {
       console.error("Upload failed:", data.message);
@@ -332,7 +381,17 @@ updateUsernameBtn.addEventListener("click", async () => {
   }
 
   currentUser.username = newUsername;
-  userGreeting.textContent = "Welcome, " + newUsername + "!";
+
+  if (userGreeting) userGreeting.textContent = "Welcome back, " + newUsername + "!";
+  // Keep showing full name in sidebar if available
+  const sidebarUsername = document.getElementById("sidebarUsername");
+  if (sidebarUsername) {
+    const fullName = [currentUser.first_name, currentUser.middle_name, currentUser.last_name]
+      .filter(Boolean)
+      .join(" ");
+    sidebarUsername.textContent = fullName || newUsername;
+  }
+
   alert("Username updated!");
   newUsernameInput.value = "";
 });
@@ -352,6 +411,42 @@ updatePasswordBtn.addEventListener("click", async () => {
 
   alert("Password updated!");
   newPasswordInput.value = "";
+});
+
+
+/* ================= UPDATE FULL NAME ================= */
+
+updateNameBtn.addEventListener("click", async () => {
+  const firstName  = updateFirstName.value.trim();
+  const middleName = updateMiddleName.value.trim();
+  const lastName   = updateLastName.value.trim();
+
+  if (!firstName || !lastName) return alert("First and last name are required.");
+
+  const res  = await fetch(`${SERVER}/update-name`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      id: currentUser.user_id,
+      first_name: firstName,
+      middle_name: middleName || null,
+      last_name: lastName
+    })
+  });
+
+  const data = await res.json();
+  if (!data.success) return alert("Failed to update name.");
+
+  currentUser.first_name  = firstName;
+  currentUser.middle_name = middleName || null;
+  currentUser.last_name   = lastName;
+
+  // Refresh sidebar full name display
+  const fullName = [firstName, middleName, lastName].filter(Boolean).join(" ");
+  const sidebarUsername = document.getElementById("sidebarUsername");
+  if (sidebarUsername) sidebarUsername.textContent = fullName;
+
+  alert("Name updated!");
 });
 
 
@@ -380,7 +475,7 @@ document.querySelectorAll(".lifestyle-grid .soft-btn").forEach(button => {
     popup.classList.add("details-popup");
     popup.innerHTML = `
       <h4>${metricTitle}</h4>
-      <p><strong>Current Value:</strong> ${metricVal}</p>
+      <p><strong>Current:</strong> ${metricVal}</p>
       <p>${recommendation}</p>
     `;
 
@@ -395,10 +490,19 @@ document.addEventListener("click", () => {
 
 /* ================= METRIC MODAL — OPEN / CLOSE ================= */
 
-addInfoBtn.addEventListener("click", () => {
-  resetMetricModal();
-  sleepModal.classList.remove("hidden");
-});
+if (addInfoBtn) {
+  addInfoBtn.addEventListener("click", () => {
+    resetMetricModal();
+    sleepModal.classList.remove("hidden");
+  });
+}
+
+if (addInfoBtnMobile) {
+  addInfoBtnMobile.addEventListener("click", () => {
+    resetMetricModal();
+    sleepModal.classList.remove("hidden");
+  });
+}
 
 cancelSleepBtn.addEventListener("click", () => {
   sleepModal.classList.add("hidden");
@@ -535,6 +639,12 @@ async function loadMetrics() {
     stepsValue.textContent    = "--";
     stressValue.textContent   = "--";
 
+    // Clear all notes
+    ["sleepNotes","waterNotes","caloriesNotes","stepsNotes","stressNotes"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = "";
+    });
+
     const seen = {};
 
     data.forEach(metric => {
@@ -546,6 +656,18 @@ async function loadMetrics() {
       if (metric.metric_type === "calories") caloriesValue.textContent = `${metric.value1} ${metric.unit}`;
       if (metric.metric_type === "steps")    stepsValue.textContent    = `${metric.value1} ${metric.unit}`;
       if (metric.metric_type === "stress")   stressValue.textContent   = metric.unit;
+
+      // Show notes if available
+      const notesMap = {
+        sleep:    "sleepNotes",
+        water:    "waterNotes",
+        calories: "caloriesNotes",
+        steps:    "stepsNotes",
+        stress:   "stressNotes"
+      };
+
+      const notesEl = document.getElementById(notesMap[metric.metric_type]);
+      if (notesEl && metric.notes) notesEl.textContent = `📝 ${metric.notes}`;
     });
 
   } catch (err) {
@@ -616,8 +738,8 @@ if (ctx) {
         {
           label: "BPM",
           data: [72, 75, 78, 74, 76, 73, 70],
-          borderColor: "#00ffc8",
-          backgroundColor: "rgba(0,255,200,0.15)",
+          borderColor: "#5b9bd5",
+          backgroundColor: "rgba(91,155,213,0.1)",
           fill: true,
           tension: 0.4,
           pointRadius: 4,
@@ -627,7 +749,7 @@ if (ctx) {
           label: "Oxygen",
           data: [98, 97, 99, 98, 97, 98, 99],
           borderColor: "#4cafef",
-          backgroundColor: "rgba(76,175,239,0.15)",
+          backgroundColor: "rgba(76,175,239,0.1)",
           fill: true,
           tension: 0.4,
           pointRadius: 4,
@@ -637,7 +759,7 @@ if (ctx) {
           label: "Respiratory Rate",
           data: [16, 17, 15, 18, 16, 17, 16],
           borderColor: "#b388ff",
-          backgroundColor: "rgba(179,136,255,0.15)",
+          backgroundColor: "rgba(179,136,255,0.1)",
           fill: true,
           tension: 0.4,
           pointRadius: 4,
