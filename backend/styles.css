@@ -791,8 +791,8 @@ button, a {
 }
 
 .auth-logo img {
-  width: 44px;
-  height: 44px;
+  width: 64px;
+  height: 64px;
   border-radius: 12px;
   object-fit: cover;
 }
@@ -893,7 +893,7 @@ button, a {
 /* Right side — decorative panel */
 .auth-deco-side {
   width: 42%;
-  background: #0d2240;
+  background: #114888;
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
@@ -932,14 +932,14 @@ button, a {
   width: 90%;
   height: 90%;
   border-radius: 50% 0 0 0;
-  background: #2563c4;
+  background: #0061bb;
   opacity: 0.85;
 }
 
 /* Alternate cells for variation */
 .deco-grid span:nth-child(even)::after {
   opacity: 0.6;
-  background: #3b7dd8;
+  background: #6791ca;
 }
 
 .deco-grid span:nth-child(3n)::after {
