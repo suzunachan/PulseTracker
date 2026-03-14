@@ -311,10 +311,9 @@ button, a {
   left: 20%;
   width: 60%;
   height: 2.5px;
-  border-radius: 0 0 4px 4px;
+  border-radius: 4px 4px 0 0 ;
   background: var(--primary-color);
 }
-
 
 /* ================================================
    6. MOBILE HEADER
