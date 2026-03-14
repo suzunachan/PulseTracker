@@ -1110,7 +1110,7 @@ button, a {
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(220, 240, 255, 0.92);
+  background: rgba(231, 245, 255, 0.658);
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(2px);
   display: flex;
@@ -1124,7 +1124,7 @@ button, a {
 .modal-content {
   width: 420px;
   max-width: 100%;
-  background: linear-gradient(-45deg, #d2eeff, #bce2ff, #d9f0ff, #c1e3ff);
+  background: linear-gradient(-45deg, #d2eeff, #bce2ff, #d9f0ff, #d2ebff);
   background-size: 400% 400%;
   animation: gradientMove 7s ease infinite;
   border-radius: 24px;
