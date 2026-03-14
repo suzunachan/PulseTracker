@@ -85,8 +85,9 @@ body {
   width: 100%;
   -webkit-user-select: none;
   user-select: none;
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background-color: var(--bg-color);
 }
 
 img {
@@ -783,10 +784,6 @@ button, a {
 .auth-inner {
   width: 100%;
   max-width: 400px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
 }
 
 /* Logo */
@@ -795,8 +792,8 @@ button, a {
 }
 
 .auth-logo img {
-  width: 64px;
-  height: 64px;
+  width: 44px;
+  height: 44px;
   border-radius: 12px;
   object-fit: cover;
 }
@@ -837,7 +834,6 @@ button, a {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  width: 100%;
 }
 
 .auth-field input {
@@ -897,7 +893,7 @@ button, a {
 /* Right side — decorative panel */
 .auth-deco-side {
   width: 42%;
-  background: #114888;
+  background: #0d2240;
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
@@ -936,14 +932,14 @@ button, a {
   width: 90%;
   height: 90%;
   border-radius: 50% 0 0 0;
-  background: #0061bb;
+  background: #2563c4;
   opacity: 0.85;
 }
 
 /* Alternate cells for variation */
 .deco-grid span:nth-child(even)::after {
   opacity: 0.6;
-  background: #6791ca;
+  background: #3b7dd8;
 }
 
 .deco-grid span:nth-child(3n)::after {
@@ -1045,7 +1041,7 @@ button, a {
 /* Chart canvas container */
 .chart-container {
   position: relative;
-  height: 480px;
+  height: 320px;
   width: 100%;
   background: linear-gradient(135deg, #f5faff, #eaf4ff);
   border-radius: 14px;
@@ -1079,9 +1075,6 @@ button, a {
   padding: 24px;
   border-radius: 16px;
   text-align: center;
-  background: var(--gradient-card);
-  background-size: 400% 400%;
-  animation: gradientMove 7s ease infinite;
 }
 
 .vital-info-grid h3 {
@@ -1114,9 +1107,9 @@ button, a {
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(231, 245, 255, 0.658);
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(2px);
+  background: rgba(220, 240, 255, 0.92);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1128,7 +1121,7 @@ button, a {
 .modal-content {
   width: 420px;
   max-width: 100%;
-  background: linear-gradient(-45deg, #d2eeff, #bce2ff, #d9f0ff, #d2ebff);
+  background: linear-gradient(-45deg, #d2eeff, #a2d7ff, #d9f0ff, #8ccbff, #c6f2ff);
   background-size: 400% 400%;
   animation: gradientMove 7s ease infinite;
   border-radius: 24px;
@@ -1229,7 +1222,7 @@ button, a {
   left: 50%;
   transform: translateX(-50%);
   width: 210px;
-  background: linear-gradient(135deg, #abd9ff, #5b9bd5, #9dd3ff);
+  background: linear-gradient(135deg, #aaddff, #c9e7ff);
   color: white;
   padding: 14px;
   border-radius: 14px;
@@ -1257,6 +1250,17 @@ button, a {
 
 .hidden {
   display: none !important;
+}
+
+/* Show only on desktop */
+.desktop-only {
+  display: inline-block;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
 }
 
 
