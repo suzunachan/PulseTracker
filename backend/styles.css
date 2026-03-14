@@ -1225,7 +1225,7 @@ button, a {
   left: 50%;
   transform: translateX(-50%);
   width: 210px;
-  background: linear-gradient(135deg, #5b9bd5, #67b5f5);
+  background: linear-gradient(135deg, #abd9ff, #5b9bd5, #9dd3ff);
   color: white;
   padding: 14px;
   border-radius: 14px;
