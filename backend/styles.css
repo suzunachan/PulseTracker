@@ -1049,7 +1049,7 @@ button, a {
   position: relative;
   height: 380px;
   width: 100%;
-  background: linear-gradient(135deg, #bdddff, #ecf6ff, #bdddff);
+  background: linear-gradient(135deg, #e7f3ff, #ecf6ff, #d5eaff);
   border-radius: 14px;
   padding: 16px;
 }
