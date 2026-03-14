@@ -85,7 +85,7 @@ body {
   width: 100%;
   -webkit-user-select: none;
   user-select: none;
-  padding-top: env(safe-area-inset-top, 0px);
+  padding-top: 0;
   padding-bottom: env(safe-area-inset-bottom, 0px);
   background-color: var(--bg-color);
 }
