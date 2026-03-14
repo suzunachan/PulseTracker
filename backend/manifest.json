@@ -4,8 +4,7 @@
   "description": "Track your heart health and lifestyle metrics",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f0f7ff",
-  "theme_color": "#5b9bd5",
+  "theme_color": "#f0f7ff",
   "orientation": "portrait",
   "icons": [
     {
