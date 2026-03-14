@@ -1503,3 +1503,19 @@ button, a {
     width: 100%;
   }
 }
+
+@media (max-width: 768px) {
+  .vital-info-grid .card {
+    background: var(--gradient-card) !important;
+    background-size: 400% 400% !important;
+    animation: gradientMove 7s ease infinite !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    background: var(--gradient-card) !important;
+    background-size: 400% 400% !important;
+    animation: gradientMove 7s ease infinite !important;
+  }
+}
