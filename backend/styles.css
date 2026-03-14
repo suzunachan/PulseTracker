@@ -791,14 +791,6 @@ button, a {
   text-align: center;
 }
 
-.auth-form {
-  width: 100%;
-}
-
-.auth-field input {
-  text-align: left;
-}
-
 /* Logo */
 .auth-logo {
   margin-bottom: 32px;
@@ -847,6 +839,7 @@ button, a {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  width: 100%;
 }
 
 .auth-field input {
