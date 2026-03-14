@@ -1041,7 +1041,7 @@ button, a {
 /* Chart canvas container */
 .chart-container {
   position: relative;
-  height: 450px;
+  height: 480px;
   width: 100%;
   background: linear-gradient(135deg, #f5faff, #eaf4ff);
   border-radius: 14px;
@@ -1400,7 +1400,7 @@ button, a {
 
   /* Chart */
   .chart-container {
-    height: 360px;
+    height: 220px;
     padding: 10px;
   }
 
