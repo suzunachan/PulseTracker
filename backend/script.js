@@ -654,7 +654,7 @@ async function loadMetrics() {
 
       const notesEl = document.getElementById(notesMap[metric.metric_type]);
       if (notesEl && metric.notes) {
-        notesEl.innerHTML = `<img src="icon-note.png" alt="note" class="note-icon"> ${metric.notes}`;
+        notesEl.innerHTML = `<img src="write.png" alt="note" class="note-icon"> ${metric.notes}`;
       }
     });
 
@@ -704,31 +704,68 @@ simulateVitals();
 const ctx = document.getElementById("pulseChart");
 
 if (ctx) {
+  const chartCtx = ctx.getContext("2d");
+
+  // Gradient for BPM bars
+  const bpmGrad = chartCtx.createLinearGradient(0, 0, 0, 400);
+  bpmGrad.addColorStop(0, "rgba(74, 144, 217, 0.95)");
+  bpmGrad.addColorStop(1, "rgba(74, 144, 217, 0.4)");
+
+  // Gradient for Oxygen bars
+  const oxyGrad = chartCtx.createLinearGradient(0, 0, 0, 400);
+  oxyGrad.addColorStop(0, "rgba(110, 198, 245, 0.95)");
+  oxyGrad.addColorStop(1, "rgba(110, 198, 245, 0.4)");
+
+  // Gradient for Respiratory Rate bars
+  const rrGrad = chartCtx.createLinearGradient(0, 0, 0, 400);
+  rrGrad.addColorStop(0, "rgba(179, 136, 255, 0.95)");
+  rrGrad.addColorStop(1, "rgba(179, 136, 255, 0.4)");
+
+  // Shadow plugin
+  const shadowPlugin = {
+    id: "barShadow",
+    beforeDatasetsDraw(chart) {
+      const { ctx } = chart;
+      ctx.save();
+      ctx.shadowColor = "rgba(100, 160, 220, 0.3)";
+      ctx.shadowBlur = 12;
+      ctx.shadowOffsetX = 3;
+      ctx.shadowOffsetY = 6;
+    },
+    afterDatasetsDraw(chart) {
+      chart.ctx.restore();
+    }
+  };
+
   new Chart(ctx, {
     type: "bar",
+    plugins: [shadowPlugin],
     data: {
       labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
       datasets: [
         {
           label: "BPM",
           data: [72, 75, 78, 74, 76, 73, 70],
-          backgroundColor: "rgba(91, 155, 213, 0.7)",
-          borderRadius: 8,
+          backgroundColor: bpmGrad,
+          borderRadius: 10,
           borderSkipped: false,
+          borderWidth: 0,
         },
         {
           label: "Oxygen",
           data: [98, 97, 99, 98, 97, 98, 99],
-          backgroundColor: "rgba(76, 175, 239, 0.7)",
-          borderRadius: 8,
+          backgroundColor: oxyGrad,
+          borderRadius: 10,
           borderSkipped: false,
+          borderWidth: 0,
         },
         {
           label: "Respiratory Rate",
           data: [16, 17, 15, 18, 16, 17, 16],
-          backgroundColor: "rgba(179, 136, 255, 0.7)",
-          borderRadius: 8,
+          backgroundColor: rrGrad,
+          borderRadius: 10,
           borderSkipped: false,
+          borderWidth: 0,
         }
       ]
     },
@@ -738,16 +775,36 @@ if (ctx) {
       animation: { duration: 1500, easing: "easeInOutQuart" },
       interaction: { mode: "index", intersect: false },
       plugins: {
-        legend: { labels: { color: "#333", font: { size: 13 }, padding: 20 } }
+        legend: {
+          labels: {
+            color: "#7a90a8",
+            font: { size: 12, family: "DM Sans" },
+            padding: 20,
+            usePointStyle: true,
+            pointStyle: "rectRounded"
+          }
+        },
+        tooltip: {
+          backgroundColor: "rgba(238, 242, 247, 0.95)",
+          titleColor: "#1c2b3a",
+          bodyColor: "#8fa3bc",
+          borderColor: "rgba(74, 144, 217, 0.2)",
+          borderWidth: 1,
+          padding: 12,
+          cornerRadius: 12,
+          boxShadow: "0 4px 20px rgba(0,0,0,0.1)"
+        }
       },
       scales: {
         x: {
           grid: { display: false },
-          ticks: { color: "#7a90a8" }
+          ticks: { color: "#8fa3bc", font: { family: "DM Sans" } },
+          border: { display: false }
         },
         y: {
-          grid: { color: "rgba(0,0,0,0.04)" },
-          ticks: { color: "#7a90a8" }
+          grid: { color: "rgba(163, 185, 210, 0.15)", drawBorder: false },
+          ticks: { color: "#8fa3bc", font: { family: "DM Sans" } },
+          border: { display: false, dash: [4, 4] }
         }
       }
     }
