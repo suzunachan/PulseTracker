@@ -706,64 +706,34 @@ const ctx = document.getElementById("pulseChart");
 if (ctx) {
   const chartCtx = ctx.getContext("2d");
 
-  // 3D-style gradient for BPM bars
+  // Card-style gradient for BPM bars
   const bpmGrad = chartCtx.createLinearGradient(0, 0, 0, 400);
-  bpmGrad.addColorStop(0, "rgba(74, 144, 217, 1)");
-  bpmGrad.addColorStop(0.5, "rgba(74, 144, 217, 0.85)");
-  bpmGrad.addColorStop(1, "rgba(45, 111, 181, 0.6)");
+  bpmGrad.addColorStop(0, "rgba(74, 144, 217, 0.9)");
+  bpmGrad.addColorStop(1, "rgba(74, 144, 217, 0.45)");
 
-  // 3D-style gradient for Oxygen bars
+  // Card-style gradient for Oxygen bars
   const oxyGrad = chartCtx.createLinearGradient(0, 0, 0, 400);
-  oxyGrad.addColorStop(0, "rgba(110, 198, 245, 1)");
-  oxyGrad.addColorStop(0.5, "rgba(110, 198, 245, 0.85)");
-  oxyGrad.addColorStop(1, "rgba(74, 160, 220, 0.6)");
+  oxyGrad.addColorStop(0, "rgba(110, 198, 245, 0.9)");
+  oxyGrad.addColorStop(1, "rgba(110, 198, 245, 0.45)");
 
-  // 3D-style gradient for Respiratory Rate bars
+  // Card-style gradient for Respiratory Rate bars
   const rrGrad = chartCtx.createLinearGradient(0, 0, 0, 400);
-  rrGrad.addColorStop(0, "rgba(179, 136, 255, 1)");
-  rrGrad.addColorStop(0.5, "rgba(179, 136, 255, 0.85)");
-  rrGrad.addColorStop(1, "rgba(130, 90, 210, 0.6)");
+  rrGrad.addColorStop(0, "rgba(179, 136, 255, 0.9)");
+  rrGrad.addColorStop(1, "rgba(179, 136, 255, 0.45)");
 
-  // 3D highlight overlay on top of each bar
-  const bpmHighlight = chartCtx.createLinearGradient(0, 0, 0, 400);
-  bpmHighlight.addColorStop(0, "rgba(255,255,255,0.35)");
-  bpmHighlight.addColorStop(0.3, "rgba(255,255,255,0.05)");
-  bpmHighlight.addColorStop(1, "rgba(255,255,255,0)");
-
-  // Shadow + 3D depth plugin
+  // Shadow + clean depth plugin — no shine, just shadow like the cards
   const shadowPlugin = {
     id: "barShadow",
     beforeDatasetsDraw(chart) {
       const { ctx } = chart;
       ctx.save();
-      ctx.shadowColor = "rgba(80, 130, 200, 0.35)";
-      ctx.shadowBlur = 16;
-      ctx.shadowOffsetX = 4;
-      ctx.shadowOffsetY = 8;
+      ctx.shadowColor = "rgba(80, 130, 200, 0.25)";
+      ctx.shadowBlur = 14;
+      ctx.shadowOffsetX = 3;
+      ctx.shadowOffsetY = 6;
     },
     afterDatasetsDraw(chart) {
-      const { ctx, data, chartArea: { bottom }, scales: { x, y } } = chart;
-      ctx.restore();
-
-      // Draw a shine highlight on top portion of each bar
-      chart.data.datasets.forEach((dataset, datasetIndex) => {
-        const meta = chart.getDatasetMeta(datasetIndex);
-        meta.data.forEach((bar) => {
-          const { x: bx, y: by, width, height } = bar.getProps(["x", "y", "width", "height"]);
-          const barW = width * 0.55;
-          const shineGrad = ctx.createLinearGradient(bx - barW / 2, by, bx + barW / 2, by);
-          shineGrad.addColorStop(0, "rgba(255,255,255,0.0)");
-          shineGrad.addColorStop(0.3, "rgba(255,255,255,0.25)");
-          shineGrad.addColorStop(0.7, "rgba(255,255,255,0.08)");
-          shineGrad.addColorStop(1, "rgba(255,255,255,0.0)");
-          ctx.save();
-          ctx.fillStyle = shineGrad;
-          ctx.beginPath();
-          ctx.roundRect(bx - barW / 2, by, barW, height, 10);
-          ctx.fill();
-          ctx.restore();
-        });
-      });
+      chart.ctx.restore();
     }
   };
 
