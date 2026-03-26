@@ -9,8 +9,8 @@
    ================================================ */
 
 :root {
-  --bg:              #eef2f7;
-  --bg-dark:         #e4eaf3;
+  --bg:              #ffffff;
+  --bg-dark:         #f0f4f9;
   --bg-card:         #f0f4f9;
   --text:            #1c2b3a;
   --text-muted:      #8fa3bc;
@@ -21,10 +21,10 @@
   --primary-glow:    rgba(74, 144, 217, 0.18);
   --accent:          #6ec6f5;
 
-  --shadow-out:      8px 8px 20px #c8d4e3, -6px -6px 16px #ffffff;
-  --shadow-out-sm:   5px 5px 12px #c8d4e3, -3px -3px 9px #ffffff;
-  --shadow-in:       inset 4px 4px 10px #c0cdde, inset -3px -3px 8px #ffffff;
-  --shadow-in-deep:  inset 6px 6px 14px #bbc9db, inset -4px -4px 10px #ffffff;
+  --shadow-out:      8px 8px 20px #d0d8e4, -6px -6px 16px #ffffff;
+  --shadow-out-sm:   5px 5px 12px #d0d8e4, -3px -3px 9px #ffffff;
+  --shadow-in:       inset 4px 4px 10px #d0d8e4, inset -3px -3px 8px #ffffff;
+  --shadow-in-deep:  inset 6px 6px 14px #ccd4e0, inset -4px -4px 10px #ffffff;
 
   --sidebar-width:   240px;
   --mobile-nav-h:    70px;
@@ -692,27 +692,27 @@ button, a { -webkit-touch-callout: none; }
 
 .ghost-btn {
   margin-top: 12px;
-  color: var(--primary);
+  color: white;
   border: none;
   font-family: 'DM Sans', sans-serif;
   font-size: 11.5px;
   font-weight: 600;
   padding: 7px 16px;
-  border-radius: var(--radius-xs);
-  background: var(--bg);
+  border-radius: var(--radius-sm);
+  background: var(--primary);
   cursor: pointer;
   transition: all 0.2s ease;
   display: inline-block;
   text-align: center;
   white-space: nowrap;
-  box-shadow: var(--shadow-out-sm);
+  box-shadow: 0 4px 14px rgba(74, 144, 217, 0.35);
   letter-spacing: 0.1px;
 }
 
 .ghost-btn:hover {
-  box-shadow: 6px 6px 16px #c0ceda, -3px -3px 10px #ffffff;
-  color: var(--primary-dark);
+  background: var(--primary-dark);
   transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(74, 144, 217, 0.45);
 }
 
 .save-btn {
