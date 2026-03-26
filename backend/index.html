@@ -133,14 +133,12 @@
     <!-- ================= HOME SECTION ================= -->
     <section id="homeSection" class="section active-section">
 
-      <!-- Mobile header -->
       <div class="mobile-header">
         <img src="Blue and Green Modern Charity Foundation Logo.png" alt="Logo" class="mobile-logo">
         <h1 class="page-title">Heart Health Overview</h1>
         <img id="homeProfilePic" src="default-profile.png" alt="Profile" class="mobile-profile">
       </div>
 
-      <!-- Desktop header -->
       <div class="desktop-header">
         <div>
           <h1 class="page-title">Heart Health Overview</h1>
@@ -149,6 +147,7 @@
       </div>
       <p id="userGreetingMobile" class="greeting-text mobile-only"></p>
 
+      <!-- HOME LAYOUT: main feed + right panel -->
       <div class="home-layout">
         <div class="main-feed">
 
@@ -206,22 +205,18 @@
             </div>
 
           </div>
-
         </div>
 
         <!-- RIGHT PANEL -->
         <aside class="right-panel">
-
           <div class="neo-card panel-card">
             <h4>Upcoming Checkup</h4>
             <p>No upcoming appointments scheduled.</p>
           </div>
-
           <div class="neo-card panel-card">
             <h4>Recent Activity</h4>
             <p>No recent alerts detected.</p>
           </div>
-
           <div class="neo-card panel-card">
             <h4>Daily Goals</h4>
             <div class="goal-item">
@@ -237,16 +232,14 @@
               <span class="goal-value">8h</span>
             </div>
           </div>
-
           <div class="neo-card panel-card">
             <h4>Health Tips</h4>
             <p>Drink water regularly and aim for 7-8 hours of sleep daily.</p>
           </div>
-
         </aside>
       </div>
 
-      <!-- LIFESTYLE METRICS — full width below the home layout -->
+      <!-- LIFESTYLE METRICS — full width below home layout -->
       <div class="subtitle-row">
         <h2 class="section-subtitle" style="margin:0;">Lifestyle Metrics</h2>
         <button id="addInfoBtn" class="add-btn desktop-only" type="button">+ Add Info</button>
@@ -254,96 +247,43 @@
       </div>
 
       <div class="lifestyle-grid">
-
-            <div class="neo-card lifestyle-card">
-              <div class="lifestyle-icon">
-                <img src="moon.png" alt="Sleep">
-              </div>
-              <span id="sleepValue" class="lifestyle-value">--</span>
-              <div class="lifestyle-label">Sleep Duration</div>
-              <div id="sleepNotes" class="metric-notes"></div>
-              <button class="ghost-btn">View Details</button>
-            </div>
-
-            <div class="neo-card lifestyle-card">
-              <div class="lifestyle-icon">
-                <img src="raindrops.png" alt="Water">
-              </div>
-              <span id="waterValue" class="lifestyle-value">--</span>
-              <div class="lifestyle-label">Water Intake</div>
-              <div id="waterNotes" class="metric-notes"></div>
-              <button class="ghost-btn">View Details</button>
-            </div>
-
-            <div class="neo-card lifestyle-card">
-              <div class="lifestyle-icon">
-                <img src="fire-flame-curved.png" alt="Calories">
-              </div>
-              <span id="caloriesValue" class="lifestyle-value">--</span>
-              <div class="lifestyle-label">Calories Burned</div>
-              <div id="caloriesNotes" class="metric-notes"></div>
-              <button class="ghost-btn">View Details</button>
-            </div>
-
-            <div class="neo-card lifestyle-card">
-              <div class="lifestyle-icon">
-                <img src="shoe-prints.png" alt="Steps">
-              </div>
-              <span id="stepsValue" class="lifestyle-value">--</span>
-              <div class="lifestyle-label">Steps Today</div>
-              <div id="stepsNotes" class="metric-notes"></div>
-              <button class="ghost-btn">View Details</button>
-            </div>
-
-            <div class="neo-card lifestyle-card">
-              <div class="lifestyle-icon">
-                <img src="brain-circuit.png" alt="Stress">
-              </div>
-              <span id="stressValue" class="lifestyle-value">--</span>
-              <div class="lifestyle-label">Stress Level</div>
-              <div id="stressNotes" class="metric-notes"></div>
-              <button class="ghost-btn">View Details</button>
-            </div>
-
-          </div>
+        <div class="neo-card lifestyle-card">
+          <div class="lifestyle-icon"><img src="moon.png" alt="Sleep"></div>
+          <span id="sleepValue" class="lifestyle-value">--</span>
+          <div class="lifestyle-label">Sleep Duration</div>
+          <div id="sleepNotes" class="metric-notes"></div>
+          <button class="ghost-btn">View Details</button>
         </div>
-
-        <!-- RIGHT PANEL -->
-        <aside class="right-panel">
-
-          <div class="neo-card panel-card">
-            <h4>Upcoming Checkup</h4>
-            <p>No upcoming appointments scheduled.</p>
-          </div>
-
-          <div class="neo-card panel-card">
-            <h4>Recent Activity</h4>
-            <p>No recent alerts detected.</p>
-          </div>
-
-          <div class="neo-card panel-card">
-            <h4>Daily Goals</h4>
-            <div class="goal-item">
-              <span>Steps</span>
-              <span class="goal-value">10,000</span>
-            </div>
-            <div class="goal-item">
-              <span>Water</span>
-              <span class="goal-value">2L</span>
-            </div>
-            <div class="goal-item">
-              <span>Sleep</span>
-              <span class="goal-value">8h</span>
-            </div>
-          </div>
-
-          <div class="neo-card panel-card">
-            <h4>Health Tips</h4>
-            <p>Drink water regularly and aim for 7-8 hours of sleep daily.</p>
-          </div>
-
-        </aside>
+        <div class="neo-card lifestyle-card">
+          <div class="lifestyle-icon"><img src="raindrops.png" alt="Water"></div>
+          <span id="waterValue" class="lifestyle-value">--</span>
+          <div class="lifestyle-label">Water Intake</div>
+          <div id="waterNotes" class="metric-notes"></div>
+          <button class="ghost-btn">View Details</button>
+        </div>
+        <div class="neo-card lifestyle-card">
+          <div class="lifestyle-icon"><img src="fire-flame-curved.png" alt="Calories"></div>
+          <span id="caloriesValue" class="lifestyle-value">--</span>
+          <div class="lifestyle-label">Calories Burned</div>
+          <div id="caloriesNotes" class="metric-notes"></div>
+          <button class="ghost-btn">View Details</button>
+        </div>
+        <div class="neo-card lifestyle-card">
+          <div class="lifestyle-icon"><img src="shoe-prints.png" alt="Steps"></div>
+          <span id="stepsValue" class="lifestyle-value">--</span>
+          <div class="lifestyle-label">Steps Today</div>
+          <div id="stepsNotes" class="metric-notes"></div>
+          <button class="ghost-btn">View Details</button>
+        </div>
+        <div class="neo-card lifestyle-card">
+          <div class="lifestyle-icon"><img src="brain-circuit.png" alt="Stress"></div>
+          <span id="stressValue" class="lifestyle-value">--</span>
+          <div class="lifestyle-label">Stress Level</div>
+          <div id="stressNotes" class="metric-notes"></div>
+          <button class="ghost-btn">View Details</button>
+        </div>
       </div>
+
     </section>
 
     <!-- ================= STATS SECTION ================= -->
@@ -371,27 +311,24 @@
       <div class="neo-card info-card">
         <h2 class="info-card-title">Understanding Your Vitals</h2>
         <div class="vital-info-grid">
-
           <div class="neo-card inner-card">
             <h3>Heart Rate (BPM)</h3>
             <p>Your heart rate measures how many times your heart beats per minute.</p>
             <p><strong>Normal resting range:</strong> 60 - 100 BPM</p>
           </div>
-
           <div class="neo-card inner-card">
             <h3>Oxygen Saturation</h3>
             <p>Oxygen level shows how much oxygen your blood is carrying.</p>
             <p><strong>Normal range:</strong> 95% - 100%</p>
           </div>
-
           <div class="neo-card inner-card">
             <h3>Respiratory Rate</h3>
             <p>Respiratory rate measures how many breaths you take per minute.</p>
             <p><strong>Normal resting range:</strong> 12 - 20 breaths/min</p>
           </div>
-
         </div>
       </div>
+
     </section>
 
     <!-- ================= SETTINGS SECTION ================= -->
