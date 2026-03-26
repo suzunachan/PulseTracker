@@ -706,34 +706,64 @@ const ctx = document.getElementById("pulseChart");
 if (ctx) {
   const chartCtx = ctx.getContext("2d");
 
-  // Gradient for BPM bars
+  // 3D-style gradient for BPM bars
   const bpmGrad = chartCtx.createLinearGradient(0, 0, 0, 400);
-  bpmGrad.addColorStop(0, "rgba(74, 144, 217, 0.95)");
-  bpmGrad.addColorStop(1, "rgba(74, 144, 217, 0.4)");
+  bpmGrad.addColorStop(0, "rgba(74, 144, 217, 1)");
+  bpmGrad.addColorStop(0.5, "rgba(74, 144, 217, 0.85)");
+  bpmGrad.addColorStop(1, "rgba(45, 111, 181, 0.6)");
 
-  // Gradient for Oxygen bars
+  // 3D-style gradient for Oxygen bars
   const oxyGrad = chartCtx.createLinearGradient(0, 0, 0, 400);
-  oxyGrad.addColorStop(0, "rgba(110, 198, 245, 0.95)");
-  oxyGrad.addColorStop(1, "rgba(110, 198, 245, 0.4)");
+  oxyGrad.addColorStop(0, "rgba(110, 198, 245, 1)");
+  oxyGrad.addColorStop(0.5, "rgba(110, 198, 245, 0.85)");
+  oxyGrad.addColorStop(1, "rgba(74, 160, 220, 0.6)");
 
-  // Gradient for Respiratory Rate bars
+  // 3D-style gradient for Respiratory Rate bars
   const rrGrad = chartCtx.createLinearGradient(0, 0, 0, 400);
-  rrGrad.addColorStop(0, "rgba(179, 136, 255, 0.95)");
-  rrGrad.addColorStop(1, "rgba(179, 136, 255, 0.4)");
+  rrGrad.addColorStop(0, "rgba(179, 136, 255, 1)");
+  rrGrad.addColorStop(0.5, "rgba(179, 136, 255, 0.85)");
+  rrGrad.addColorStop(1, "rgba(130, 90, 210, 0.6)");
 
-  // Shadow plugin
+  // 3D highlight overlay on top of each bar
+  const bpmHighlight = chartCtx.createLinearGradient(0, 0, 0, 400);
+  bpmHighlight.addColorStop(0, "rgba(255,255,255,0.35)");
+  bpmHighlight.addColorStop(0.3, "rgba(255,255,255,0.05)");
+  bpmHighlight.addColorStop(1, "rgba(255,255,255,0)");
+
+  // Shadow + 3D depth plugin
   const shadowPlugin = {
     id: "barShadow",
     beforeDatasetsDraw(chart) {
       const { ctx } = chart;
       ctx.save();
-      ctx.shadowColor = "rgba(100, 160, 220, 0.3)";
-      ctx.shadowBlur = 12;
-      ctx.shadowOffsetX = 3;
-      ctx.shadowOffsetY = 6;
+      ctx.shadowColor = "rgba(80, 130, 200, 0.35)";
+      ctx.shadowBlur = 16;
+      ctx.shadowOffsetX = 4;
+      ctx.shadowOffsetY = 8;
     },
     afterDatasetsDraw(chart) {
-      chart.ctx.restore();
+      const { ctx, data, chartArea: { bottom }, scales: { x, y } } = chart;
+      ctx.restore();
+
+      // Draw a shine highlight on top portion of each bar
+      chart.data.datasets.forEach((dataset, datasetIndex) => {
+        const meta = chart.getDatasetMeta(datasetIndex);
+        meta.data.forEach((bar) => {
+          const { x: bx, y: by, width, height } = bar.getProps(["x", "y", "width", "height"]);
+          const barW = width * 0.55;
+          const shineGrad = ctx.createLinearGradient(bx - barW / 2, by, bx + barW / 2, by);
+          shineGrad.addColorStop(0, "rgba(255,255,255,0.0)");
+          shineGrad.addColorStop(0.3, "rgba(255,255,255,0.25)");
+          shineGrad.addColorStop(0.7, "rgba(255,255,255,0.08)");
+          shineGrad.addColorStop(1, "rgba(255,255,255,0.0)");
+          ctx.save();
+          ctx.fillStyle = shineGrad;
+          ctx.beginPath();
+          ctx.roundRect(bx - barW / 2, by, barW, height, 10);
+          ctx.fill();
+          ctx.restore();
+        });
+      });
     }
   };
 
@@ -785,14 +815,13 @@ if (ctx) {
           }
         },
         tooltip: {
-          backgroundColor: "rgba(238, 242, 247, 0.95)",
+          backgroundColor: "rgba(255, 255, 255, 0.97)",
           titleColor: "#1c2b3a",
           bodyColor: "#8fa3bc",
-          borderColor: "rgba(74, 144, 217, 0.2)",
+          borderColor: "rgba(74, 144, 217, 0.25)",
           borderWidth: 1,
           padding: 12,
           cornerRadius: 12,
-          boxShadow: "0 4px 20px rgba(0,0,0,0.1)"
         }
       },
       scales: {
@@ -802,9 +831,17 @@ if (ctx) {
           border: { display: false }
         },
         y: {
-          grid: { color: "rgba(163, 185, 210, 0.15)", drawBorder: false },
-          ticks: { color: "#8fa3bc", font: { family: "DM Sans" } },
-          border: { display: false, dash: [4, 4] }
+          grid: {
+            color: "rgba(163, 185, 210, 0.35)",
+            lineWidth: 1,
+            drawBorder: false,
+          },
+          ticks: {
+            color: "#8fa3bc",
+            font: { family: "DM Sans", size: 11 },
+            padding: 8,
+          },
+          border: { display: false, dash: [6, 4] }
         }
       }
     }
