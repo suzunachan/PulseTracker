@@ -936,7 +936,6 @@ button, a { -webkit-touch-callout: none; }
   box-shadow: var(--shadow-in-deep);
   outline: none;
   transition: box-shadow 0.2s ease;
-  max-width: 480px;
   width: 100%;
 }
 
@@ -955,13 +954,12 @@ button, a { -webkit-touch-callout: none; }
 #profileUpload { display: none; }
 
 .settings-group .ghost-btn {
-  max-width: 200px;
   width: 100%;
   margin-top: 4px;
 }
 
 .settings-group label.ghost-btn {
-  max-width: 200px;
+  width: 100%;
 }
 
 .logout-btn {
@@ -975,7 +973,6 @@ button, a { -webkit-touch-callout: none; }
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  max-width: 200px;
   width: 100%;
   transition: all 0.2s ease;
   box-shadow: var(--shadow-out);
