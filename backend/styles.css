@@ -1,5 +1,5 @@
 /* ================================================
-   PULSE TRACKER — MAIN STYLESHEET (Redesigned)
+   PULSE TRACKER — MAIN STYLESHEET
    ================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
@@ -21,10 +21,9 @@
   --primary-glow:    rgba(74, 144, 217, 0.18);
   --accent:          #6ec6f5;
 
-  /* True neumorphic shadows — lighter bg needs sharper contrast */
   --shadow-out:      8px 8px 20px #c8d4e3, -6px -6px 16px #ffffff;
   --shadow-out-sm:   5px 5px 12px #c8d4e3, -3px -3px 9px #ffffff;
-  --shadow-in:       inset 4px 4px 10px #c0cdd e, inset -3px -3px 8px #ffffff;
+  --shadow-in:       inset 4px 4px 10px #c0cdde, inset -3px -3px 8px #ffffff;
   --shadow-in-deep:  inset 6px 6px 14px #bbc9db, inset -4px -4px 10px #ffffff;
 
   --sidebar-width:   240px;
@@ -129,7 +128,6 @@ button, a { -webkit-touch-callout: none; }
   letter-spacing: -0.3px;
 }
 
-/* Section label */
 .sidebar-section-label {
   font-size: 10px;
   font-weight: 600;
@@ -148,6 +146,7 @@ button, a { -webkit-touch-callout: none; }
 }
 
 .nav-btn {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -188,7 +187,6 @@ button, a { -webkit-touch-callout: none; }
 
 .nav-btn.active img { opacity: 1; }
 
-/* Active blue bar accent */
 .nav-btn.active::before {
   content: "";
   position: absolute;
@@ -198,9 +196,7 @@ button, a { -webkit-touch-callout: none; }
   background: var(--primary);
   border-radius: 0 4px 4px 0;
 }
-.nav-btn { position: relative; }
 
-/* User profile */
 .sidebar-user {
   display: flex;
   align-items: center;
@@ -462,7 +458,6 @@ button, a { -webkit-touch-callout: none; }
   transition: box-shadow 0.25s ease;
 }
 
-/* Hero card */
 .hero-card {
   background: linear-gradient(135deg, #deeeff 0%, #eef6ff 50%, #d8edff 100%);
   border-radius: var(--radius-card);
@@ -517,19 +512,23 @@ button, a { -webkit-touch-callout: none; }
 }
 
 .vital-icon {
-  width: 38px; height: 38px;
-  border-radius: 10px;
+  width: 42px; height: 42px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
-  font-weight: 700;
   margin-bottom: 8px;
+  box-shadow: inset 3px 3px 8px rgba(0,0,0,0.08), inset -2px -2px 6px #ffffff;
 }
 
-.bpm-icon  { background: rgba(239, 104, 104, 0.12); color: #e05e5e; }
-.oxy-icon  { background: rgba(74, 144, 217, 0.12);  color: var(--primary); }
-.rr-icon   { background: rgba(90, 184, 90, 0.12);   color: #4ca84c; font-size: 20px; }
+.vital-icon img {
+  width: 20px; height: 20px;
+  object-fit: contain;
+}
+
+.bpm-icon  { background: rgba(239, 104, 104, 0.12); }
+.oxy-icon  { background: rgba(74, 144, 217, 0.12); }
+.rr-icon   { background: rgba(90, 184, 90, 0.12); }
 
 .vital-number {
   font-size: 36px;
@@ -603,9 +602,6 @@ button, a { -webkit-touch-callout: none; }
 }
 
 .lifestyle-icon {
-  font-size: 26px;
-  margin-bottom: 10px;
-  /* Soft inset container for emoji */
   width: 52px; height: 52px;
   display: flex;
   align-items: center;
@@ -613,6 +609,13 @@ button, a { -webkit-touch-callout: none; }
   border-radius: 14px;
   background: var(--bg);
   box-shadow: inset 3px 3px 8px #c0ceda, inset -2px -2px 6px #ffffff;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.lifestyle-icon img {
+  width: 22px; height: 22px;
+  object-fit: contain;
 }
 
 .lifestyle-value {
@@ -647,7 +650,12 @@ button, a { -webkit-touch-callout: none; }
   margin-top: 6px;
 }
 
-/* Details popup */
+.note-icon {
+  width: 13px; height: 13px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .details-popup {
   position: absolute;
   bottom: 76px;
@@ -810,7 +818,7 @@ button, a { -webkit-touch-callout: none; }
 }
 
 .auth-field input:focus {
-  box-shadow: inset 6px 6px 14px #bbc9db, inset -4px -4px 10px #ffffff, 0 0 0 2px rgba(74, 144, 217, 0.2);
+  box-shadow: inset 7px 7px 18px #b4c4d8, inset -5px -5px 12px #ffffff, 0 0 0 2px rgba(74, 144, 217, 0.2);
 }
 
 .auth-field input::placeholder { color: var(--text-light); }
@@ -846,7 +854,6 @@ button, a { -webkit-touch-callout: none; }
   font-weight: 500;
 }
 
-/* Right decorative panel */
 .auth-deco-side {
   width: 40%;
   background: #0d2142;
@@ -1149,11 +1156,10 @@ button, a { -webkit-touch-callout: none; }
 .modal-actions .ghost-btn { flex: 1; margin-top: 0; }
 
 /* ================================================
-   20. UTILITY
+   19. UTILITY
    ================================================ */
 
 .hidden { display: none !important; }
-
 .desktop-only { display: inline-block; }
 
 @media (max-width: 768px) {
@@ -1161,7 +1167,7 @@ button, a { -webkit-touch-callout: none; }
 }
 
 /* ================================================
-   21. RESPONSIVE — TABLET (max-width: 1100px)
+   20. RESPONSIVE — TABLET (max-width: 1100px)
    ================================================ */
 
 @media (max-width: 1100px) {
@@ -1179,7 +1185,7 @@ button, a { -webkit-touch-callout: none; }
 }
 
 /* ================================================
-   22. RESPONSIVE — MOBILE (max-width: 768px)
+   21. RESPONSIVE — MOBILE (max-width: 768px)
    ================================================ */
 
 @media (max-width: 768px) {
@@ -1229,13 +1235,11 @@ button, a { -webkit-touch-callout: none; }
   .inner-card { padding: 14px; }
   .settings-group { margin-bottom: 18px; }
 
-  /* Login */
   .auth-deco-side { display: none; }
   .auth-form-side { padding: 28px 20px; flex: 1; overflow-y: auto; }
   .auth-inner { max-width: 100%; padding-bottom: 40px; }
   .auth-title { font-size: 22px; }
 
-  /* Modal slides up */
   .modal { align-items: flex-end; padding: 0; }
   .modal-content {
     border-radius: 24px 24px 0 0;
@@ -1254,7 +1258,7 @@ button, a { -webkit-touch-callout: none; }
 }
 
 /* ================================================
-   23. RESPONSIVE — SMALL PHONES (max-width: 380px)
+   22. RESPONSIVE — SMALL PHONES (max-width: 380px)
    ================================================ */
 
 @media (max-width: 380px) {
