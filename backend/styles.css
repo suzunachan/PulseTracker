@@ -13,22 +13,20 @@
    7.  Dashboard & Main Content
    8.  Home Layout (Feed + Right Panel)
    9.  Right Panel
-   10. Cards (Base, Hero, Full-Width)
-   11. Stat Cards & Metric Notes
-   12. Core Vitals Grid
-   13. Lifestyle Metrics Grid
-   14. Progress Circles
-   15. Soft Buttons & Add Button
-   16. Login / Register Screens
-   17. Settings Section
-   18. Stats Section & Chart
-   19. About Section
-   20. Metric Modal
-   21. Details Popup
-   22. Utility Classes
-   23. Responsive — Tablet (max-width: 1100px)
-   24. Responsive — Mobile (max-width: 768px)
-   25. Responsive — Small Phones (max-width: 380px)
+   10. Neumorphic Base Card
+   11. Core Vitals (Stat Number Cards)
+   12. Lifestyle Metrics Grid
+   13. Soft Buttons & Ghost Buttons
+   14. Login / Register Screens
+   15. Settings Section
+   16. Stats Section & Chart
+   17. About Section
+   18. Metric Modal
+   19. Details Popup
+   20. Utility Classes
+   21. Responsive — Tablet (max-width: 1100px)
+   22. Responsive — Mobile (max-width: 768px)
+   23. Responsive — Small Phones (max-width: 380px)
 
    ================================================ */
 
@@ -37,21 +35,22 @@
    1. CSS VARIABLES
    ================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --bg-color:         #f0f7ff;
-  --text-color:       #1a1a2e;
-  --card-bg:          #ffffff;
-  --card-shadow:      rgba(0, 0, 0, 0.08);
-  --primary-color:    #5b9bd5;
-  --primary-light:    #86afd6;
-  --hover-bg:         rgba(91, 155, 213, 0.12);
-  --soft-btn-bg:      rgba(255, 255, 255, 0.85);
-  --sidebar-bg:       #ffffff;
-  --gradient-card:    linear-gradient(-45deg, #c9ebff, #f1f9ff, #dff2ff, #daeeff);
-  --sidebar-width:    270px;
-  --mobile-nav-h:     70px;
+  --bg:              #e8f0f7;
+  --bg-dark:         #dce6f0;
+  --text:            #1a2a3a;
+  --text-muted:      #7a90a8;
+  --primary:         #5b9bd5;
+  --primary-light:   #86afd6;
+  --primary-dark:    #3a7abf;
+  --card-bg:         #eef4fb;
+  --neo-shadow-dark: rgba(163, 185, 210, 0.7);
+  --neo-shadow-light:#ffffff;
+  --gradient-card:   linear-gradient(-45deg, #c9ebff, #f1f9ff, #dff2ff, #daeeff);
+  --sidebar-width:   270px;
+  --mobile-nav-h:    70px;
 }
 
 
@@ -77,17 +76,16 @@ html {
 
 body {
   font-family: 'Poppins', sans-serif;
-  background: var(--bg-color);
-  color: var(--text-color);
+  background: var(--bg);
+  color: var(--text);
   min-height: 100%;
   min-height: -webkit-fill-available;
   overflow-x: hidden;
   width: 100%;
   -webkit-user-select: none;
   user-select: none;
-  padding-bottom: 0;
+  padding-top: 0;
   padding-bottom: env(safe-area-inset-bottom, 0px);
-  background-color: var(--bg-color);
 }
 
 img {
@@ -96,9 +94,7 @@ img {
   display: block;
 }
 
-input,
-textarea,
-select {
+input, textarea, select {
   -webkit-user-select: text;
   user-select: text;
   font-size: 16px;
@@ -136,39 +132,38 @@ button, a {
 
 .sidebar {
   position: fixed;
-  bottom: 0;
+  top: 0;
   left: 0;
   width: var(--sidebar-width);
   height: 100vh;
-  background: var(--sidebar-bg);
+  background: var(--bg);
   display: flex;
   flex-direction: column;
   padding: 30px 20px;
-  box-shadow: 2px 0 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 4px 0 20px rgba(163, 185, 210, 0.4);
   z-index: 100;
 }
 
-/* Logo + brand name */
 .sidebar-logo {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 0 8px 20px 8px;
+  gap: 12px;
+  padding: 0 8px 24px 8px;
   border-bottom: 1px solid rgba(91, 155, 213, 0.15);
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .sidebar-logo img {
   width: 48px;
   height: 48px;
-  border-radius: 12px;
+  border-radius: 14px;
   object-fit: cover;
 }
 
 .sidebar-brand {
   font-size: 22px;
-  font-weight: 600;
-  color: var(--primary-color);
+  font-weight: 700;
+  color: var(--primary);
   letter-spacing: 0.5px;
 }
 
@@ -176,24 +171,23 @@ button, a {
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   flex: 1;
 }
 
 .nav-btn {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  gap: 14px;
+  padding: 13px 18px;
   border: none;
-  border-radius: 14px;
+  border-radius: 16px;
   background: transparent;
   cursor: pointer;
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: var(--text-color);
-  opacity: 0.65;
+  color: var(--text-muted);
   transition: all 0.2s ease;
   text-align: left;
   width: 100%;
@@ -203,27 +197,36 @@ button, a {
   width: 20px;
   height: 20px;
   flex-shrink: 0;
+  opacity: 0.6;
 }
 
 .nav-btn:hover {
-  opacity: 1;
-  background: var(--hover-bg);
+  color: var(--primary);
+  background: rgba(91, 155, 213, 0.08);
   transform: translateX(3px);
 }
 
-.nav-btn.active {
+.nav-btn:hover img {
   opacity: 1;
-  background: rgba(91, 155, 213, 0.15);
-  color: var(--primary-color);
-  font-weight: 600;
 }
 
-/* User profile at bottom of sidebar */
+.nav-btn.active {
+  color: var(--primary);
+  font-weight: 600;
+  background: rgba(91, 155, 213, 0.12);
+  box-shadow: 4px 4px 10px var(--neo-shadow-dark), -2px -2px 8px var(--neo-shadow-light);
+}
+
+.nav-btn.active img {
+  opacity: 1;
+}
+
+/* User profile at bottom */
 .sidebar-user {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 16px 8px 0 8px;
+  padding: 18px 8px 0 8px;
   border-top: 1px solid rgba(91, 155, 213, 0.15);
   margin-top: auto;
 }
@@ -234,14 +237,13 @@ button, a {
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid var(--primary-light);
-  flex-shrink: 0;
+  box-shadow: 3px 3px 8px var(--neo-shadow-dark), -2px -2px 6px var(--neo-shadow-light);
 }
 
 .sidebar-username {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
-  color: var(--text-color);
-  opacity: 0.8;
+  color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -261,12 +263,12 @@ button, a {
   transform: translateX(-50%);
   width: calc(100% - 32px);
   height: var(--mobile-nav-h);
-  background: rgba(195, 233, 255, 0.274);
-  -webkit-backdrop-filter: blur(18px) saturate(180%);
-  backdrop-filter: blur(18px) saturate(180%);
+  background: rgba(232, 240, 247, 0.75);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 28px;
-  box-shadow: 0 8px 32px rgba(91, 155, 213, 0.15);
+  box-shadow: 4px 4px 16px var(--neo-shadow-dark), -2px -2px 10px var(--neo-shadow-light);
   z-index: 1000;
   align-items: center;
   justify-content: space-around;
@@ -293,18 +295,16 @@ button, a {
   height: 24px;
 }
 
-/* Hide labels */
 .mobile-nav-btn span {
   display: none;
 }
 
 .mobile-nav-btn.active {
   opacity: 1;
-  background: rgba(0, 140, 255, 0.12);
-  border-radius: 12px;
+  background: rgba(91, 155, 213, 0.12);
+  border-radius: 14px;
 }
 
-/* Active indicator — line above the icon */
 .mobile-nav-btn.active::before {
   content: "";
   position: absolute;
@@ -312,9 +312,10 @@ button, a {
   left: 20%;
   width: 60%;
   height: 2.5px;
-  border-radius: 4px 4px 0 0 ;
-  background: var(--primary-color);
+  border-radius: 4px 4px 0 0;
+  background: var(--primary);
 }
+
 
 /* ================================================
    6. MOBILE HEADER
@@ -369,25 +370,27 @@ button, a {
 }
 
 .page-title {
-  font-size: 28px;
-  font-weight: 600;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
   margin-bottom: 4px;
 }
 
 .greeting-text {
-  font-size: 14px;
-  opacity: 0.6;
+  font-size: 13px;
+  color: var(--text-muted);
   margin-bottom: 24px;
 }
 
 .section-subtitle {
-  margin: 30px 0 16px 0;
-  font-size: 16px;
+  margin: 28px 0 14px 0;
+  font-size: 15px;
   font-weight: 600;
-  opacity: 0.85;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-/* Desktop section header */
 .desktop-header {
   display: flex;
   align-items: flex-start;
@@ -395,20 +398,18 @@ button, a {
   margin-bottom: 8px;
 }
 
-/* Subtitle row with label + add button side by side */
 .subtitle-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 30px 0 16px 0;
+  margin: 28px 0 14px 0;
 }
 
-/* Add info button */
 .add-btn {
-  padding: 9px 18px;
+  padding: 9px 20px;
   border: none;
   border-radius: 12px;
-  background: var(--primary-color);
+  background: var(--primary);
   color: white;
   font-family: 'Poppins', sans-serif;
   font-size: 13px;
@@ -416,29 +417,29 @@ button, a {
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+  box-shadow: 3px 3px 8px rgba(91, 155, 213, 0.4);
 }
 
 .add-btn:hover {
-  background: #4a8bc4;
+  background: var(--primary-dark);
   transform: translateY(-1px);
 }
 
 
 /* ================================================
-   8. HOME LAYOUT (FEED + RIGHT PANEL)
+   8. HOME LAYOUT
    ================================================ */
 
 .home-layout {
   display: grid;
-  grid-template-columns: 1fr 280px;
-  gap: 30px;
+  grid-template-columns: 1fr 270px;
+  gap: 28px;
   align-items: start;
 }
 
 .main-feed {
   display: flex;
   flex-direction: column;
-  gap: 0;
   min-width: 0;
 }
 
@@ -455,25 +456,18 @@ button, a {
   top: 30px;
 }
 
-.panel-card {
-  background: var(--card-bg);
-  border-radius: 18px;
-  padding: 20px;
-  box-shadow: 0 4px 16px var(--card-shadow);
-}
-
 .panel-card h4 {
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--primary-color);
+  letter-spacing: 1px;
+  color: var(--primary);
   margin-bottom: 10px;
 }
 
 .panel-card p {
   font-size: 13px;
-  opacity: 0.7;
+  color: var(--text-muted);
   line-height: 1.5;
 }
 
@@ -481,9 +475,10 @@ button, a {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 0;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(91, 155, 213, 0.1);
   font-size: 13px;
+  color: var(--text-muted);
 }
 
 .goal-item:last-child {
@@ -492,36 +487,33 @@ button, a {
 
 .goal-value {
   font-weight: 600;
-  color: var(--primary-color);
+  color: var(--primary);
 }
 
 
 /* ================================================
-   10. CARDS (BASE, HERO, FULL-WIDTH)
+   10. NEUMORPHIC BASE CARD
    ================================================ */
 
-/* Base white card */
-.card {
-  background: var(--card-bg);
-  border-radius: 18px;
+.neo-card {
+  background: var(--bg);
+  border-radius: 20px;
   padding: 24px;
-  box-shadow: 0 4px 16px var(--card-shadow);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  min-width: 0;
+  box-shadow: 6px 6px 16px var(--neo-shadow-dark), -4px -4px 12px var(--neo-shadow-light);
+  transition: box-shadow 0.2s ease;
 }
 
-.card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px var(--card-shadow);
+.neo-card:hover {
+  box-shadow: 8px 8px 20px var(--neo-shadow-dark), -4px -4px 14px var(--neo-shadow-light);
 }
 
 /* Hero card */
 .hero-card {
   background: var(--gradient-card);
   border-radius: 20px;
-  padding: 28px 30px;
+  padding: 28px;
   margin-bottom: 8px;
-  box-shadow: 0 8px 24px var(--card-shadow);
+  box-shadow: 6px 6px 16px var(--neo-shadow-dark), -4px -4px 12px var(--neo-shadow-light);
 }
 
 .hero-content {
@@ -530,7 +522,6 @@ button, a {
   gap: 20px;
 }
 
-/* Hero icon image */
 .hero-icon img {
   width: 52px;
   height: 52px;
@@ -542,121 +533,18 @@ button, a {
   font-size: 17px;
   font-weight: 600;
   margin-bottom: 6px;
+  color: var(--text);
 }
 
 .hero-card p {
   font-size: 13px;
-  opacity: 0.7;
+  color: var(--text-muted);
   line-height: 1.6;
 }
 
-/* Full width cards */
-.card-full {
-  background: var(--card-bg);
-  border-radius: 20px;
-  padding: 30px;
-  margin-bottom: 24px;
-  box-shadow: 0 4px 16px var(--card-shadow);
-  width: 100%;
-}
-
-/* Settings card */
-.settings-card {
-  background: var(--card-bg);
-  border-radius: 20px;
-  padding: 40px;
-  max-width: 700px;
-  box-shadow: 0 4px 16px var(--card-shadow);
-}
-
-/* About cards */
-.about-card {
-  background: var(--card-bg);
-  border-radius: 20px;
-  padding: 30px 36px;
-  max-width: 900px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 16px var(--card-shadow);
-}
-
-.about-card h3 {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 10px;
-  color: var(--primary-color);
-}
-
-.about-card p,
-.about-card li {
-  font-size: 14px;
-  line-height: 1.7;
-  opacity: 0.8;
-}
-
-.about-card ul {
-  padding-left: 20px;
-  margin-top: 8px;
-}
-
-.about-card li {
-  margin-bottom: 6px;
-}
-
 
 /* ================================================
-   11. STAT CARDS & METRIC NOTES
-   ================================================ */
-
-.stat-card {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-}
-
-.stat-value {
-  font-size: 28px;
-  font-weight: 600;
-  color: var(--primary-color);
-}
-
-.stat-label {
-  font-size: 13px;
-  margin-top: 4px;
-  opacity: 0.75;
-  font-weight: 500;
-}
-
-/* Notes shown below metric value */
-.metric-notes {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 12px;
-  color: var(--primary-color);
-  opacity: 0.85;
-  margin-top: 6px;
-  font-style: italic;
-  text-align: center;
-  min-height: 16px;
-  max-width: 100%;
-  word-break: break-word;
-  justify-content: center;
-}
-
-/* Note icon image */
-.note-icon {
-  width: 14px;
-  height: 14px;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-
-
-/* ================================================
-   12. CORE VITALS GRID
+   11. CORE VITALS (STAT NUMBER CARDS)
    ================================================ */
 
 .core-vitals-grid {
@@ -666,14 +554,76 @@ button, a {
   margin-bottom: 8px;
 }
 
-.core-vitals-grid .stat-card {
-  height: 180px;
-  border-radius: 18px;
+.vital-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 22px;
 }
+
+/* Colored icon badge */
+.vital-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.bpm-icon  { background: rgba(239, 104, 104, 0.15); color: #ef6868; }
+.oxy-icon  { background: rgba(91, 155, 213, 0.15);  color: var(--primary); }
+.rr-icon   { background: rgba(130, 195, 130, 0.15); color: #5ab85a; font-size: 22px; }
+
+/* Big number */
+.vital-number {
+  font-size: 38px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+}
+
+.vital-unit {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-top: -4px;
+}
+
+.vital-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+/* Mini progress bar inside vital card */
+.vital-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(163, 185, 210, 0.3);
+  border-radius: 10px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.vital-bar-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.8s ease;
+}
+
+.bpm-fill  { background: linear-gradient(90deg, #ef9898, #ef6868); }
+.oxy-fill  { background: linear-gradient(90deg, #86afd6, #5b9bd5); }
+.rr-fill   { background: linear-gradient(90deg, #90d090, #5ab85a); }
 
 
 /* ================================================
-   13. LIFESTYLE METRICS GRID
+   12. LIFESTYLE METRICS GRID
    ================================================ */
 
 .lifestyle-grid {
@@ -683,66 +633,103 @@ button, a {
   margin-top: 8px;
 }
 
-
-/* ================================================
-   14. PROGRESS CIRCLES
-   ================================================ */
-
-.progress-circle {
+.lifestyle-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 20px 16px;
   position: relative;
+  background: var(--gradient-card);
+  box-shadow: 6px 6px 16px var(--neo-shadow-dark), -4px -4px 12px var(--neo-shadow-light);
+}
+
+.lifestyle-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.lifestyle-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.lifestyle-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+/* Notes below metric */
+.metric-notes {
   display: flex;
   align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--primary);
+  font-style: italic;
+  text-align: center;
+  min-height: 16px;
+  max-width: 100%;
+  word-break: break-word;
   justify-content: center;
+  margin-top: 4px;
 }
 
-.progress-circle svg {
-  transform: rotate(-90deg);
+.note-icon {
+  width: 13px;
+  height: 13px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
-.progress-circle circle {
-  fill: none;
-  stroke-width: 8;
-  stroke-linecap: round;
-}
-
-.progress-circle .bg {
-  stroke: rgba(0, 0, 0, 0.08);
-}
-
-.progress-circle .progress {
-  stroke: var(--primary-color);
-  stroke-dasharray: 283;
-  stroke-dashoffset: 283;
-  transition: stroke-dashoffset 0.8s ease;
-}
-
-.circle-number {
+/* Details popup */
+.details-popup {
   position: absolute;
-  top: 50%;
+  bottom: 70px;
   left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--primary-color);
-  transition: opacity 0.3s ease;
-  white-space: nowrap;
+  transform: translateX(-50%);
+  width: 210px;
+  background: var(--bg);
+  box-shadow: 6px 6px 16px var(--neo-shadow-dark), -4px -4px 12px var(--neo-shadow-light);
+  color: var(--text);
+  padding: 14px;
+  border-radius: 16px;
+  font-size: 13px;
+  text-align: center;
+  z-index: 10;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.details-popup h4 {
+  margin-bottom: 5px;
+  font-size: 13px;
+  color: var(--primary);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(6px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
 
 /* ================================================
-   15. SOFT BUTTONS & ADD BUTTON
+   13. SOFT BUTTONS & GHOST BUTTONS
    ================================================ */
 
-.soft-btn {
+/* Ghost button — outlined style */
+.ghost-btn {
   margin-top: 12px;
-  color: var(--text-color);
-  border: none;
+  color: var(--primary);
+  border: 1.5px solid rgba(91, 155, 213, 0.3);
   font-family: 'Poppins', sans-serif;
-  font-size: 13px;
-  padding: 9px 18px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px 16px;
   border-radius: 10px;
-  background: var(--soft-btn-bg);
-  box-shadow: 0 4px 12px var(--card-shadow);
+  background: transparent;
   cursor: pointer;
   transition: all 0.2s ease;
   display: inline-block;
@@ -750,19 +737,28 @@ button, a {
   white-space: nowrap;
 }
 
-.soft-btn:hover,
-.soft-btn:active {
-  transform: scale(1.02);
-  background: var(--primary-color);
-  color: #fff;
+.ghost-btn:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  box-shadow: 3px 3px 8px rgba(91, 155, 213, 0.3);
+}
+
+.save-btn {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.save-btn:hover {
+  background: var(--primary-dark);
 }
 
 
 /* ================================================
-   16. LOGIN / REGISTER SCREENS
+   14. LOGIN / REGISTER SCREENS
    ================================================ */
 
-/* Full screen two-panel layout */
 .auth-screen {
   position: fixed;
   inset: 0;
@@ -771,7 +767,6 @@ button, a {
   z-index: 9999;
 }
 
-/* Left side — clean white form */
 .auth-form-side {
   flex: 1;
   background: #ffffff;
@@ -791,19 +786,18 @@ button, a {
   text-align: center;
 }
 
-/* Logo */
 .auth-logo {
-  margin-bottom: 32px;
+  margin-bottom: 28px;
 }
 
 .auth-logo img {
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
   object-fit: cover;
+  margin: 0 auto;
 }
 
-/* Title */
 .auth-title {
   font-size: 28px;
   font-weight: 700;
@@ -811,22 +805,20 @@ button, a {
   margin-bottom: 8px;
 }
 
-/* Subtitle with inline link */
 .auth-subtitle {
   font-size: 14px;
-  color: #666;
+  color: #888;
   margin-bottom: 32px;
 }
 
 .auth-link {
   background: none;
   border: none;
-  color: var(--primary-color);
+  color: var(--primary);
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  text-decoration: none;
   padding: 0;
 }
 
@@ -834,7 +826,6 @@ button, a {
   text-decoration: underline;
 }
 
-/* Form fields */
 .auth-form {
   display: flex;
   flex-direction: column;
@@ -855,10 +846,11 @@ button, a {
   outline: none;
   -webkit-user-select: text;
   user-select: text;
+  text-align: left;
 }
 
 .auth-field input:focus {
-  border-color: var(--primary-color);
+  border-color: var(--primary);
   background: #ffffff;
   box-shadow: 0 0 0 3px rgba(91, 155, 213, 0.15);
 }
@@ -867,13 +859,12 @@ button, a {
   color: #aab8cc;
 }
 
-/* Login/Register button */
 .auth-btn {
   width: 100%;
   padding: 14px;
   border-radius: 12px;
   border: none;
-  background: var(--primary-color);
+  background: var(--primary);
   color: white;
   font-family: 'Poppins', sans-serif;
   font-size: 15px;
@@ -881,12 +872,12 @@ button, a {
   cursor: pointer;
   transition: all 0.2s ease;
   margin-top: 6px;
+  box-shadow: 3px 3px 10px rgba(91, 155, 213, 0.4);
 }
 
 .auth-btn:hover {
-  background: #4a8bc4;
+  background: var(--primary-dark);
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(91, 155, 213, 0.35);
 }
 
 .error-msg {
@@ -896,7 +887,7 @@ button, a {
   min-height: 18px;
 }
 
-/* Right side — decorative panel */
+/* Right decorative panel */
 .auth-deco-side {
   width: 42%;
   background: #0d2240;
@@ -908,12 +899,8 @@ button, a {
 .auth-deco-pattern {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-/* Grid of arc shapes matching inspo */
 .deco-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -929,7 +916,6 @@ button, a {
   overflow: hidden;
 }
 
-/* Arc shape inside each cell */
 .deco-grid span::after {
   content: "";
   position: absolute;
@@ -942,7 +928,6 @@ button, a {
   opacity: 0.85;
 }
 
-/* Alternate cells for variation */
 .deco-grid span:nth-child(even)::after {
   opacity: 0.6;
   background: #3b7dd8;
@@ -953,26 +938,15 @@ button, a {
   background: #5b9bd5;
 }
 
-/* Mobile — stack vertically, hide deco panel */
-@media (max-width: 768px) {
-  .auth-screen {
-    flex-direction: column;
-  }
-
-  .auth-deco-side {
-    display: none;
-  }
-
-  .auth-form-side {
-    padding: 40px 24px;
-    flex: 1;
-  }
-}
-
 
 /* ================================================
-   17. SETTINGS SECTION
+   15. SETTINGS SECTION
    ================================================ */
+
+.settings-card {
+  max-width: 700px;
+  padding: 40px;
+}
 
 .settings-group {
   display: flex;
@@ -982,20 +956,27 @@ button, a {
 }
 
 .settings-group h3 {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--primary-color);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
 }
 
 .settings-group input {
   padding: 12px 16px;
   border-radius: 12px;
-  border: 1px solid #d0e8ff;
+  border: none;
   font-size: 15px;
-  background: var(--bg-color);
-  color: var(--text-color);
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: inset 3px 3px 8px var(--neo-shadow-dark), inset -2px -2px 6px var(--neo-shadow-light);
+  outline: none;
+  transition: box-shadow 0.2s ease;
+}
+
+.settings-group input:focus {
+  box-shadow: inset 4px 4px 10px var(--neo-shadow-dark), inset -2px -2px 8px var(--neo-shadow-light), 0 0 0 2px rgba(91, 155, 213, 0.2);
 }
 
 .profile-img {
@@ -1004,6 +985,7 @@ button, a {
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid var(--primary-light);
+  box-shadow: 4px 4px 10px var(--neo-shadow-dark), -2px -2px 8px var(--neo-shadow-light);
 }
 
 #profileUpload {
@@ -1013,7 +995,7 @@ button, a {
 .logout-btn {
   margin-top: 10px;
   padding: 13px;
-  border-radius: 12px;
+  border-radius: 14px;
   border: none;
   background: #ff6b6b;
   color: white;
@@ -1022,32 +1004,28 @@ button, a {
   font-weight: 600;
   cursor: pointer;
   width: 100%;
-  transition: background 0.2s;
+  transition: all 0.2s ease;
+  box-shadow: 3px 3px 10px rgba(255, 107, 107, 0.3);
 }
 
 .logout-btn:hover {
   background: #ff4d4d;
+  transform: translateY(-1px);
 }
 
 
 /* ================================================
-   18. STATS SECTION & CHART
+   16. STATS SECTION & CHART
    ================================================ */
 
-/* Chart card wrapper */
-.card-full {
-  background: var(--card-bg);
-  border-radius: 20px;
-  padding: 30px;
+.chart-card {
+  padding: 28px;
   margin-bottom: 24px;
-  box-shadow: 0 4px 16px var(--card-shadow);
-  width: 100%;
 }
 
-/* Chart canvas container */
 .chart-container {
   position: relative;
-  height: 580px;
+  height: 380px;
   width: 100%;
   background: linear-gradient(135deg, #e7f3ff, #ecf6ff, #d5eaff);
   border-radius: 14px;
@@ -1059,22 +1037,20 @@ button, a {
   height: 100% !important;
 }
 
-/* Info card — Understanding Your Vitals */
 .info-card {
   display: block !important;
-  padding-top: 30px !important;
+  padding: 30px !important;
+  margin-bottom: 24px;
 }
 
-/* Title inside info card — pinned to top */
 .info-card-title {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 17px;
+  font-weight: 700;
   text-align: center;
   margin: 0 0 24px 0;
-  color: var(--text-color);
+  color: var(--text);
 }
 
-/* Vitals info grid */
 .vital-info-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1082,8 +1058,8 @@ button, a {
   width: 100%;
 }
 
-.vital-info-grid .card {
-  padding: 24px;
+.inner-card {
+  padding: 22px;
   border-radius: 16px;
   text-align: center;
   background: var(--gradient-card) !important;
@@ -1091,39 +1067,74 @@ button, a {
   animation: gradientMove 7s ease infinite !important;
 }
 
-.vital-info-grid h3 {
-  font-size: 15px;
+.inner-card h3 {
+  font-size: 14px;
   font-weight: 600;
   margin-bottom: 10px;
-  color: var(--text-color);
+  color: var(--text);
 }
 
-.vital-info-grid p {
+.inner-card p {
   font-size: 13px;
-  opacity: 0.8;
+  color: var(--text-muted);
   line-height: 1.6;
+}
+
+@keyframes gradientMove {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 
 /* ================================================
-   19. ABOUT SECTION
+   17. ABOUT SECTION
    ================================================ */
 
 #about-section {
   padding-bottom: 40px;
 }
 
+.about-card {
+  max-width: 900px;
+  margin-bottom: 20px;
+  padding: 28px 32px;
+}
+
+.about-card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--primary);
+}
+
+.about-card p,
+.about-card li {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+.about-card ul {
+  padding-left: 20px;
+  margin-top: 8px;
+}
+
+.about-card li {
+  margin-bottom: 6px;
+}
+
 
 /* ================================================
-   20. METRIC MODAL
+   18. METRIC MODAL
    ================================================ */
 
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(220, 240, 255, 0.92);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  background: rgba(220, 235, 247, 0.85);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1135,18 +1146,18 @@ button, a {
 .modal-content {
   width: 420px;
   max-width: 100%;
-  background: linear-gradient(-45deg, #d2eeff, #a2d7ff, #d9f0ff, #8ccbff, #c6f2ff);
+  background: var(--gradient-card);
   background-size: 400% 400%;
   animation: gradientMove 7s ease infinite;
   border-radius: 24px;
   padding: 32px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  box-shadow: 8px 8px 24px var(--neo-shadow-dark), -4px -4px 16px var(--neo-shadow-light);
 }
 
 .modal-content h2 {
   font-size: 18px;
-  font-weight: 600;
-  color: white;
+  font-weight: 700;
+  color: var(--text);
   margin-bottom: 20px;
 }
 
@@ -1165,16 +1176,18 @@ button, a {
   outline: none;
   font-family: 'Poppins', sans-serif;
   font-size: 15px;
-  background: rgba(255, 255, 255, 0.95);
-  color: #333;
-  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.3s;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text);
+  box-shadow: inset 2px 2px 6px rgba(163, 185, 210, 0.4);
+  transition: box-shadow 0.2s ease;
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 .modal-field input:focus,
 .modal-field select:focus,
 .modal-field textarea:focus {
-  box-shadow: 0 0 0 3px rgba(134, 175, 214, 0.4);
+  box-shadow: 0 0 0 2px rgba(91, 155, 213, 0.3), inset 2px 2px 6px rgba(163, 185, 210, 0.3);
 }
 
 .modal-field textarea {
@@ -1196,7 +1209,7 @@ button, a {
   transform: translateY(-50%);
   pointer-events: none;
   font-size: 14px;
-  color: #86afd6;
+  color: var(--primary);
 }
 
 .sleep-row {
@@ -1214,59 +1227,25 @@ button, a {
   margin-top: 12px;
 }
 
-.modal-actions .soft-btn {
+.modal-actions .ghost-btn {
   flex: 1;
-  margin-bottom: 0;
-}
-
-#sleepModal .soft-btn {
-  background: white;
-  color: #5b9bd5;
-  font-weight: 600;
+  margin-top: 0;
 }
 
 
 /* ================================================
-   21. DETAILS POPUP
+   19. DETAILS POPUP — already defined above
    ================================================ */
 
-.details-popup {
-  position: absolute;
-  bottom: 65px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 210px;
-  background: linear-gradient(135deg, #aaddff, #c9e7ff);
-  color: white;
-  padding: 14px;
-  border-radius: 14px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  font-size: 13px;
-  text-align: center;
-  z-index: 10;
-  animation: fadeIn 0.2s ease-in-out;
-}
-
-.details-popup h4 {
-  margin-bottom: 5px;
-  font-size: 14px;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateX(-50%) translateY(6px); }
-  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
-}
-
 
 /* ================================================
-   22. UTILITY CLASSES
+   20. UTILITY CLASSES
    ================================================ */
 
 .hidden {
   display: none !important;
 }
 
-/* Show only on desktop */
 .desktop-only {
   display: inline-block;
 }
@@ -1279,7 +1258,7 @@ button, a {
 
 
 /* ================================================
-   23. RESPONSIVE — TABLET (max-width: 1100px)
+   21. RESPONSIVE — TABLET (max-width: 1100px)
    ================================================ */
 
 @media (max-width: 1100px) {
@@ -1309,12 +1288,11 @@ button, a {
 
 
 /* ================================================
-   24. RESPONSIVE — MOBILE (max-width: 768px)
+   22. RESPONSIVE — MOBILE (max-width: 768px)
    ================================================ */
 
 @media (max-width: 768px) {
 
-  /* Hide left sidebar, show mobile nav */
   .sidebar {
     display: none;
   }
@@ -1323,7 +1301,6 @@ button, a {
     display: flex;
   }
 
-  /* Show mobile header, hide desktop header */
   .mobile-header {
     display: flex;
   }
@@ -1336,7 +1313,6 @@ button, a {
     display: block;
   }
 
-  /* Dashboard full width */
   .dashboard {
     margin-left: 0 !important;
     width: 100% !important;
@@ -1347,13 +1323,11 @@ button, a {
     padding-bottom: 90px !important;
   }
 
-  /* Single column */
   .home-layout {
     grid-template-columns: 1fr;
     gap: 16px;
   }
 
-  /* Right panel 2 columns on mobile */
   .right-panel {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1361,15 +1335,10 @@ button, a {
     position: static;
   }
 
-  /* Vitals 1 column */
+  /* Vitals 1 column on mobile */
   .core-vitals-grid {
     grid-template-columns: 1fr;
     gap: 12px;
-  }
-
-  .core-vitals-grid .stat-card {
-    height: auto;
-    padding: 20px;
   }
 
   /* Lifestyle 2 columns */
@@ -1379,7 +1348,7 @@ button, a {
   }
 
   /* Cards */
-  .card {
+  .neo-card {
     padding: 18px;
     border-radius: 16px;
   }
@@ -1389,61 +1358,83 @@ button, a {
     border-radius: 16px;
   }
 
-  .card-full {
-    padding: 20px;
-    border-radius: 16px;
+  .chart-card {
+    padding: 16px;
     margin-bottom: 16px;
   }
 
-  .settings-card {
-    padding: 20px;
-    border-radius: 16px;
-  }
-
-  .about-card {
-    padding: 20px 22px;
-    border-radius: 16px;
-    margin-bottom: 14px;
-  }
-
-  /* Titles */
-  .page-title {
-    font-size: 20px;
-  }
-
-  .section-subtitle {
-    font-size: 15px;
-    margin: 20px 0 12px 0;
-  }
-
-  .stat-value {
-    font-size: 22px;
-  }
-
-  /* Chart */
   .chart-container {
     height: 220px;
     padding: 10px;
   }
 
-  /* Vital info */
+  .info-card {
+    padding: 20px !important;
+    margin-bottom: 16px;
+  }
+
+  .settings-card {
+    padding: 20px;
+  }
+
+  .about-card {
+    padding: 18px 20px;
+    margin-bottom: 14px;
+  }
+
+  .page-title {
+    font-size: 18px;
+  }
+
+  .section-subtitle {
+    font-size: 12px;
+    margin: 18px 0 10px 0;
+  }
+
+  .lifestyle-value {
+    font-size: 20px;
+  }
+
+  .vital-number {
+    font-size: 30px;
+  }
+
   .vital-info-grid {
     grid-template-columns: 1fr;
     gap: 12px;
   }
 
+  .inner-card {
+    padding: 16px;
+  }
+
+  .settings-group {
+    margin-bottom: 20px;
+  }
+
   /* Login */
-  .login-card {
-    padding: 30px 20px;
-    border-radius: 20px;
+  .auth-deco-side {
+    display: none;
   }
 
-  .login-form input,
-  .login-form button {
-    width: 95%;
+  .auth-form-side {
+    padding: 30px 24px;
+    flex: 1;
+    overflow-y: auto;
+    justify-content: center;
+    align-items: center;
   }
 
-  /* Modal slides up from bottom */
+  .auth-inner {
+    max-width: 100%;
+    padding-bottom: 40px;
+  }
+
+  .auth-title {
+    font-size: 22px;
+  }
+
+  /* Modal slides up */
   .modal {
     align-items: flex-end;
     padding: 0;
@@ -1453,29 +1444,32 @@ button, a {
     border-radius: 24px 24px 0 0;
     padding: 24px 20px;
     width: 100%;
+    background: var(--gradient-card) !important;
+    background-size: 400% 400% !important;
+    animation: gradientMove 7s ease infinite !important;
   }
 
-  /* Details popup */
+  /* Vitals info gradient on mobile */
+  .inner-card {
+    background: var(--gradient-card) !important;
+    background-size: 400% 400% !important;
+    animation: gradientMove 7s ease infinite !important;
+  }
+
   .details-popup {
     width: 175px;
     font-size: 12px;
   }
 
-  /* Settings */
-  .settings-group {
-    margin-bottom: 20px;
-  }
-
-  /* Info card title on mobile */
   .info-card-title {
-    font-size: 16px;
-    margin-bottom: 16px;
+    font-size: 15px;
+    margin-bottom: 14px;
   }
 }
 
 
 /* ================================================
-   25. RESPONSIVE — SMALL PHONES (max-width: 380px)
+   23. RESPONSIVE — SMALL PHONES (max-width: 380px)
    ================================================ */
 
 @media (max-width: 380px) {
@@ -1494,41 +1488,5 @@ button, a {
 
   .mobile-nav-btn {
     padding: 8px 10px;
-  }
-}
-
-@media (max-width: 768px) {
-  .auth-form-side {
-    justify-content: center;
-    align-items: center;
-  }
-
-  .auth-inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    width: 100%;
-    padding: 0 24px;
-  }
-
-  .auth-form {
-    width: 100%;
-  }
-}
-
-@media (max-width: 768px) {
-  .vital-info-grid .card {
-    background: var(--gradient-card) !important;
-    background-size: 400% 400% !important;
-    animation: gradientMove 7s ease infinite !important;
-  }
-}
-
-@media (max-width: 768px) {
-  .modal-content {
-    background: var(--gradient-card) !important;
-    background-size: 400% 400% !important;
-    animation: gradientMove 7s ease infinite !important;
   }
 }

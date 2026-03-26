@@ -608,13 +608,13 @@ saveSleepBtn.addEventListener("click", async () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-      userId: currentUser.user_id,
-      metricType: type,
-      value1,
-      value2,
-      unit,
-      notes: metricNotes.value.trim() || null
-    })
+        userId: currentUser.user_id,
+        metricType: type,
+        value1,
+        value2,
+        unit,
+        notes: metricNotes.value.trim() || null
+      })
     });
 
     await loadMetrics();
@@ -668,7 +668,7 @@ async function loadMetrics() {
       };
 
       const notesEl = document.getElementById(notesMap[metric.metric_type]);
-      if (notesEl && metric.notes) notesEl.innerHTML = `<img src="write.png" alt="note" class="note-icon"> ${metric.notes}`;
+      if (notesEl && metric.notes) notesEl.textContent = `📝 ${metric.notes}`;
     });
 
   } catch (err) {
@@ -677,49 +677,37 @@ async function loadMetrics() {
 }
 
 
-/* ================= PROGRESS CIRCLES ================= */
-
-function updateProgressCircle(element, value, maxValue) {
-  if (!element) return;
-
-  const circle       = element.querySelector(".progress");
-  const circleNumber = element.querySelector(".circle-number");
-  if (!circle || !circleNumber) return;
-
-  const radius        = circle.r.baseVal.value;
-  const circumference = 2 * Math.PI * radius;
-  const offset        = circumference - (value / maxValue) * circumference;
-
-  circle.style.transition       = "stroke-dashoffset 0.8s ease";
-  circle.style.strokeDashoffset = offset;
-
-  circleNumber.style.transition = "opacity 0.3s ease";
-  circleNumber.style.opacity    = 0;
-
-  setTimeout(() => {
-    circleNumber.textContent   = element.id === "oxygenCircle" ? `${value}%` : value;
-    circleNumber.style.opacity = 1;
-  }, 300);
-}
-
-
 /* ================= VITALS SIMULATION ================= */
 
+function updateVitalCard(valueId, barId, value, maxValue) {
+  const valueEl = document.getElementById(valueId);
+  const barEl   = document.getElementById(barId);
+  if (!valueEl || !barEl) return;
+
+  valueEl.style.transition = "opacity 0.3s ease";
+  valueEl.style.opacity    = 0;
+
+  setTimeout(() => {
+    valueEl.textContent    = value;
+    valueEl.style.opacity  = 1;
+  }, 300);
+
+  const pct = Math.min((value / maxValue) * 100, 100);
+  barEl.style.transition = "width 0.8s ease";
+  barEl.style.width      = pct + "%";
+}
+
 function simulateVitals() {
-  const bpmEl    = document.getElementById("bpmCircle");
-  const oxygenEl = document.getElementById("oxygenCircle");
-  const rrEl     = document.getElementById("rrCircle");
+  // Set initial values
+  updateVitalCard("bpmValue",    "bpmBar",    72, 180);
+  updateVitalCard("oxygenValue", "oxygenBar", 98, 100);
+  updateVitalCard("rrValue",     "rrBar",     16,  30);
 
-  if (!bpmEl || !oxygenEl || !rrEl) return;
-
-  updateProgressCircle(bpmEl,    72, 180);
-  updateProgressCircle(oxygenEl, 98, 100);
-  updateProgressCircle(rrEl,     16,  30);
-
+  // Randomize on interval
   setInterval(() => {
-    updateProgressCircle(bpmEl,    Math.floor(Math.random() * 41) + 60,  180);
-    updateProgressCircle(oxygenEl, Math.floor(Math.random() * 6)  + 95,  100);
-    updateProgressCircle(rrEl,     Math.floor(Math.random() * 13) + 12,   30);
+    updateVitalCard("bpmValue",    "bpmBar",    Math.floor(Math.random() * 41) + 60,  180);
+    updateVitalCard("oxygenValue", "oxygenBar", Math.floor(Math.random() * 6)  + 95,  100);
+    updateVitalCard("rrValue",     "rrBar",     Math.floor(Math.random() * 13) + 12,   30);
   }, 3500);
 }
 
@@ -732,39 +720,30 @@ const ctx = document.getElementById("pulseChart");
 
 if (ctx) {
   new Chart(ctx, {
-    type: "line",
+    type: "bar",
     data: {
       labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
       datasets: [
         {
           label: "BPM",
           data: [72, 75, 78, 74, 76, 73, 70],
-          borderColor: "#5b9bd5",
-          backgroundColor: "rgba(91,155,213,0.1)",
-          fill: true,
-          tension: 0.4,
-          pointRadius: 4,
-          pointHoverRadius: 6
+          backgroundColor: "rgba(91, 155, 213, 0.7)",
+          borderRadius: 8,
+          borderSkipped: false,
         },
         {
           label: "Oxygen",
           data: [98, 97, 99, 98, 97, 98, 99],
-          borderColor: "#4cafef",
-          backgroundColor: "rgba(76,175,239,0.1)",
-          fill: true,
-          tension: 0.4,
-          pointRadius: 4,
-          pointHoverRadius: 6
+          backgroundColor: "rgba(76, 175, 239, 0.7)",
+          borderRadius: 8,
+          borderSkipped: false,
         },
         {
           label: "Respiratory Rate",
           data: [16, 17, 15, 18, 16, 17, 16],
-          borderColor: "#b388ff",
-          backgroundColor: "rgba(179,136,255,0.1)",
-          fill: true,
-          tension: 0.4,
-          pointRadius: 4,
-          pointHoverRadius: 6
+          backgroundColor: "rgba(179, 136, 255, 0.7)",
+          borderRadius: 8,
+          borderSkipped: false,
         }
       ]
     },
@@ -774,11 +753,17 @@ if (ctx) {
       animation: { duration: 1500, easing: "easeInOutQuart" },
       interaction: { mode: "index", intersect: false },
       plugins: {
-        legend: { labels: { color: "#333", font: { size: 13 } } }
+        legend: { labels: { color: "#333", font: { size: 13 }, padding: 20 } }
       },
       scales: {
-        x: { grid: { display: false } },
-        y: { grid: { color: "rgba(0,0,0,0.05)" } }
+        x: {
+          grid: { display: false },
+          ticks: { color: "#7a90a8" }
+        },
+        y: {
+          grid: { color: "rgba(0,0,0,0.04)" },
+          ticks: { color: "#7a90a8" }
+        }
       }
     }
   });
