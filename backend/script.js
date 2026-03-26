@@ -59,11 +59,11 @@ const profilePreview = document.getElementById("profilePreview");
 const sidebarProfile = document.getElementById("sidebarProfile");
 
 // Modal
-const addInfoBtn     = document.getElementById("addInfoBtn");
+const addInfoBtn       = document.getElementById("addInfoBtn");
 const addInfoBtnMobile = document.getElementById("addInfoBtnMobile");
-const sleepModal     = document.getElementById("sleepModal");
-const cancelSleepBtn = document.getElementById("cancelSleepBtn");
-const saveSleepBtn   = document.getElementById("saveSleepBtn");
+const sleepModal       = document.getElementById("sleepModal");
+const cancelSleepBtn   = document.getElementById("cancelSleepBtn");
+const saveSleepBtn     = document.getElementById("saveSleepBtn");
 
 const metricType       = document.getElementById("metricType");
 const metricUnit       = document.getElementById("metricUnit");
@@ -91,11 +91,9 @@ function applyProfilePic(picUrl) {
     ? picUrl
     : "default-profile.png";
 
-  // Sidebar profile pic
   if (profilePreview) profilePreview.src = src;
   if (sidebarProfile) sidebarProfile.src = src;
 
-  // Mobile header profile pics (on each section)
   ["homeProfilePic", "homeProfilePic2", "homeProfilePic3", "homeProfilePic4"].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.src = src;
@@ -135,12 +133,10 @@ async function startSession(userId) {
   registerScreen.style.display = "none";
   mainApp.style.display        = "flex";
 
-  // Set greeting
   if (userGreeting) userGreeting.textContent = "Welcome back, " + currentUser.username + "!";
   const greetingMobile = document.getElementById("userGreetingMobile");
   if (greetingMobile) greetingMobile.textContent = "Welcome back, " + currentUser.username + "!";
 
-  // Set sidebar full name
   const sidebarUsername = document.getElementById("sidebarUsername");
   if (sidebarUsername) {
     const fullName = [currentUser.first_name, currentUser.middle_name, currentUser.last_name]
@@ -151,7 +147,6 @@ async function startSession(userId) {
 
   applyProfilePic(currentUser.profilePic);
 
-  // Pre-fill name fields in settings with current values
   if (updateFirstName)  updateFirstName.value  = currentUser.first_name  || "";
   if (updateMiddleName) updateMiddleName.value = currentUser.middle_name || "";
   if (updateLastName)   updateLastName.value   = currentUser.last_name   || "";
@@ -288,11 +283,9 @@ logoutBtn.addEventListener("click", () => {
   registerPassword.value        = "";
   registerConfirmPassword.value = "";
 
-  // Reset sections
   document.querySelectorAll(".section").forEach(s => s.classList.remove("active-section"));
   homeSection.classList.add("active-section");
 
-  // Reset all nav buttons
   document.querySelectorAll(".nav-btn, .mobile-nav-btn").forEach(b => b.classList.remove("active"));
   homeLink.classList.add("active");
   homeLinkMobile.classList.add("active");
@@ -309,17 +302,14 @@ function showSection(section, desktopBtn, mobileBtn) {
   if (desktopBtn) desktopBtn.classList.add("active");
   if (mobileBtn)  mobileBtn.classList.add("active");
 
-  // Scroll to top when switching sections
   window.scrollTo(0, 0);
 }
 
-// Desktop nav
 homeLink.addEventListener("click",     () => showSection(homeSection,     homeLink,     homeLinkMobile));
 statsLink.addEventListener("click",    () => showSection(statsSection,    statsLink,    statsLinkMobile));
 settingsLink.addEventListener("click", () => showSection(settingsSection, settingsLink, settingsLinkMobile));
 infoLink.addEventListener("click",     () => showSection(aboutSection,    infoLink,     infoLinkMobile));
 
-// Mobile nav
 homeLinkMobile.addEventListener("click",     () => showSection(homeSection,     homeLink,     homeLinkMobile));
 statsLinkMobile.addEventListener("click",    () => showSection(statsSection,    statsLink,    statsLinkMobile));
 settingsLinkMobile.addEventListener("click", () => showSection(settingsSection, settingsLink, settingsLinkMobile));
@@ -332,7 +322,6 @@ profileUpload.addEventListener("change", async () => {
   const file = profileUpload.files[0];
   if (!file) return;
 
-  // Show preview immediately
   const reader = new FileReader();
   reader.onload = (e) => applyProfilePic(e.target.result);
   reader.readAsDataURL(file);
@@ -383,7 +372,6 @@ updateUsernameBtn.addEventListener("click", async () => {
   currentUser.username = newUsername;
 
   if (userGreeting) userGreeting.textContent = "Welcome back, " + newUsername + "!";
-  // Keep showing full name in sidebar if available
   const sidebarUsername = document.getElementById("sidebarUsername");
   if (sidebarUsername) {
     const fullName = [currentUser.first_name, currentUser.middle_name, currentUser.last_name]
@@ -441,7 +429,6 @@ updateNameBtn.addEventListener("click", async () => {
   currentUser.middle_name = middleName || null;
   currentUser.last_name   = lastName;
 
-  // Refresh sidebar full name display
   const fullName = [firstName, middleName, lastName].filter(Boolean).join(" ");
   const sidebarUsername = document.getElementById("sidebarUsername");
   if (sidebarUsername) sidebarUsername.textContent = fullName;
@@ -640,10 +627,9 @@ async function loadMetrics() {
     stepsValue.textContent    = "--";
     stressValue.textContent   = "--";
 
-    // Clear all notes
     ["sleepNotes","waterNotes","caloriesNotes","stepsNotes","stressNotes"].forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.textContent = "";
+      if (el) el.innerHTML = "";
     });
 
     const seen = {};
@@ -658,7 +644,6 @@ async function loadMetrics() {
       if (metric.metric_type === "steps")    stepsValue.textContent    = `${metric.value1} ${metric.unit}`;
       if (metric.metric_type === "stress")   stressValue.textContent   = metric.unit;
 
-      // Show notes if available
       const notesMap = {
         sleep:    "sleepNotes",
         water:    "waterNotes",
@@ -668,7 +653,9 @@ async function loadMetrics() {
       };
 
       const notesEl = document.getElementById(notesMap[metric.metric_type]);
-      if (notesEl && metric.notes) notesEl.textContent = `📝 ${metric.notes}`;
+      if (notesEl && metric.notes) {
+        notesEl.innerHTML = `<img src="icon-note.png" alt="note" class="note-icon"> ${metric.notes}`;
+      }
     });
 
   } catch (err) {
@@ -698,12 +685,10 @@ function updateVitalCard(valueId, barId, value, maxValue) {
 }
 
 function simulateVitals() {
-  // Set initial values
   updateVitalCard("bpmValue",    "bpmBar",    72, 180);
   updateVitalCard("oxygenValue", "oxygenBar", 98, 100);
   updateVitalCard("rrValue",     "rrBar",     16,  30);
 
-  // Randomize on interval
   setInterval(() => {
     updateVitalCard("bpmValue",    "bpmBar",    Math.floor(Math.random() * 41) + 60,  180);
     updateVitalCard("oxygenValue", "oxygenBar", Math.floor(Math.random() * 6)  + 95,  100);
