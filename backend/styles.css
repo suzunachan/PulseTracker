@@ -128,16 +128,6 @@ button, a { -webkit-touch-callout: none; }
   letter-spacing: -0.3px;
 }
 
-.sidebar-section-label {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  color: var(--text-light);
-  padding: 4px 12px 6px 12px;
-  margin-top: 8px;
-}
-
 .sidebar-nav {
   display: flex;
   flex-direction: column;
@@ -358,6 +348,7 @@ button, a { -webkit-touch-callout: none; }
   margin-bottom: 6px;
 }
 
+/* Subtitle row with label + button */
 .subtitle-row {
   display: flex;
   align-items: center;
@@ -378,17 +369,15 @@ button, a { -webkit-touch-callout: none; }
   transition: all 0.2s ease;
   white-space: nowrap;
   box-shadow: 0 4px 14px rgba(74, 144, 217, 0.35);
-  letter-spacing: 0.1px;
 }
 
 .add-btn:hover {
   background: var(--primary-dark);
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(74, 144, 217, 0.4);
 }
 
 /* ================================================
-   8. HOME LAYOUT
+   8. HOME LAYOUT (vitals + right panel only)
    ================================================ */
 
 .home-layout {
@@ -458,6 +447,7 @@ button, a { -webkit-touch-callout: none; }
   transition: box-shadow 0.25s ease;
 }
 
+/* Hero card */
 .hero-card {
   background: linear-gradient(135deg, #deeeff 0%, #eef6ff 50%, #d8edff 100%);
   border-radius: var(--radius-card);
@@ -483,7 +473,6 @@ button, a { -webkit-touch-callout: none; }
   font-weight: 700;
   margin-bottom: 5px;
   color: var(--text);
-  letter-spacing: -0.2px;
 }
 
 .hero-card p {
@@ -536,7 +525,6 @@ button, a { -webkit-touch-callout: none; }
   color: var(--text);
   line-height: 1;
   letter-spacing: -1px;
-  font-variant-numeric: tabular-nums;
 }
 
 .vital-unit {
@@ -574,13 +562,13 @@ button, a { -webkit-touch-callout: none; }
 .rr-fill   { background: linear-gradient(90deg, #90d090, #4ca84c); }
 
 /* ================================================
-   12. LIFESTYLE METRICS GRID
+   12. LIFESTYLE METRICS GRID (full width)
    ================================================ */
 
 .lifestyle-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 14px;
+  gap: 16px;
   margin-top: 6px;
   align-items: stretch;
 }
@@ -590,10 +578,8 @@ button, a { -webkit-touch-callout: none; }
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 20px 10px;
+  padding: 20px 12px;
   position: relative;
-  background: var(--bg);
-  box-shadow: var(--shadow-out);
   transition: box-shadow 0.25s ease, transform 0.2s ease;
   min-width: 0;
 }
@@ -611,7 +597,7 @@ button, a { -webkit-touch-callout: none; }
   border-radius: 12px;
   background: var(--bg);
   box-shadow: inset 3px 3px 8px #c0ceda, inset -2px -2px 6px #ffffff;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   flex-shrink: 0;
 }
 
@@ -625,7 +611,6 @@ button, a { -webkit-touch-callout: none; }
   font-weight: 700;
   color: var(--primary);
   letter-spacing: -0.5px;
-  margin-top: 6px;
 }
 
 .lifestyle-label {
@@ -658,6 +643,7 @@ button, a { -webkit-touch-callout: none; }
   flex-shrink: 0;
 }
 
+/* Details popup */
 .details-popup {
   position: absolute;
   bottom: 76px;
@@ -689,7 +675,7 @@ button, a { -webkit-touch-callout: none; }
 }
 
 /* ================================================
-   13. GHOST / SOFT BUTTONS
+   13. BUTTONS
    ================================================ */
 
 .ghost-btn {
@@ -708,23 +694,15 @@ button, a { -webkit-touch-callout: none; }
   text-align: center;
   white-space: nowrap;
   box-shadow: 0 4px 14px rgba(74, 144, 217, 0.35);
-  letter-spacing: 0.1px;
 }
 
 .ghost-btn:hover {
   background: var(--primary-dark);
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(74, 144, 217, 0.45);
 }
 
 .save-btn {
   background: var(--primary);
-  color: white;
-  box-shadow: 0 4px 12px rgba(74, 144, 217, 0.35);
-}
-
-.save-btn:hover {
-  background: var(--primary-dark);
   color: white;
 }
 
@@ -817,6 +795,7 @@ button, a { -webkit-touch-callout: none; }
   -webkit-user-select: text;
   user-select: text;
   box-shadow: var(--shadow-in-deep);
+  text-align: left;
 }
 
 .auth-field input:focus {
@@ -839,13 +818,11 @@ button, a { -webkit-touch-callout: none; }
   transition: all 0.2s ease;
   margin-top: 4px;
   box-shadow: 0 6px 18px rgba(74, 144, 217, 0.38);
-  letter-spacing: 0.1px;
 }
 
 .auth-btn:hover {
   background: var(--primary-dark);
   transform: translateY(-1px);
-  box-shadow: 0 8px 22px rgba(74, 144, 217, 0.45);
 }
 
 .error-msg {
@@ -856,6 +833,7 @@ button, a { -webkit-touch-callout: none; }
   font-weight: 500;
 }
 
+/* Right decorative panel */
 .auth-deco-side {
   width: 40%;
   background: #0d2142;
@@ -901,7 +879,6 @@ button, a { -webkit-touch-callout: none; }
   max-width: 780px;
   width: 100%;
   padding: 40px;
-  min-height: calc(100vh - 160px);
   display: flex;
   flex-direction: column;
   gap: 32px;
@@ -911,7 +888,6 @@ button, a { -webkit-touch-callout: none; }
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 32px 40px;
-  flex: 1;
   align-items: start;
 }
 
@@ -956,17 +932,13 @@ button, a { -webkit-touch-callout: none; }
 
 #profileUpload { display: none; }
 
-.settings-group .ghost-btn {
+.settings-group .ghost-btn,
+.settings-group label.ghost-btn {
   width: 100%;
   margin-top: 4px;
 }
 
-.settings-group label.ghost-btn {
-  width: 100%;
-}
-
 .logout-btn {
-  margin-top: auto;
   padding: 13px;
   border-radius: var(--radius-sm);
   border: none;
@@ -979,7 +951,6 @@ button, a { -webkit-touch-callout: none; }
   width: 100%;
   transition: all 0.2s ease;
   box-shadow: var(--shadow-out);
-  letter-spacing: 0.1px;
 }
 
 .logout-btn:hover {
@@ -1022,7 +993,6 @@ button, a { -webkit-touch-callout: none; }
   text-align: center;
   margin: 0 0 22px 0;
   color: var(--text);
-  letter-spacing: -0.2px;
 }
 
 .vital-info-grid {
@@ -1030,11 +1000,10 @@ button, a { -webkit-touch-callout: none; }
   grid-template-columns: repeat(3, 1fr);
   gap: 18px;
   width: 100%;
-  align-items: stretch;
 }
 
 .inner-card {
-  padding: 28px 24px;
+  padding: 24px;
   border-radius: 16px;
   text-align: left;
   background: linear-gradient(145deg, #e6f2ff, #f0f8ff, #d8eaff) !important;
@@ -1048,7 +1017,6 @@ button, a { -webkit-touch-callout: none; }
   font-size: 14px;
   font-weight: 700;
   color: var(--primary);
-  margin-bottom: 4px;
   padding-bottom: 10px;
   border-bottom: 1px solid rgba(74, 144, 217, 0.15);
 }
@@ -1057,7 +1025,6 @@ button, a { -webkit-touch-callout: none; }
   font-size: 13px;
   color: var(--text-muted);
   line-height: 1.7;
-  flex: 1;
 }
 
 .inner-card p strong {
@@ -1132,7 +1099,6 @@ button, a { -webkit-touch-callout: none; }
   font-weight: 700;
   color: var(--text);
   margin-bottom: 18px;
-  letter-spacing: -0.2px;
 }
 
 .modal-field { position: relative; margin-bottom: 12px; }
@@ -1207,7 +1173,10 @@ button, a { -webkit-touch-callout: none; }
    ================================================ */
 
 @media (max-width: 1100px) {
-  .home-layout { grid-template-columns: 1fr; }
+
+  .home-layout {
+    grid-template-columns: 1fr;
+  }
 
   .right-panel {
     display: grid;
@@ -1215,7 +1184,11 @@ button, a { -webkit-touch-callout: none; }
     position: static;
   }
 
-  .lifestyle-grid { grid-template-columns: repeat(3, 1fr); }
+  /* 3 columns on tablet */
+  .lifestyle-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
   .vital-info-grid { grid-template-columns: 1fr; }
   .dashboard { padding: 28px 28px 40px 28px; }
 }
@@ -1225,6 +1198,7 @@ button, a { -webkit-touch-callout: none; }
    ================================================ */
 
 @media (max-width: 768px) {
+
   .sidebar { display: none; }
   .mobile-nav { display: flex; }
   .mobile-header { display: flex; }
@@ -1239,7 +1213,10 @@ button, a { -webkit-touch-callout: none; }
 
   .section { padding-bottom: 90px !important; }
 
-  .home-layout { grid-template-columns: 1fr; gap: 14px; }
+  .home-layout {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
 
   .right-panel {
     display: grid;
@@ -1248,34 +1225,45 @@ button, a { -webkit-touch-callout: none; }
     position: static;
   }
 
-  .core-vitals-grid { grid-template-columns: 1fr; gap: 12px; }
-  .lifestyle-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  /* Vitals 1 column */
+  .core-vitals-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* Lifestyle 2 columns on mobile */
+  .lifestyle-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
 
   .neo-card { padding: 16px; border-radius: 16px; }
   .hero-card { padding: 18px; border-radius: 16px; }
-
   .chart-card { padding: 14px; margin-bottom: 14px; }
   .chart-container { height: 210px; padding: 10px; }
-
   .info-card { padding: 18px !important; margin-bottom: 14px; }
   .settings-card { padding: 18px; }
   .about-card { padding: 16px 18px; margin-bottom: 12px; }
 
+  /* Settings 1 column on mobile */
+  .settings-groups-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
   .page-title { font-size: 17px; }
   .section-subtitle { font-size: 10px; margin: 16px 0 8px; }
-
   .lifestyle-value { font-size: 19px; }
   .vital-number { font-size: 28px; }
-
   .vital-info-grid { grid-template-columns: 1fr; gap: 12px; }
   .inner-card { padding: 14px; }
-  .settings-group { margin-bottom: 18px; }
 
   .auth-deco-side { display: none; }
   .auth-form-side { padding: 28px 20px; flex: 1; overflow-y: auto; }
   .auth-inner { max-width: 100%; padding-bottom: 40px; }
   .auth-title { font-size: 22px; }
 
+  /* Modal slides up from bottom */
   .modal { align-items: flex-end; padding: 0; }
   .modal-content {
     border-radius: 24px 24px 0 0;

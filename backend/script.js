@@ -439,23 +439,23 @@ updateNameBtn.addEventListener("click", async () => {
 
 /* ================= VIEW DETAILS POPUP ================= */
 
-document.querySelectorAll(".lifestyle-grid .soft-btn").forEach(button => {
+document.querySelectorAll(".lifestyle-grid .ghost-btn").forEach(button => {
   button.addEventListener("click", (e) => {
     e.stopPropagation();
 
     document.querySelectorAll(".details-popup").forEach(p => p.remove());
 
-    const card        = button.closest(".stat-card");
-    const metricTitle = card.querySelector(".stat-label").textContent;
-    const metricVal   = card.querySelector(".stat-value").textContent;
+    const card        = button.closest(".lifestyle-card");
+    const metricTitle = card.querySelector(".lifestyle-label").textContent;
+    const metricVal   = card.querySelector(".lifestyle-value").textContent;
 
     let recommendation = "";
     const t = metricTitle.toLowerCase();
 
-    if (t.includes("sleep"))   recommendation = "Recommended sleep duration: 7–9 hours per night for adults.";
-    if (t.includes("water"))   recommendation = "Recommended water intake: About 2–3 liters per day.";
-    if (t.includes("calorie")) recommendation = "Average daily intake: 2000–2500 kcal depending on age and activity level.";
-    if (t.includes("step"))    recommendation = "Recommended: 8,000–10,000 steps per day for good health.";
+    if (t.includes("sleep"))   recommendation = "Recommended sleep duration: 7-9 hours per night for adults.";
+    if (t.includes("water"))   recommendation = "Recommended water intake: About 2-3 liters per day.";
+    if (t.includes("calorie")) recommendation = "Average daily intake: 2000-2500 kcal depending on age and activity.";
+    if (t.includes("step"))    recommendation = "Recommended: 8,000-10,000 steps per day for good health.";
     if (t.includes("stress"))  recommendation = "Healthy stress level: Try to maintain low to moderate stress.";
 
     const popup = document.createElement("div");
@@ -706,22 +706,18 @@ const ctx = document.getElementById("pulseChart");
 if (ctx) {
   const chartCtx = ctx.getContext("2d");
 
-  // Card-style gradient for BPM bars
   const bpmGrad = chartCtx.createLinearGradient(0, 0, 0, 400);
   bpmGrad.addColorStop(0, "rgba(74, 144, 217, 0.9)");
   bpmGrad.addColorStop(1, "rgba(74, 144, 217, 0.45)");
 
-  // Card-style gradient for Oxygen bars
   const oxyGrad = chartCtx.createLinearGradient(0, 0, 0, 400);
   oxyGrad.addColorStop(0, "rgba(110, 198, 245, 0.9)");
   oxyGrad.addColorStop(1, "rgba(110, 198, 245, 0.45)");
 
-  // Card-style gradient for Respiratory Rate bars
   const rrGrad = chartCtx.createLinearGradient(0, 0, 0, 400);
   rrGrad.addColorStop(0, "rgba(179, 136, 255, 0.9)");
   rrGrad.addColorStop(1, "rgba(179, 136, 255, 0.45)");
 
-  // Shadow + clean depth plugin — no shine, just shadow like the cards
   const shadowPlugin = {
     id: "barShadow",
     beforeDatasetsDraw(chart) {
@@ -804,14 +800,13 @@ if (ctx) {
           grid: {
             color: "rgba(163, 185, 210, 0.35)",
             lineWidth: 1,
-            drawBorder: false,
           },
           ticks: {
             color: "#8fa3bc",
             font: { family: "DM Sans", size: 11 },
             padding: 8,
           },
-          border: { display: false, dash: [6, 4] }
+          border: { display: false }
         }
       }
     }
