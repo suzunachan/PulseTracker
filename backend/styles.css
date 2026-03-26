@@ -582,6 +582,7 @@ button, a { -webkit-touch-callout: none; }
   grid-template-columns: repeat(6, 1fr);
   gap: 14px;
   margin-top: 6px;
+  align-items: stretch;
 }
 
 .lifestyle-card {
@@ -589,11 +590,12 @@ button, a { -webkit-touch-callout: none; }
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 20px 14px;
+  padding: 20px 10px;
   position: relative;
   background: var(--bg);
   box-shadow: var(--shadow-out);
   transition: box-shadow 0.25s ease, transform 0.2s ease;
+  min-width: 0;
 }
 
 .lifestyle-card:hover {
@@ -602,19 +604,19 @@ button, a { -webkit-touch-callout: none; }
 }
 
 .lifestyle-icon {
-  width: 52px; height: 52px;
+  width: 44px; height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--bg);
   box-shadow: inset 3px 3px 8px #c0ceda, inset -2px -2px 6px #ffffff;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   flex-shrink: 0;
 }
 
 .lifestyle-icon img {
-  width: 22px; height: 22px;
+  width: 20px; height: 20px;
   object-fit: contain;
 }
 
@@ -896,7 +898,7 @@ button, a { -webkit-touch-callout: none; }
    ================================================ */
 
 .settings-card {
-  max-width: 100%;
+  max-width: 780px;
   width: 100%;
   padding: 40px;
   min-height: calc(100vh - 160px);
