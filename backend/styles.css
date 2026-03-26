@@ -579,7 +579,7 @@ button, a { -webkit-touch-callout: none; }
 
 .lifestyle-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 14px;
   margin-top: 6px;
   align-items: stretch;
@@ -904,6 +904,11 @@ button, a { -webkit-touch-callout: none; }
   min-height: calc(100vh - 160px);
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+}
+
+.settings-card > *:not(.logout-btn) {
+  flex-shrink: 0;
 }
 
 .settings-group {
