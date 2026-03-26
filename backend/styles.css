@@ -901,16 +901,23 @@ button, a { -webkit-touch-callout: none; }
   max-width: 780px;
   width: 100%;
   padding: 40px;
+  min-height: calc(100vh - 160px);
   display: flex;
   flex-direction: column;
-  gap: 0;
+}
+
+.settings-groups-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 40px;
+  flex: 1;
 }
 
 .settings-group {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-bottom: 26px;
+  margin-bottom: 0;
 }
 
 .settings-group h3 {
@@ -958,7 +965,7 @@ button, a { -webkit-touch-callout: none; }
 }
 
 .logout-btn {
-  margin-top: 10px;
+  margin-top: auto;
   padding: 13px;
   border-radius: var(--radius-sm);
   border: none;
