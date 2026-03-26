@@ -579,7 +579,7 @@ button, a { -webkit-touch-callout: none; }
 
 .lifestyle-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 14px;
   margin-top: 6px;
 }
@@ -896,8 +896,12 @@ button, a { -webkit-touch-callout: none; }
    ================================================ */
 
 .settings-card {
-  max-width: 660px;
-  padding: 36px;
+  max-width: 100%;
+  width: 100%;
+  padding: 40px;
+  min-height: calc(100vh - 160px);
+  display: flex;
+  flex-direction: column;
 }
 
 .settings-group {
@@ -1006,27 +1010,39 @@ button, a { -webkit-touch-callout: none; }
   grid-template-columns: repeat(3, 1fr);
   gap: 18px;
   width: 100%;
+  align-items: stretch;
 }
 
 .inner-card {
-  padding: 20px;
+  padding: 28px 24px;
   border-radius: 16px;
-  text-align: center;
+  text-align: left;
   background: linear-gradient(145deg, #e6f2ff, #f0f8ff, #d8eaff) !important;
   box-shadow: var(--shadow-out-sm) !important;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .inner-card h3 {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
-  margin-bottom: 8px;
-  color: var(--text);
+  color: var(--primary);
+  margin-bottom: 4px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(74, 144, 217, 0.15);
 }
 
 .inner-card p {
-  font-size: 12.5px;
+  font-size: 13px;
   color: var(--text-muted);
-  line-height: 1.65;
+  line-height: 1.7;
+  flex: 1;
+}
+
+.inner-card p strong {
+  color: var(--text);
+  font-weight: 600;
 }
 
 /* ================================================
@@ -1179,7 +1195,7 @@ button, a { -webkit-touch-callout: none; }
     position: static;
   }
 
-  .lifestyle-grid { grid-template-columns: repeat(2, 1fr); }
+  .lifestyle-grid { grid-template-columns: repeat(3, 1fr); }
   .vital-info-grid { grid-template-columns: 1fr; }
   .dashboard { padding: 28px 28px 40px 28px; }
 }
