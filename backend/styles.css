@@ -21,11 +21,12 @@
   --primary-glow:    rgba(74, 144, 217, 0.18);
   --accent:          #6ec6f5;
 
-  /* True neumorphic shadows — lighter bg needs sharper contrast */
+  /* True neumorphic shadows */
   --shadow-out:      8px 8px 20px #c8d4e3, -6px -6px 16px #ffffff;
   --shadow-out-sm:   5px 5px 12px #c8d4e3, -3px -3px 9px #ffffff;
-  --shadow-in:       inset 4px 4px 10px #c0cdd e, inset -3px -3px 8px #ffffff;
-  --shadow-in-deep:  inset 6px 6px 14px #bbc9db, inset -4px -4px 10px #ffffff;
+  --shadow-in:       inset 4px 4px 10px #c0cdde, inset -3px -3px 8px #ffffff;
+  --shadow-in-deep:  inset 6px 6px 16px #b8c8da, inset -4px -4px 12px #ffffff;
+  --shadow-card:     inset 6px 6px 16px #b8c8da, inset -4px -4px 12px #ffffff;
 
   --sidebar-width:   240px;
   --mobile-nav-h:    70px;
@@ -458,7 +459,7 @@ button, a { -webkit-touch-callout: none; }
   background: var(--bg);
   border-radius: var(--radius-card);
   padding: 22px;
-  box-shadow: var(--shadow-out);
+  box-shadow: var(--shadow-card);
   transition: box-shadow 0.25s ease;
 }
 
@@ -468,8 +469,8 @@ button, a { -webkit-touch-callout: none; }
   border-radius: var(--radius-card);
   padding: 24px 28px;
   margin-bottom: 6px;
-  box-shadow: var(--shadow-out);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
 .hero-content {
@@ -593,13 +594,12 @@ button, a { -webkit-touch-callout: none; }
   padding: 20px 14px;
   position: relative;
   background: var(--bg);
-  box-shadow: var(--shadow-out);
-  transition: box-shadow 0.25s ease, transform 0.2s ease;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.25s ease;
 }
 
 .lifestyle-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 10px 10px 26px #c0ceda, -5px -5px 18px #ffffff;
+  box-shadow: inset 8px 8px 20px #b4c4d8, inset -5px -5px 14px #ffffff;
 }
 
 .lifestyle-icon {
@@ -697,14 +697,13 @@ button, a { -webkit-touch-callout: none; }
   display: inline-block;
   text-align: center;
   white-space: nowrap;
-  box-shadow: var(--shadow-out-sm);
+  box-shadow: var(--shadow-in);
   letter-spacing: 0.1px;
 }
 
 .ghost-btn:hover {
-  box-shadow: 6px 6px 16px #c0ceda, -3px -3px 10px #ffffff;
+  box-shadow: inset 5px 5px 12px #b4c4d8, inset -3px -3px 8px #ffffff;
   color: var(--primary-dark);
-  transform: translateY(-1px);
 }
 
 .save-btn {
@@ -810,7 +809,7 @@ button, a { -webkit-touch-callout: none; }
 }
 
 .auth-field input:focus {
-  box-shadow: inset 6px 6px 14px #bbc9db, inset -4px -4px 10px #ffffff, 0 0 0 2px rgba(74, 144, 217, 0.2);
+  box-shadow: inset 7px 7px 18px #b4c4d8, inset -5px -5px 12px #ffffff, 0 0 0 2px rgba(74, 144, 217, 0.2);
 }
 
 .auth-field input::placeholder { color: var(--text-light); }
@@ -947,15 +946,14 @@ button, a { -webkit-touch-callout: none; }
   cursor: pointer;
   width: 100%;
   transition: all 0.2s ease;
-  box-shadow: var(--shadow-out);
+  box-shadow: var(--shadow-in);
   letter-spacing: 0.1px;
 }
 
 .logout-btn:hover {
   background: #d95050;
   color: white;
-  box-shadow: 0 6px 18px rgba(217, 80, 80, 0.3);
-  transform: translateY(-1px);
+  box-shadow: inset 4px 4px 10px rgba(0,0,0,0.15), inset -2px -2px 6px rgba(255,255,255,0.1);
 }
 
 /* ================================================
@@ -971,10 +969,10 @@ button, a { -webkit-touch-callout: none; }
   position: relative;
   height: 360px;
   width: 100%;
-  background: linear-gradient(145deg, #e6f2ff, #eef6ff, #d8eaff);
+  background: var(--bg);
   border-radius: 14px;
   padding: 16px;
-  box-shadow: inset 3px 3px 10px #c0cedc, inset -2px -2px 8px #ffffff;
+  box-shadow: var(--shadow-in-deep);
 }
 
 .chart-container canvas { width: 100% !important; height: 100% !important; }
@@ -1005,8 +1003,8 @@ button, a { -webkit-touch-callout: none; }
   padding: 20px;
   border-radius: 16px;
   text-align: center;
-  background: linear-gradient(145deg, #e6f2ff, #f0f8ff, #d8eaff) !important;
-  box-shadow: var(--shadow-out-sm) !important;
+  background: var(--bg) !important;
+  box-shadow: var(--shadow-card) !important;
 }
 
 .inner-card h3 {
@@ -1074,8 +1072,8 @@ button, a { -webkit-touch-callout: none; }
   background: var(--bg);
   border-radius: 24px;
   padding: 30px;
-  box-shadow: 12px 12px 30px #b8c8da, -6px -6px 20px #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(255, 255, 255, 0.7);
   animation: modalIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
