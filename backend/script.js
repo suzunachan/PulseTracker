@@ -24,19 +24,16 @@ const registerPassword        = document.getElementById("registerPassword");
 const registerConfirmPassword = document.getElementById("registerConfirmPassword");
 const registerError           = document.getElementById("registerError");
 
-// Desktop sidebar nav
 const homeLink     = document.getElementById("homeLink");
 const statsLink    = document.getElementById("statsLink");
 const settingsLink = document.getElementById("settingsLink");
 const infoLink     = document.getElementById("infoLink");
 
-// Mobile bottom nav
 const homeLinkMobile     = document.getElementById("homeLinkMobile");
 const statsLinkMobile    = document.getElementById("statsLinkMobile");
 const settingsLinkMobile = document.getElementById("settingsLinkMobile");
 const infoLinkMobile     = document.getElementById("infoLinkMobile");
 
-// Sections
 const homeSection     = document.getElementById("homeSection");
 const statsSection    = document.getElementById("statsSection");
 const settingsSection = document.getElementById("settingsSection");
@@ -58,7 +55,6 @@ const profileUpload  = document.getElementById("profileUpload");
 const profilePreview = document.getElementById("profilePreview");
 const sidebarProfile = document.getElementById("sidebarProfile");
 
-// Modal
 const addInfoBtn       = document.getElementById("addInfoBtn");
 const addInfoBtnMobile = document.getElementById("addInfoBtnMobile");
 const sleepModal       = document.getElementById("sleepModal");
@@ -152,6 +148,7 @@ async function startSession(userId) {
   if (updateLastName)   updateLastName.value   = currentUser.last_name   || "";
 
   await loadMetrics();
+  await loadHistory();
 }
 
 
@@ -663,7 +660,8 @@ async function loadMetrics() {
   }
 }
 
-/* ================= VITALS SIMULATION ================= */
+
+/* ================= VITALS ================= */
 
 function updateVitalCard(valueId, barId, value, maxValue) {
   const valueEl = document.getElementById(valueId);
@@ -680,10 +678,9 @@ function updateVitalCard(valueId, barId, value, maxValue) {
 
   const pct = Math.min((value / maxValue) * 100, 100);
   barEl.style.transition = "width 0.8s ease";
-  barEl.style.width      = pct + "%";
+  barEl.style.width      = isNaN(value) ? "0%" : pct + "%";
 }
 
-// Set initial placeholder values
 updateVitalCard("bpmValue",    "bpmBar",    "--", 180);
 updateVitalCard("oxygenValue", "oxygenBar", "--", 100);
 updateVitalCard("rrValue",     "rrBar",     "--",  30);
@@ -691,12 +688,14 @@ updateVitalCard("rrValue",     "rrBar",     "--",  30);
 
 /* ================= ARDUINO WEBSOCKET ================= */
 
+let lastSavedTime = 0;
+
 function connectArduino() {
   const ws = new WebSocket('ws://localhost:8080');
 
   ws.onopen = () => console.log('Arduino bridge connected');
 
-  ws.onmessage = (e) => {
+  ws.onmessage = async (e) => {
     try {
       const d = JSON.parse(e.data);
 
@@ -706,14 +705,18 @@ function connectArduino() {
         return;
       }
 
-      // Update BPM
-      if (d.valid_bpm && d.bpm > 20 && d.bpm < 255) {
-        updateVitalCard("bpmValue", "bpmBar", Math.round(d.bpm), 180);
-      }
+      const bpm  = d.valid_bpm  && d.bpm  > 20  && d.bpm  < 255 ? Math.round(d.bpm)  : null;
+      const spo2 = d.valid_spo2 && d.spo2 > 50  && d.spo2 <= 100 ? d.spo2 : null;
 
-      // Update SpO2
-      if (d.valid_spo2 && d.spo2 > 50 && d.spo2 <= 100) {
-        updateVitalCard("oxygenValue", "oxygenBar", d.spo2, 100);
+      if (bpm)  updateVitalCard("bpmValue",    "bpmBar",    bpm,  180);
+      if (spo2) updateVitalCard("oxygenValue", "oxygenBar", spo2, 100);
+
+      if (bpm) addLiveReading(bpm, spo2 || 0);
+
+      const now = Date.now();
+      if (bpm && spo2 && currentUser && (now - lastSavedTime > 10000)) {
+        lastSavedTime = now;
+        await saveReading(bpm, spo2);
       }
 
     } catch (err) {
@@ -731,9 +734,30 @@ function connectArduino() {
 
 connectArduino();
 
+
+/* ================= SAVE READING TO SUPABASE ================= */
+
+async function saveReading(bpm, spo2) {
+  try {
+    await fetch(`${SERVER}/save-reading`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: currentUser.user_id, bpm, spo2 })
+    });
+    console.log("Reading saved:", bpm, spo2);
+  } catch (err) {
+    console.error("Save reading error:", err);
+  }
+}
+
+
 /* ================= PULSE HISTORY CHART ================= */
 
 const ctx = document.getElementById("pulseChart");
+let pulseChart = null;
+const liveLabels = [];
+const liveBpm    = [];
+const liveSpo2   = [];
 
 if (ctx) {
   const chartCtx = ctx.getContext("2d");
@@ -746,61 +770,37 @@ if (ctx) {
   oxyGrad.addColorStop(0, "rgba(110, 198, 245, 0.9)");
   oxyGrad.addColorStop(1, "rgba(110, 198, 245, 0.45)");
 
-  const rrGrad = chartCtx.createLinearGradient(0, 0, 0, 400);
-  rrGrad.addColorStop(0, "rgba(179, 136, 255, 0.9)");
-  rrGrad.addColorStop(1, "rgba(179, 136, 255, 0.45)");
-
-  const shadowPlugin = {
-    id: "barShadow",
-    beforeDatasetsDraw(chart) {
-      const { ctx } = chart;
-      ctx.save();
-      ctx.shadowColor = "rgba(80, 130, 200, 0.25)";
-      ctx.shadowBlur = 14;
-      ctx.shadowOffsetX = 3;
-      ctx.shadowOffsetY = 6;
-    },
-    afterDatasetsDraw(chart) {
-      chart.ctx.restore();
-    }
-  };
-
-  new Chart(ctx, {
-    type: "bar",
-    plugins: [shadowPlugin],
+  pulseChart = new Chart(ctx, {
+    type: "line",
     data: {
-      labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      labels: liveLabels,
       datasets: [
         {
           label: "BPM",
-          data: [72, 75, 78, 74, 76, 73, 70],
+          data: liveBpm,
+          borderColor: "rgba(74, 144, 217, 1)",
           backgroundColor: bpmGrad,
-          borderRadius: 10,
-          borderSkipped: false,
-          borderWidth: 0,
+          borderWidth: 2,
+          pointRadius: 3,
+          tension: 0.4,
+          fill: true,
         },
         {
-          label: "Oxygen",
-          data: [98, 97, 99, 98, 97, 98, 99],
+          label: "SpO2 %",
+          data: liveSpo2,
+          borderColor: "rgba(110, 198, 245, 1)",
           backgroundColor: oxyGrad,
-          borderRadius: 10,
-          borderSkipped: false,
-          borderWidth: 0,
-        },
-        {
-          label: "Respiratory Rate",
-          data: [16, 17, 15, 18, 16, 17, 16],
-          backgroundColor: rrGrad,
-          borderRadius: 10,
-          borderSkipped: false,
-          borderWidth: 0,
+          borderWidth: 2,
+          pointRadius: 3,
+          tension: 0.4,
+          fill: true,
         }
       ]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      animation: { duration: 1500, easing: "easeInOutQuart" },
+      animation: { duration: 500 },
       interaction: { mode: "index", intersect: false },
       plugins: {
         legend: {
@@ -809,14 +809,13 @@ if (ctx) {
             font: { size: 12, family: "DM Sans" },
             padding: 20,
             usePointStyle: true,
-            pointStyle: "rectRounded"
           }
         },
         tooltip: {
-          backgroundColor: "rgba(255, 255, 255, 0.97)",
+          backgroundColor: "rgba(255,255,255,0.97)",
           titleColor: "#1c2b3a",
           bodyColor: "#8fa3bc",
-          borderColor: "rgba(74, 144, 217, 0.25)",
+          borderColor: "rgba(74,144,217,0.25)",
           borderWidth: 1,
           padding: 12,
           cornerRadius: 12,
@@ -825,22 +824,69 @@ if (ctx) {
       scales: {
         x: {
           grid: { display: false },
-          ticks: { color: "#8fa3bc", font: { family: "DM Sans" } },
+          ticks: { color: "#8fa3bc", font: { family: "DM Sans" }, maxTicksLimit: 10 },
           border: { display: false }
         },
         y: {
-          grid: {
-            color: "rgba(163, 185, 210, 0.35)",
-            lineWidth: 1,
-          },
-          ticks: {
-            color: "#8fa3bc",
-            font: { family: "DM Sans", size: 11 },
-            padding: 8,
-          },
+          grid: { color: "rgba(163,185,210,0.35)", lineWidth: 1 },
+          ticks: { color: "#8fa3bc", font: { family: "DM Sans", size: 11 }, padding: 8 },
           border: { display: false }
         }
       }
     }
   });
+}
+
+
+/* ================= ADD LIVE READING TO CHART ================= */
+
+function addLiveReading(bpm, spo2) {
+  const now   = new Date();
+  const label = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+  liveLabels.push(label);
+  liveBpm.push(bpm);
+  liveSpo2.push(spo2);
+
+  if (liveLabels.length > 30) {
+    liveLabels.shift();
+    liveBpm.shift();
+    liveSpo2.shift();
+  }
+
+  if (pulseChart) pulseChart.update();
+}
+
+
+/* ================= LOAD HISTORY FROM SUPABASE ================= */
+
+async function loadHistory() {
+  if (!currentUser) return;
+
+  try {
+    const res  = await fetch(`${SERVER}/readings/${currentUser.user_id}`);
+    const data = await res.json();
+
+    if (!data.length || !pulseChart) return;
+
+    const byDay = {};
+    data.forEach(r => {
+      const day = new Date(r.created_at).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+      if (!byDay[day]) byDay[day] = { bpm: [], spo2: [] };
+      byDay[day].bpm.push(r.bpm);
+      byDay[day].spo2.push(r.spo2);
+    });
+
+    const days    = Object.keys(byDay).reverse();
+    const avgBpm  = days.map(d => Math.round(byDay[d].bpm.reduce((a,b) => a+b, 0)  / byDay[d].bpm.length));
+    const avgSpo2 = days.map(d => Math.round(byDay[d].spo2.reduce((a,b) => a+b, 0) / byDay[d].spo2.length));
+
+    pulseChart.data.labels           = days;
+    pulseChart.data.datasets[0].data = avgBpm;
+    pulseChart.data.datasets[1].data = avgSpo2;
+    pulseChart.update();
+
+  } catch (err) {
+    console.error("Load history error:", err);
+  }
 }

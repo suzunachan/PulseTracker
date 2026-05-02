@@ -211,3 +211,33 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log("Server running on port " + PORT);
 });
+
+// ================= SAVE HEART READING =================
+app.post("/save-reading", async (req, res) => {
+  const { userId, bpm, spo2 } = req.body;
+
+  const { error } = await supabase
+    .from("heart_readings")
+    .insert([{ user_id: userId, bpm, spo2 }]);
+
+  if (error) {
+    console.log("Reading insert error:", error);
+    return res.json({ success: false });
+  }
+
+  res.json({ success: true });
+});
+
+
+// ================= GET HEART READINGS =================
+app.get("/readings/:userId", async (req, res) => {
+  const { data, error } = await supabase
+    .from("heart_readings")
+    .select("*")
+    .eq("user_id", req.params.userId)
+    .order("created_at", { ascending: false })
+    .limit(100);
+
+  if (error) return res.json([]);
+  res.json(data);
+});
