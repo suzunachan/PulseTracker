@@ -696,33 +696,36 @@ function connectArduino() {
   ws.onopen = () => console.log('Arduino bridge connected');
 
   ws.onmessage = async (e) => {
-    try {
-      const d = JSON.parse(e.data);
+  try {
+    const d = JSON.parse(e.data);
 
-      if (d.status === 'no_finger') {
-        updateVitalCard("bpmValue",    "bpmBar",    "--", 180);
-        updateVitalCard("oxygenValue", "oxygenBar", "--", 100);
-        return;
-      }
-
-      const bpm  = d.valid_bpm  && d.bpm  > 20  && d.bpm  < 255 ? Math.round(d.bpm)  : null;
-      const spo2 = d.valid_spo2 && d.spo2 > 50  && d.spo2 <= 100 ? d.spo2 : null;
-
-      if (bpm)  updateVitalCard("bpmValue",    "bpmBar",    bpm,  180);
-      if (spo2) updateVitalCard("oxygenValue", "oxygenBar", spo2, 100);
-
-      if (bpm) addLiveReading(bpm, spo2 || 0);
-
-      const now = Date.now();
-      if (bpm && spo2 && currentUser && (now - lastSavedTime > 10000)) {
-        lastSavedTime = now;
-        await saveReading(bpm, spo2);
-      }
-
-    } catch (err) {
-      console.error('WebSocket parse error:', err);
+    if (d.status === 'no_finger') {
+      updateVitalCard("bpmValue",    "bpmBar",    "--", 180);
+      updateVitalCard("oxygenValue", "oxygenBar", "--", 100);
+      updateVitalCard("rrValue",     "rrBar",     "--",  30);
+      return;
     }
-  };
+
+    const bpm  = d.valid_bpm  && d.bpm  > 20  && d.bpm  < 255  ? Math.round(d.bpm)  : null;
+    const spo2 = d.valid_spo2 && d.spo2 > 50  && d.spo2 <= 100 ? d.spo2              : null;
+    const rr   = d.rr         && d.rr   >= 8  && d.rr   <= 30  ? d.rr                : null;
+
+    if (bpm)  updateVitalCard("bpmValue",    "bpmBar",    bpm,  180);
+    if (spo2) updateVitalCard("oxygenValue", "oxygenBar", spo2, 100);
+    if (rr)   updateVitalCard("rrValue",     "rrBar",     rr,    30);
+
+    if (bpm) addLiveReading(bpm, spo2 || 0);
+
+    const now = Date.now();
+    if (bpm && spo2 && currentUser && (now - lastSavedTime > 10000)) {
+      lastSavedTime = now;
+      await saveReading(bpm, spo2);
+    }
+
+  } catch (err) {
+    console.error('WebSocket parse error:', err);
+  }
+};
 
   ws.onclose = () => {
     console.log('Arduino bridge disconnected — retrying in 3s...');
