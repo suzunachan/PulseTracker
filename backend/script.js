@@ -663,7 +663,6 @@ async function loadMetrics() {
   }
 }
 
-
 /* ================= VITALS SIMULATION ================= */
 
 function updateVitalCard(valueId, barId, value, maxValue) {
@@ -686,29 +685,35 @@ function updateVitalCard(valueId, barId, value, maxValue) {
 
 // Set initial placeholder values
 updateVitalCard("bpmValue",    "bpmBar",    "--", 180);
-updateVitalCard("oxygenValue", "oxygenBar", 98,   100);
-updateVitalCard("rrValue",     "rrBar",     16,    30);
+updateVitalCard("oxygenValue", "oxygenBar", "--", 100);
+updateVitalCard("rrValue",     "rrBar",     "--",  30);
 
 
 /* ================= ARDUINO WEBSOCKET ================= */
 
-let wsConnected = false;
-
 function connectArduino() {
   const ws = new WebSocket('ws://localhost:8080');
 
-  ws.onopen = () => {
-    wsConnected = true;
-    console.log('Arduino bridge connected');
-  };
+  ws.onopen = () => console.log('Arduino bridge connected');
 
   ws.onmessage = (e) => {
     try {
       const d = JSON.parse(e.data);
 
-      // Only update BPM if we have a valid reading
-      if (d.avg_bpm && d.avg_bpm > 20 && d.avg_bpm < 255) {
-        updateVitalCard("bpmValue", "bpmBar", Math.round(d.avg_bpm), 180);
+      if (d.status === 'no_finger') {
+        updateVitalCard("bpmValue",    "bpmBar",    "--", 180);
+        updateVitalCard("oxygenValue", "oxygenBar", "--", 100);
+        return;
+      }
+
+      // Update BPM
+      if (d.valid_bpm && d.bpm > 20 && d.bpm < 255) {
+        updateVitalCard("bpmValue", "bpmBar", Math.round(d.bpm), 180);
+      }
+
+      // Update SpO2
+      if (d.valid_spo2 && d.spo2 > 50 && d.spo2 <= 100) {
+        updateVitalCard("oxygenValue", "oxygenBar", d.spo2, 100);
       }
 
     } catch (err) {
@@ -717,19 +722,14 @@ function connectArduino() {
   };
 
   ws.onclose = () => {
-    wsConnected = false;
     console.log('Arduino bridge disconnected — retrying in 3s...');
-    // Auto-reconnect
     setTimeout(connectArduino, 3000);
   };
 
-  ws.onerror = () => {
-    // Silently fail — onclose will handle reconnect
-  };
+  ws.onerror = () => {};
 }
 
 connectArduino();
-
 
 /* ================= PULSE HISTORY CHART ================= */
 
