@@ -675,8 +675,8 @@ function updateVitalCard(valueId, barId, value, maxValue) {
   valueEl.style.opacity    = 0;
 
   setTimeout(() => {
-    valueEl.textContent    = value;
-    valueEl.style.opacity  = 1;
+    valueEl.textContent   = value;
+    valueEl.style.opacity = 1;
   }, 300);
 
   const pct = Math.min((value / maxValue) * 100, 100);
@@ -684,19 +684,51 @@ function updateVitalCard(valueId, barId, value, maxValue) {
   barEl.style.width      = pct + "%";
 }
 
-function simulateVitals() {
-  updateVitalCard("bpmValue",    "bpmBar",    72, 180);
-  updateVitalCard("oxygenValue", "oxygenBar", 98, 100);
-  updateVitalCard("rrValue",     "rrBar",     16,  30);
+// Set initial placeholder values
+updateVitalCard("bpmValue",    "bpmBar",    "--", 180);
+updateVitalCard("oxygenValue", "oxygenBar", 98,   100);
+updateVitalCard("rrValue",     "rrBar",     16,    30);
 
-  setInterval(() => {
-    updateVitalCard("bpmValue",    "bpmBar",    Math.floor(Math.random() * 41) + 60,  180);
-    updateVitalCard("oxygenValue", "oxygenBar", Math.floor(Math.random() * 6)  + 95,  100);
-    updateVitalCard("rrValue",     "rrBar",     Math.floor(Math.random() * 13) + 12,   30);
-  }, 3500);
+
+/* ================= ARDUINO WEBSOCKET ================= */
+
+let wsConnected = false;
+
+function connectArduino() {
+  const ws = new WebSocket('ws://localhost:8080');
+
+  ws.onopen = () => {
+    wsConnected = true;
+    console.log('Arduino bridge connected');
+  };
+
+  ws.onmessage = (e) => {
+    try {
+      const d = JSON.parse(e.data);
+
+      // Only update BPM if we have a valid reading
+      if (d.avg_bpm && d.avg_bpm > 20 && d.avg_bpm < 255) {
+        updateVitalCard("bpmValue", "bpmBar", Math.round(d.avg_bpm), 180);
+      }
+
+    } catch (err) {
+      console.error('WebSocket parse error:', err);
+    }
+  };
+
+  ws.onclose = () => {
+    wsConnected = false;
+    console.log('Arduino bridge disconnected — retrying in 3s...');
+    // Auto-reconnect
+    setTimeout(connectArduino, 3000);
+  };
+
+  ws.onerror = () => {
+    // Silently fail — onclose will handle reconnect
+  };
 }
 
-simulateVitals();
+connectArduino();
 
 
 /* ================= PULSE HISTORY CHART ================= */
