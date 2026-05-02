@@ -708,7 +708,7 @@ function connectArduino() {
 
     const bpm  = d.valid_bpm  && d.bpm  > 20  && d.bpm  < 255  ? Math.round(d.bpm)  : null;
     const spo2 = d.valid_spo2 && d.spo2 > 50  && d.spo2 <= 100 ? d.spo2              : null;
-    const rr   = d.rr         && d.rr   >= 8  && d.rr   <= 30  ? d.rr                : null;
+    const rr = d.rr > 0 ? d.rr : null;
 
     if (bpm)  updateVitalCard("bpmValue",    "bpmBar",    bpm,  180);
     if (spo2) updateVitalCard("oxygenValue", "oxygenBar", spo2, 100);
