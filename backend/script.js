@@ -140,6 +140,8 @@ if (document.getElementById("nurseGoToLogin")) {
 
 /* ================= NURSE REGISTER ================= */
 
+/* ================= NURSE REGISTER ================= */
+
 if (nurseRegisterBtn) {
   nurseRegisterBtn.addEventListener("click", async () => {
     const firstName       = nurseRegFirstName.value.trim();
@@ -186,24 +188,21 @@ if (nurseRegisterBtn) {
         return;
       }
 
-      // Force role to nurse after registration
+      // Log in immediately and go straight to nurse dashboard
       const loginRes = await fetch(`${SERVER}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password })
       });
       const loginData = await loginRes.json();
-      if (loginData.success) {
-        await fetch(`${SERVER}/update-role`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: loginData.user.user_id, role: "nurse" })
-        });
-      }
 
-      alert("Nurse account created! Please log in.");
-      nurseRegisterScreen.style.display = "none";
-      loginScreen.style.display         = "flex";
+      if (loginData.success) {
+        currentUser = loginData.user;
+        currentUser.role = "nurse";
+        localStorage.setItem("pulse_user_id", String(currentUser.user_id));
+        nurseRegisterScreen.style.display = "none";
+        startNurseSession();
+      }
 
     } catch {
       nurseRegisterError.textContent = "Server not reachable.";
