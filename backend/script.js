@@ -138,7 +138,6 @@ if (document.getElementById("nurseGoToLogin")) {
   });
 }
 
-
 /* ================= NURSE REGISTER ================= */
 
 if (nurseRegisterBtn) {
@@ -167,7 +166,7 @@ if (nurseRegisterBtn) {
     }
 
     try {
-      const res  = await fetch(`${SERVER}/register`, {
+      const res = await fetch(`${SERVER}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -183,28 +182,34 @@ if (nurseRegisterBtn) {
       const data = await res.json();
 
       if (!data.success) {
-  nurseRegisterError.textContent = data.message;
-  return;
-}
+        nurseRegisterError.textContent = data.message;
+        return;
+      }
 
-// Force role to nurse after registration
-const loginRes = await fetch(`${SERVER}/login`, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ username, password })
-});
-const loginData = await loginRes.json();
-if (loginData.success) {
-  await fetch(`${SERVER}/update-role`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ id: loginData.user.user_id, role: "nurse" })
+      // Force role to nurse after registration
+      const loginRes = await fetch(`${SERVER}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+      const loginData = await loginRes.json();
+      if (loginData.success) {
+        await fetch(`${SERVER}/update-role`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: loginData.user.user_id, role: "nurse" })
+        });
+      }
+
+      alert("Nurse account created! Please log in.");
+      nurseRegisterScreen.style.display = "none";
+      loginScreen.style.display         = "flex";
+
+    } catch {
+      nurseRegisterError.textContent = "Server not reachable.";
+    }
   });
 }
-
-alert("Nurse account created! Please log in.");
-nurseRegisterScreen.style.display = "none";
-loginScreen.style.display         = "flex";
 
 
 /* ================= HELPER — APPLY PROFILE PIC ================= */
