@@ -19,8 +19,9 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 
 // ================= REGISTER =================
+// Accepts optional `role` field ("student" default, "nurse" for nurse accounts)
 app.post("/register", async (req, res) => {
-  const { username, password, first_name, middle_name, last_name } = req.body;
+  const { username, password, first_name, middle_name, last_name, role } = req.body;
 
   const { data: existing } = await supabase
     .from("users")
@@ -34,7 +35,14 @@ app.post("/register", async (req, res) => {
 
   const { error } = await supabase
     .from("users")
-    .insert([{ username, password_hash: password, first_name, middle_name, last_name }]);
+    .insert([{
+      username,
+      password_hash: password,
+      first_name,
+      middle_name,
+      last_name,
+      role: role || "student"
+    }]);
 
   if (error) {
     console.log("Register error:", error);
@@ -137,16 +145,14 @@ app.post("/upload-profile-pic", upload.single("profilePic"), async (req, res) =>
     return res.json({ success: false, message: "No file received" });
   }
 
-  // Use user_id as filename so each user always overwrites their own pic
   const fileExt  = req.file.originalname.split(".").pop();
   const fileName = `user_${id}.${fileExt}`;
 
-  // Upload to Supabase Storage bucket "pulse-tracker"
   const { error: uploadError } = await supabase.storage
     .from("pulse-tracker")
     .upload(fileName, req.file.buffer, {
       contentType: req.file.mimetype,
-      upsert: true  // overwrite if exists
+      upsert: true
     });
 
   if (uploadError) {
@@ -154,14 +160,12 @@ app.post("/upload-profile-pic", upload.single("profilePic"), async (req, res) =>
     return res.json({ success: false, message: "Upload failed" });
   }
 
-  // Get the public URL
   const { data: urlData } = supabase.storage
     .from("pulse-tracker")
     .getPublicUrl(fileName);
 
   const publicUrl = urlData.publicUrl;
 
-  // Save public URL to users table
   const { error: dbError } = await supabase
     .from("users")
     .update({ profilePic: publicUrl })
@@ -206,12 +210,6 @@ app.get("/metrics/:userId", async (req, res) => {
 });
 
 
-// ================= START SERVER =================
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, "0.0.0.0", () => {
-  console.log("Server running on port " + PORT);
-});
-
 // ================= SAVE HEART READING =================
 app.post("/save-reading", async (req, res) => {
   const { userId, bpm, spo2 } = req.body;
@@ -240,4 +238,77 @@ app.get("/readings/:userId", async (req, res) => {
 
   if (error) return res.json([]);
   res.json(data);
+});
+
+
+// ================= NURSE: GET ALL STUDENTS WITH LATEST DATA =================
+// Returns all student accounts with their latest BPM/SpO2 reading
+// and latest lifestyle metrics for the nurse dashboard.
+app.get("/nurse/students", async (req, res) => {
+  try {
+    // 1. Fetch all student users
+    const { data: students, error: studentsErr } = await supabase
+      .from("users")
+      .select("user_id, username, first_name, middle_name, last_name, profilePic")
+      .eq("role", "student")
+      .order("first_name", { ascending: true });
+
+    if (studentsErr) {
+      console.log("Nurse students error:", studentsErr);
+      return res.json([]);
+    }
+
+    // 2. For each student, fetch latest heart reading + latest metrics
+    const results = await Promise.all(students.map(async (student) => {
+      // Latest heart reading
+      const { data: readings } = await supabase
+        .from("heart_readings")
+        .select("bpm, spo2, created_at")
+        .eq("user_id", student.user_id)
+        .order("created_at", { ascending: false })
+        .limit(1);
+
+      const latestReading = readings && readings[0] ? readings[0] : null;
+
+      // Latest metrics (one per type)
+      const { data: metrics } = await supabase
+        .from("metrics_data")
+        .select("metric_type, value1, value2, unit, notes, created_at")
+        .eq("user_id", student.user_id)
+        .order("created_at", { ascending: false });
+
+      // Deduplicate — take first occurrence of each metric type
+      const metricMap = {};
+      if (metrics) {
+        metrics.forEach(m => {
+          if (!metricMap[m.metric_type]) metricMap[m.metric_type] = m;
+        });
+      }
+
+      return {
+        ...student,
+        latest_bpm:      latestReading ? latestReading.bpm      : null,
+        latest_spo2:     latestReading ? latestReading.spo2     : null,
+        last_reading_at: latestReading ? latestReading.created_at : null,
+        sleep:    metricMap["sleep"]    || null,
+        water:    metricMap["water"]    || null,
+        calories: metricMap["calories"] || null,
+        steps:    metricMap["steps"]    || null,
+        stress:   metricMap["stress"]   || null,
+      };
+    }));
+
+    res.json(results);
+
+  } catch (err) {
+    console.error("Nurse dashboard error:", err);
+    res.json([]);
+  }
+});
+
+
+// ================= START SERVER =================
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("Server running on port " + PORT);
 });

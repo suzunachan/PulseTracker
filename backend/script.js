@@ -77,7 +77,125 @@ const caloriesValue = document.getElementById("caloriesValue");
 const stepsValue    = document.getElementById("stepsValue");
 const stressValue   = document.getElementById("stressValue");
 
-let currentUser = null;
+/* ================= NURSE DOM REFERENCES ================= */
+
+const nurseRegisterScreen     = document.getElementById("nurseRegisterScreen");
+const nurseDashboard          = document.getElementById("nurseDashboard");
+const nurseRegFirstName       = document.getElementById("nurseRegFirstName");
+const nurseRegMiddleName      = document.getElementById("nurseRegMiddleName");
+const nurseRegLastName        = document.getElementById("nurseRegLastName");
+const nurseRegUsername        = document.getElementById("nurseRegUsername");
+const nurseRegPassword        = document.getElementById("nurseRegPassword");
+const nurseRegConfirmPassword = document.getElementById("nurseRegConfirmPassword");
+const nurseSecretCode         = document.getElementById("nurseSecretCode");
+const nurseRegisterBtn        = document.getElementById("nurseRegisterBtn");
+const nurseRegisterError      = document.getElementById("nurseRegisterError");
+const nurseLogoutBtn          = document.getElementById("nurseLogoutBtn");
+const nurseGreeting           = document.getElementById("nurseGreeting");
+const nurseRefreshBtn         = document.getElementById("nurseRefreshBtn");
+const nurseTableBody          = document.getElementById("nurseTableBody");
+const nurseSearch             = document.getElementById("nurseSearch");
+const nurseFilter             = document.getElementById("nurseFilter");
+const nursePortalLink         = document.getElementById("nursePortalLink");
+const logoClickTarget         = document.getElementById("logoClickTarget");
+
+const NURSE_SECRET = "NURSE2025";
+
+let currentUser    = null;
+let nurseAllRows   = [];
+
+
+/* ================= HIDDEN LOGO TAP — NURSE PORTAL ================= */
+
+let logoTapCount = 0;
+let logoTapTimer = null;
+
+if (logoClickTarget) {
+  logoClickTarget.addEventListener("click", () => {
+    logoTapCount++;
+    clearTimeout(logoTapTimer);
+    logoTapTimer = setTimeout(() => { logoTapCount = 0; }, 2000);
+
+    if (logoTapCount >= 5) {
+      logoTapCount = 0;
+      nursePortalLink.classList.remove("hidden");
+      nursePortalLink.classList.add("nurse-portal-reveal");
+    }
+  });
+}
+
+if (nursePortalLink) {
+  nursePortalLink.addEventListener("click", () => {
+    loginScreen.style.display         = "none";
+    nurseRegisterScreen.style.display = "flex";
+  });
+}
+
+if (document.getElementById("nurseGoToLogin")) {
+  document.getElementById("nurseGoToLogin").addEventListener("click", () => {
+    nurseRegisterScreen.style.display = "none";
+    loginScreen.style.display         = "flex";
+  });
+}
+
+
+/* ================= NURSE REGISTER ================= */
+
+if (nurseRegisterBtn) {
+  nurseRegisterBtn.addEventListener("click", async () => {
+    const firstName       = nurseRegFirstName.value.trim();
+    const middleName      = nurseRegMiddleName.value.trim();
+    const lastName        = nurseRegLastName.value.trim();
+    const username        = nurseRegUsername.value.trim();
+    const password        = nurseRegPassword.value.trim();
+    const confirmPassword = nurseRegConfirmPassword.value.trim();
+    const secretCode      = nurseSecretCode.value.trim();
+
+    if (!firstName || !lastName || !username || !password || !confirmPassword) {
+      nurseRegisterError.textContent = "Please fill all required fields.";
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      nurseRegisterError.textContent = "Passwords do not match.";
+      return;
+    }
+
+    if (secretCode !== NURSE_SECRET) {
+      nurseRegisterError.textContent = "Invalid nurse access code.";
+      return;
+    }
+
+    try {
+      const res  = await fetch(`${SERVER}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username,
+          password,
+          first_name: firstName,
+          middle_name: middleName || null,
+          last_name: lastName,
+          role: "nurse"
+        })
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        nurseRegisterError.textContent = data.message;
+        return;
+      }
+
+      alert("Nurse account created! Please log in.");
+      nurseRegisterScreen.style.display = "none";
+      loginScreen.style.display         = "flex";
+
+    } catch {
+      nurseRegisterError.textContent = "Server not reachable.";
+    }
+  });
+}
 
 
 /* ================= HELPER — APPLY PROFILE PIC ================= */
@@ -127,7 +245,15 @@ async function startSession(userId) {
 
   loginScreen.style.display    = "none";
   registerScreen.style.display = "none";
-  mainApp.style.display        = "flex";
+
+  // Route by role
+  if (currentUser.role === "nurse") {
+    startNurseSession();
+    return;
+  }
+
+  // Student flow
+  mainApp.style.display = "flex";
 
   if (userGreeting) userGreeting.textContent = "Welcome back, " + currentUser.username + "!";
   const greetingMobile = document.getElementById("userGreetingMobile");
@@ -149,6 +275,180 @@ async function startSession(userId) {
 
   await loadMetrics();
   await loadHistory();
+}
+
+
+/* ================= NURSE SESSION ================= */
+
+function startNurseSession() {
+  nurseDashboard.style.display = "flex";
+
+  const fullName = [currentUser.first_name, currentUser.middle_name, currentUser.last_name]
+    .filter(Boolean).join(" ");
+
+  if (nurseGreeting) nurseGreeting.textContent = "Logged in as " + (fullName || currentUser.username);
+  if (document.getElementById("nurseDisplayName")) {
+    document.getElementById("nurseDisplayName").textContent = fullName || currentUser.username;
+  }
+  if (document.getElementById("nurseProfilePic") && currentUser.profilePic) {
+    document.getElementById("nurseProfilePic").src = currentUser.profilePic;
+  }
+
+  loadNurseDashboard();
+}
+
+
+/* ================= LOAD NURSE DASHBOARD ================= */
+
+async function loadNurseDashboard() {
+  if (nurseTableBody) {
+    nurseTableBody.innerHTML = `<tr><td colspan="9" class="nurse-loading">Loading students…</td></tr>`;
+  }
+
+  try {
+    const res  = await fetch(`${SERVER}/nurse/students`);
+    const data = await res.json();
+
+    nurseAllRows = data;
+    renderNurseTable(data);
+    updateNurseStats(data);
+
+  } catch (err) {
+    console.error("Nurse dashboard error:", err);
+    if (nurseTableBody) {
+      nurseTableBody.innerHTML = `<tr><td colspan="9" class="nurse-loading">Failed to load data.</td></tr>`;
+    }
+  }
+}
+
+
+/* ================= RENDER NURSE TABLE ================= */
+
+function renderNurseTable(rows) {
+  if (!nurseTableBody) return;
+
+  if (!rows.length) {
+    nurseTableBody.innerHTML = `<tr><td colspan="9" class="nurse-loading">No students found.</td></tr>`;
+    return;
+  }
+
+  nurseTableBody.innerHTML = rows.map(s => {
+    const bpm    = s.latest_bpm  ?? "—";
+    const spo2   = s.latest_spo2 ?? "—";
+    const sleep  = s.sleep  ? `${s.sleep.value1}h ${s.sleep.value2}m` : "—";
+    const water  = s.water  ? `${s.water.value1} ${s.water.unit}`     : "—";
+    const steps  = s.steps  ? `${s.steps.value1}`                     : "—";
+    const stress = s.stress ? s.stress.unit                           : "—";
+
+    const status    = getStatus(s.latest_bpm, s.latest_spo2);
+    const statusTag = `<span class="status-badge status-${status.cls}">${status.label}</span>`;
+
+    const lastRead = s.last_reading_at
+      ? new Date(s.last_reading_at).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })
+      : "No readings";
+
+    const fullName = [s.first_name, s.middle_name, s.last_name].filter(Boolean).join(" ");
+    const avatar   = s.profilePic && s.profilePic.startsWith("http")
+      ? `<img src="${s.profilePic}" class="nurse-avatar" alt="pic">`
+      : `<div class="nurse-avatar-placeholder">${(s.first_name || s.username || "?")[0].toUpperCase()}</div>`;
+
+    return `
+      <tr class="nurse-row" data-status="${status.cls}">
+        <td>
+          <div class="nurse-student-cell">
+            ${avatar}
+            <div>
+              <div class="nurse-student-name">${fullName || s.username}</div>
+              <div class="nurse-student-user">@${s.username}</div>
+            </div>
+          </div>
+        </td>
+        <td><span class="metric-pill bpm-pill">${bpm}${bpm !== "—" ? " bpm" : ""}</span></td>
+        <td><span class="metric-pill oxy-pill">${spo2}${spo2 !== "—" ? "%" : ""}</span></td>
+        <td>${sleep}</td>
+        <td>${water}</td>
+        <td>${steps}</td>
+        <td>${stress}</td>
+        <td>${statusTag}</td>
+        <td class="last-read-cell">${lastRead}</td>
+      </tr>
+    `;
+  }).join("");
+}
+
+
+/* ================= STATUS LOGIC ================= */
+
+function getStatus(bpm, spo2) {
+  if (!bpm && !spo2) return { cls: "nodata",  label: "No Data" };
+  const bpmNum  = Number(bpm);
+  const spo2Num = Number(spo2);
+  if ((bpm  && (bpmNum  < 60 || bpmNum  > 100)) ||
+      (spo2 && spo2Num < 95)) {
+    return { cls: "alert",  label: "⚠ Attention" };
+  }
+  return { cls: "normal", label: "✓ Normal" };
+}
+
+
+/* ================= NURSE STATS BAR ================= */
+
+function updateNurseStats(rows) {
+  const total  = rows.length;
+  let normal = 0, alert = 0, nodata = 0;
+
+  rows.forEach(s => {
+    const st = getStatus(s.latest_bpm, s.latest_spo2).cls;
+    if (st === "normal") normal++;
+    else if (st === "alert")  alert++;
+    else nodata++;
+  });
+
+  if (document.getElementById("totalStudents"))  document.getElementById("totalStudents").textContent  = total;
+  if (document.getElementById("normalCount"))    document.getElementById("normalCount").textContent    = normal;
+  if (document.getElementById("alertCount"))     document.getElementById("alertCount").textContent     = alert;
+  if (document.getElementById("noDataCount"))    document.getElementById("noDataCount").textContent    = nodata;
+}
+
+
+/* ================= NURSE SEARCH & FILTER ================= */
+
+function applyNurseFilters() {
+  const q      = (nurseSearch  ? nurseSearch.value.toLowerCase()  : "");
+  const filter = (nurseFilter  ? nurseFilter.value                : "all");
+
+  const filtered = nurseAllRows.filter(s => {
+    const fullName = [s.first_name, s.middle_name, s.last_name, s.username]
+      .filter(Boolean).join(" ").toLowerCase();
+    const matchQ = !q || fullName.includes(q);
+
+    const status   = getStatus(s.latest_bpm, s.latest_spo2).cls;
+    const matchF   = filter === "all"
+      || (filter === "normal" && status === "normal")
+      || (filter === "alert"  && status === "alert")
+      || (filter === "nodata" && status === "nodata");
+
+    return matchQ && matchF;
+  });
+
+  renderNurseTable(filtered);
+}
+
+if (nurseSearch) nurseSearch.addEventListener("input",  applyNurseFilters);
+if (nurseFilter) nurseFilter.addEventListener("change", applyNurseFilters);
+if (nurseRefreshBtn) nurseRefreshBtn.addEventListener("click", loadNurseDashboard);
+
+
+/* ================= NURSE LOGOUT ================= */
+
+if (nurseLogoutBtn) {
+  nurseLogoutBtn.addEventListener("click", () => {
+    localStorage.removeItem("pulse_user_id");
+    currentUser = null;
+    nurseDashboard.style.display  = "none";
+    loginScreen.style.display     = "flex";
+    nurseAllRows = [];
+  });
 }
 
 
@@ -223,7 +523,8 @@ registerBtn.addEventListener("click", async () => {
         password,
         first_name: firstName,
         middle_name: middleName || null,
-        last_name: lastName
+        last_name: lastName,
+        role: "student"
       })
     });
 
@@ -260,7 +561,7 @@ document.getElementById("goToLogin").addEventListener("click", () => {
 });
 
 
-/* ================= LOGOUT ================= */
+/* ================= LOGOUT (student) ================= */
 
 logoutBtn.addEventListener("click", () => {
   localStorage.removeItem("pulse_user_id");
