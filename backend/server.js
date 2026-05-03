@@ -70,7 +70,6 @@ app.post("/register", async (req, res) => {
   res.json({ success: true, message: "Account created successfully" });
 });
 
-
 // ================= LOGIN =================
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
@@ -102,6 +101,16 @@ app.get("/user/:id", async (req, res) => {
   res.json({ success: true, user: data });
 });
 
+// ================= UPDATE ROLE =================
+app.put("/update-role", async (req, res) => {
+  const { id, role } = req.body;
+  const { error } = await supabase
+    .from("users")
+    .update({ role })
+    .eq("user_id", id);
+  if (error) return res.json({ success: false });
+  res.json({ success: true });
+});
 
 // ================= UPDATE USERNAME =================
 app.put("/update-username", async (req, res) => {
