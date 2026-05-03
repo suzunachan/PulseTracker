@@ -23,6 +23,9 @@ const upload = multer({ storage: multer.memoryStorage() });
 app.post("/register", async (req, res) => {
   const { username, password, first_name, middle_name, last_name, role } = req.body;
 
+  console.log("REGISTER BODY:", req.body);
+  console.log("ROLE RECEIVED:", role);
+
   const { data: existing } = await supabase
     .from("users")
     .select("user_id")
@@ -33,7 +36,8 @@ app.post("/register", async (req, res) => {
     return res.json({ success: false, message: "Username already taken" });
   }
 
-  const { error } = await supabase
+  // Insert WITHOUT role first
+  const { data: newUser, error } = await supabase
     .from("users")
     .insert([{
       username,
@@ -41,12 +45,26 @@ app.post("/register", async (req, res) => {
       first_name,
       middle_name,
       last_name,
-      role: role || "student"
-    }]);
+    }])
+    .select()
+    .single();
 
   if (error) {
     console.log("Register error:", error);
     return res.json({ success: false, message: "Database error" });
+  }
+
+  // Now force-update the role separately
+  const finalRole = role || "student";
+  console.log("SETTING ROLE TO:", finalRole);
+
+  const { error: roleError } = await supabase
+    .from("users")
+    .update({ role: finalRole })
+    .eq("user_id", newUser.user_id);
+
+  if (roleError) {
+    console.log("Role update error:", roleError);
   }
 
   res.json({ success: true, message: "Account created successfully" });
