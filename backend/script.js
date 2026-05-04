@@ -1031,9 +1031,9 @@ function connectArduino() {
     if (bpm) addLiveReading(bpm, spo2 || 0);
 
     const now = Date.now();
-    if (bpm && spo2 && currentUser && (now - lastSavedTime > 10000)) {
+    if (bpm && currentUser && (now - lastSavedTime > 10000)) {
       lastSavedTime = now;
-      await saveReading(bpm, spo2);
+      await saveReading(bpm, spo2 || 0);
     }
 
   } catch (err) {
