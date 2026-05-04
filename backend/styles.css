@@ -505,7 +505,7 @@ button, a { -webkit-touch-callout: none; }
 
 .core-vitals-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
   margin-bottom: 6px;
 }
@@ -535,7 +535,6 @@ button, a { -webkit-touch-callout: none; }
 
 .bpm-icon  { background: rgba(239, 104, 104, 0.12); }
 .oxy-icon  { background: rgba(74, 144, 217, 0.12); }
-.rr-icon   { background: rgba(90, 184, 90, 0.12); }
 
 .vital-number {
   font-size: 36px;
@@ -578,7 +577,6 @@ button, a { -webkit-touch-callout: none; }
 
 .bpm-fill  { background: linear-gradient(90deg, #f0a0a0, #e05e5e); }
 .oxy-fill  { background: linear-gradient(90deg, #90c4f0, #4a90d9); }
-.rr-fill   { background: linear-gradient(90deg, #90d090, #4ca84c); }
 
 /* ================================================
    12. LIFESTYLE METRICS GRID
@@ -1101,7 +1099,7 @@ button, a { -webkit-touch-callout: none; }
 
 .vital-info-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 18px;
   width: 100%;
   align-items: stretch;
