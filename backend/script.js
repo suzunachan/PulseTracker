@@ -357,7 +357,7 @@ function renderNurseTable(rows) {
     const statusTag = `<span class="status-badge status-${status.cls}">${status.label}</span>`;
 
     const lastRead = s.last_reading_at
-      ? new Date(s.last_reading_at).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })
+      ? new Date(s.last_reading_at + 'Z').toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })
       : "No readings";
 
     const fullName = [s.first_name, s.middle_name, s.last_name].filter(Boolean).join(" ");
