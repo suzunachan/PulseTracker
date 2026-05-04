@@ -333,6 +333,67 @@ app.get("/nurse/students", async (req, res) => {
   }
 });
 
+// ================= ADMIN: CREATE NURSE =================
+app.post("/admin/create-nurse", async (req, res) => {
+  const { adminId, username, password, first_name, middle_name, last_name } = req.body;
+
+  // Check if requester is admin
+  const { data: admin } = await supabase
+    .from("users")
+    .select("role")
+    .eq("user_id", adminId)
+    .single();
+
+  if (!admin || admin.role !== "admin") {
+    return res.json({ success: false, message: "Unauthorized" });
+  }
+
+  // Check if username taken
+  const { data: existing } = await supabase
+    .from("users")
+    .select("user_id")
+    .eq("username", username)
+    .single();
+
+  if (existing) {
+    return res.json({ success: false, message: "Username already taken" });
+  }
+
+  // Create nurse account
+  const { data: newUser, error } = await supabase
+    .from("users")
+    .insert([{ username, password_hash: password, first_name, middle_name, last_name, role: "nurse" }])
+    .select()
+    .single();
+
+  if (error) return res.json({ success: false, message: "Database error" });
+
+  res.json({ success: true, message: "Nurse account created!" });
+});
+
+// ================= ADMIN: GET ALL NURSES =================
+app.get("/admin/nurses", async (req, res) => {
+  const adminId = req.query.adminId;
+
+  const { data: admin } = await supabase
+    .from("users")
+    .select("role")
+    .eq("user_id", adminId)
+    .single();
+
+  if (!admin || admin.role !== "admin") {
+    return res.json({ success: false, message: "Unauthorized" });
+  }
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("user_id, username, first_name, middle_name, last_name")
+    .eq("role", "nurse")
+    .order("first_name", { ascending: true });
+
+  if (error) return res.json([]);
+  res.json(data);
+});
 
 // ================= START SERVER =================
 const PORT = process.env.PORT || 3000;
