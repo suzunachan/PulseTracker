@@ -1920,3 +1920,14 @@ button, a { -webkit-touch-callout: none; }
   .admin-stats-bar { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .admin-table th, .admin-table td { padding: 10px 12px; }
 }
+
+.creds-box .creds-row .creds-label,
+.creds-box .creds-row .creds-value {
+  text-align: left; /* these are fine left-aligned in the box */
+}
+
+.modal-content.creds-modal > p,
+.modal-content.creds-modal > span {
+  text-align: center;
+  width: 100%;
+}

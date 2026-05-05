@@ -19,7 +19,6 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 
 // ================= REGISTER =================
-// Accepts optional `role` field ("student" default, "nurse" for nurse accounts)
 app.post("/register", async (req, res) => {
   const { username, password, first_name, middle_name, last_name, role } = req.body;
 
@@ -36,7 +35,6 @@ app.post("/register", async (req, res) => {
     return res.json({ success: false, message: "Username already taken" });
   }
 
-  // Insert WITHOUT role first
   const { data: newUser, error } = await supabase
     .from("users")
     .insert([{
@@ -54,7 +52,6 @@ app.post("/register", async (req, res) => {
     return res.json({ success: false, message: "Database error" });
   }
 
-  // Now force-update the role separately
   const finalRole = role || "student";
   console.log("SETTING ROLE TO:", finalRole);
 
@@ -69,6 +66,7 @@ app.post("/register", async (req, res) => {
 
   res.json({ success: true, message: "Account created successfully" });
 });
+
 
 // ================= LOGIN =================
 app.post("/login", async (req, res) => {
@@ -101,6 +99,7 @@ app.get("/user/:id", async (req, res) => {
   res.json({ success: true, user: data });
 });
 
+
 // ================= UPDATE ROLE =================
 app.put("/update-role", async (req, res) => {
   const { id, role } = req.body;
@@ -111,6 +110,7 @@ app.put("/update-role", async (req, res) => {
   if (error) return res.json({ success: false });
   res.json({ success: true });
 });
+
 
 // ================= UPDATE USERNAME =================
 app.put("/update-username", async (req, res) => {
@@ -269,11 +269,8 @@ app.get("/readings/:userId", async (req, res) => {
 
 
 // ================= NURSE: GET ALL STUDENTS WITH LATEST DATA =================
-// Returns all student accounts with their latest BPM/SpO2 reading
-// and latest lifestyle metrics for the nurse dashboard.
 app.get("/nurse/students", async (req, res) => {
   try {
-    // 1. Fetch all student users
     const { data: students, error: studentsErr } = await supabase
       .from("users")
       .select("user_id, username, first_name, middle_name, last_name, profilePic")
@@ -285,9 +282,7 @@ app.get("/nurse/students", async (req, res) => {
       return res.json([]);
     }
 
-    // 2. For each student, fetch latest heart reading + latest metrics
     const results = await Promise.all(students.map(async (student) => {
-      // Latest heart reading
       const { data: readings } = await supabase
         .from("heart_readings")
         .select("bpm, spo2, created_at")
@@ -297,14 +292,12 @@ app.get("/nurse/students", async (req, res) => {
 
       const latestReading = readings && readings[0] ? readings[0] : null;
 
-      // Latest metrics (one per type)
       const { data: metrics } = await supabase
         .from("metrics_data")
         .select("metric_type, value1, value2, unit, notes, created_at")
         .eq("user_id", student.user_id)
         .order("created_at", { ascending: false });
 
-      // Deduplicate — take first occurrence of each metric type
       const metricMap = {};
       if (metrics) {
         metrics.forEach(m => {
@@ -314,8 +307,8 @@ app.get("/nurse/students", async (req, res) => {
 
       return {
         ...student,
-        latest_bpm:      latestReading ? latestReading.bpm      : null,
-        latest_spo2:     latestReading ? latestReading.spo2     : null,
+        latest_bpm:      latestReading ? latestReading.bpm        : null,
+        latest_spo2:     latestReading ? latestReading.spo2       : null,
         last_reading_at: latestReading ? latestReading.created_at : null,
         sleep:    metricMap["sleep"]    || null,
         water:    metricMap["water"]    || null,
@@ -333,43 +326,6 @@ app.get("/nurse/students", async (req, res) => {
   }
 });
 
-// ================= ADMIN: CREATE NURSE =================
-app.post("/admin/create-nurse", async (req, res) => {
-  const { adminId, username, password, first_name, middle_name, last_name } = req.body;
-
-  // Check if requester is admin
-  const { data: admin } = await supabase
-    .from("users")
-    .select("role")
-    .eq("user_id", adminId)
-    .single();
-
-  if (!admin || admin.role !== "admin") {
-    return res.json({ success: false, message: "Unauthorized" });
-  }
-
-  // Check if username taken
-  const { data: existing } = await supabase
-    .from("users")
-    .select("user_id")
-    .eq("username", username)
-    .single();
-
-  if (existing) {
-    return res.json({ success: false, message: "Username already taken" });
-  }
-
-  // Create nurse account
-  const { data: newUser, error } = await supabase
-    .from("users")
-    .insert([{ username, password_hash: password, first_name, middle_name, last_name, role: "nurse" }])
-    .select()
-    .single();
-
-  if (error) return res.json({ success: false, message: "Database error" });
-
-  res.json({ success: true, message: "Nurse account created!" });
-});
 
 // ================= ADMIN: GET ALL NURSES =================
 app.get("/admin/nurses", async (req, res) => {
@@ -387,7 +343,7 @@ app.get("/admin/nurses", async (req, res) => {
 
   const { data, error } = await supabase
     .from("users")
-    .select("user_id, username, first_name, middle_name, last_name")
+    .select("user_id, username, first_name, middle_name, last_name, created_at")
     .eq("role", "nurse")
     .order("first_name", { ascending: true });
 
@@ -395,8 +351,86 @@ app.get("/admin/nurses", async (req, res) => {
   res.json(data);
 });
 
+
+// ================= ADMIN: CREATE NURSE =================
+app.post("/admin/create-nurse", async (req, res) => {
+  const { adminId, username, password, first_name, middle_name, last_name } = req.body;
+
+  const { data: admin } = await supabase
+    .from("users")
+    .select("role")
+    .eq("user_id", adminId)
+    .single();
+
+  if (!admin || admin.role !== "admin") {
+    return res.json({ success: false, message: "Unauthorized" });
+  }
+
+  const { data: existing } = await supabase
+    .from("users")
+    .select("user_id")
+    .eq("username", username)
+    .single();
+
+  if (existing) {
+    return res.json({ success: false, message: "Username already taken" });
+  }
+
+  const { error } = await supabase
+    .from("users")
+    .insert([{ username, password_hash: password, first_name, middle_name, last_name, role: "nurse" }])
+    .select()
+    .single();
+
+  if (error) return res.json({ success: false, message: "Database error" });
+
+  res.json({ success: true, message: "Nurse account created!" });
+});
+
+
+// ================= ADMIN: DELETE NURSE =================
+app.delete("/admin/delete-nurse/:id", async (req, res) => {
+  const nurseId = req.params.id;
+  const adminId = req.query.adminId;
+
+  // Verify requester is admin
+  const { data: admin } = await supabase
+    .from("users")
+    .select("role")
+    .eq("user_id", adminId)
+    .single();
+
+  if (!admin || admin.role !== "admin") {
+    return res.json({ success: false, message: "Unauthorized" });
+  }
+
+  // Verify target is actually a nurse (safety check)
+  const { data: target } = await supabase
+    .from("users")
+    .select("role")
+    .eq("user_id", nurseId)
+    .single();
+
+  if (!target || target.role !== "nurse") {
+    return res.json({ success: false, message: "Target is not a nurse account" });
+  }
+
+  const { error } = await supabase
+    .from("users")
+    .delete()
+    .eq("user_id", nurseId);
+
+  if (error) {
+    console.log("Delete nurse error:", error);
+    return res.json({ success: false, message: "Delete failed" });
+  }
+
+  res.json({ success: true });
+});
+
+
 // ================= START SERVER =================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log("Server running on port " + PORT);
-});// force redeploy Sun, May  3, 2026  7:48:46 PM
+});

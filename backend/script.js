@@ -469,7 +469,6 @@ if (nurseLogoutBtn) {
 
 
 /* ================= ADMIN SESSION ================= */
-// FIX: hide all other screens before showing admin dashboard
 
 function startAdminSession() {
   loginScreen.style.display    = "none";
@@ -492,7 +491,6 @@ function startAdminSession() {
 
 
 /* ================= LOAD ADMIN DASHBOARD ================= */
-// FIX: pass adminId in query, guard against non-array response
 
 async function loadAdminDashboard() {
   const tbody = document.getElementById("adminNurseTableBody");
@@ -504,7 +502,6 @@ async function loadAdminDashboard() {
     const res  = await fetch(`${SERVER}/admin/nurses?adminId=${currentUser.user_id}`);
     const json = await res.json();
 
-    // Guard: if not an array (e.g. auth error object), bail out gracefully
     if (!Array.isArray(json)) {
       console.error("Admin nurses: unexpected response", json);
       tbody.innerHTML = `<tr><td colspan="4" class="nurse-loading">Failed to load nurses.</td></tr>`;
@@ -631,6 +628,7 @@ if (confirmCreateNurseBtn) {
         return;
       }
 
+      // Clear form fields
       document.getElementById("newNurseFirstName").value  = "";
       document.getElementById("newNurseMiddleName").value = "";
       document.getElementById("newNurseLastName").value   = "";
@@ -640,9 +638,14 @@ if (confirmCreateNurseBtn) {
 
       createNurseModal.classList.add("hidden");
 
-      document.getElementById("credsUsername").textContent = username;
-      document.getElementById("credsPassword").textContent = password;
-      document.getElementById("nurseCredsModal").classList.remove("hidden");
+      // Show credentials modal with centered content
+      const credsUsername = document.getElementById("credsUsername");
+      const credsPassword = document.getElementById("credsPassword");
+      if (credsUsername) credsUsername.textContent = username;
+      if (credsPassword) credsPassword.textContent = password;
+
+      const nurseCredsModal = document.getElementById("nurseCredsModal");
+      if (nurseCredsModal) nurseCredsModal.classList.remove("hidden");
 
       loadAdminDashboard();
 
@@ -666,7 +669,8 @@ let deleteTargetId = null;
 
 function openDeleteNurseModal(id, name) {
   deleteTargetId = id;
-  document.getElementById("deleteNurseName").textContent = `Delete "${name}"? This action cannot be undone.`;
+  const nameEl = document.getElementById("deleteNurseName");
+  if (nameEl) nameEl.textContent = `Delete "${name}"? This action cannot be undone.`;
   document.getElementById("deleteNurseModal").classList.remove("hidden");
 }
 
@@ -684,12 +688,21 @@ if (confirmDeleteNurseBtn) {
     if (!deleteTargetId) return;
 
     try {
-      // FIX: pass adminId so the backend can verify the request
-      await fetch(`${SERVER}/admin/delete-nurse/${deleteTargetId}?adminId=${currentUser.user_id}`, {
-        method: "DELETE"
-      });
+      const res = await fetch(
+        `${SERVER}/admin/delete-nurse/${deleteTargetId}?adminId=${currentUser.user_id}`,
+        { method: "DELETE" }
+      );
+      const data = await res.json();
+
+      if (!data.success) {
+        alert("Failed to delete nurse: " + (data.message || "Unknown error"));
+        return;
+      }
+
     } catch (err) {
       console.error("Delete error:", err);
+      alert("Server not reachable.");
+      return;
     }
 
     document.getElementById("deleteNurseModal").classList.add("hidden");
