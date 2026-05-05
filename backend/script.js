@@ -260,8 +260,14 @@ async function startSession(userId) {
   registerScreen.style.display = "none";
 
   // Route by role
+  // Route by role
   if (currentUser.role === "nurse") {
     startNurseSession();
+    return;
+  }
+
+  if (currentUser.role === "admin") {
+    startAdminSession();
     return;
   }
 
@@ -358,7 +364,7 @@ function renderNurseTable(rows) {
 
     const lastRead = s.last_reading_at
       ? new Date(s.last_reading_at + 'Z').toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })
-      : "No readings";
+      : "No readings";  
 
     const fullName = [s.first_name, s.middle_name, s.last_name].filter(Boolean).join(" ");
     const avatar   = s.profilePic && s.profilePic.startsWith("http")
