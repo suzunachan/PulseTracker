@@ -14,7 +14,6 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Use memory storage — no local disk, upload straight to Supabase Storage
 const upload = multer({ storage: multer.memoryStorage() });
 
 
@@ -35,7 +34,6 @@ app.post("/register", async (req, res) => {
     return res.json({ success: false, message: "Username already taken" });
   }
 
-  // Insert role in the same operation — no separate update needed
   const { error } = await supabase
     .from("users")
     .insert([{
@@ -318,18 +316,24 @@ app.get("/nurse/students", async (req, res) => {
 
 // ================= ADMIN: GET ALL NURSES =================
 app.get("/admin/nurses", async (req, res) => {
+  console.log("Admin nurses endpoint hit");
+
   const { data, error } = await supabase
     .from("users")
-    .select("user_id, username, first_name, middle_name, last_name, created_at")
-    .eq("role", "nurse")
-    .order("first_name", { ascending: true });
+    .select("user_id, username, first_name, middle_name, last_name, created_at, role");
+
+  console.log("All users:", JSON.stringify(data));
+  console.log("Error:", error);
 
   if (error) {
     console.log("Admin nurses error:", error);
     return res.json([]);
   }
 
-  res.json(data || []);
+  const nurses = (data || []).filter(u => u.role === "nurse");
+  console.log("Filtered nurses:", nurses);
+
+  res.json(nurses);
 });
 
 
@@ -374,7 +378,6 @@ app.delete("/admin/delete-nurse/:id", async (req, res) => {
   const nurseId = req.params.id;
   const adminId = req.query.adminId;
 
-  // Verify requester is admin
   const { data: admin } = await supabase
     .from("users")
     .select("role")
@@ -385,7 +388,6 @@ app.delete("/admin/delete-nurse/:id", async (req, res) => {
     return res.json({ success: false, message: "Unauthorized" });
   }
 
-  // Verify target is actually a nurse (safety check)
   const { data: target } = await supabase
     .from("users")
     .select("role")
