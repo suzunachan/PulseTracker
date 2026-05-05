@@ -22,8 +22,8 @@ const upload = multer({ storage: multer.memoryStorage() });
 app.post("/register", async (req, res) => {
   const { username, password, first_name, middle_name, last_name, role } = req.body;
 
-  console.log("REGISTER BODY:", req.body);
-  console.log("ROLE RECEIVED:", role);
+  const finalRole = role || "student";
+  console.log("REGISTER — username:", username, "| role:", finalRole);
 
   const { data: existing } = await supabase
     .from("users")
@@ -35,35 +35,24 @@ app.post("/register", async (req, res) => {
     return res.json({ success: false, message: "Username already taken" });
   }
 
-  const { data: newUser, error } = await supabase
+  // Insert role in the same operation — no separate update needed
+  const { error } = await supabase
     .from("users")
     .insert([{
       username,
       password_hash: password,
       first_name,
-      middle_name,
+      middle_name: middle_name || null,
       last_name,
-    }])
-    .select()
-    .single();
+      role: finalRole,
+    }]);
 
   if (error) {
     console.log("Register error:", error);
     return res.json({ success: false, message: "Database error" });
   }
 
-  const finalRole = role || "student";
-  console.log("SETTING ROLE TO:", finalRole);
-
-  const { error: roleError } = await supabase
-    .from("users")
-    .update({ role: finalRole })
-    .eq("user_id", newUser.user_id);
-
-  if (roleError) {
-    console.log("Role update error:", roleError);
-  }
-
+  console.log("Registered successfully as:", finalRole);
   res.json({ success: true, message: "Account created successfully" });
 });
 

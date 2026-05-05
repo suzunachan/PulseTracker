@@ -628,8 +628,9 @@
 </div>
 
 <!-- ================= NURSE CREDENTIALS MODAL ================= -->
+<!-- FIX: added creds-modal class so centering CSS applies -->
 <div id="nurseCredsModal" class="modal hidden">
-  <div class="modal-content">
+  <div class="modal-content creds-modal">
     <div class="creds-success-icon">✓</div>
     <h2>Nurse Account Created!</h2>
     <p class="creds-subtitle">Share these credentials with the nurse. The password will not be shown again.</p>
@@ -650,8 +651,9 @@
 </div>
 
 <!-- ================= DELETE CONFIRM MODAL ================= -->
+<!-- FIX: added creds-modal class so centering CSS applies -->
 <div id="deleteNurseModal" class="modal hidden">
-  <div class="modal-content">
+  <div class="modal-content creds-modal">
     <div class="creds-success-icon delete-icon">⚠</div>
     <h2>Delete Nurse Account?</h2>
     <p class="creds-subtitle" id="deleteNurseName">This action cannot be undone.</p>
@@ -703,6 +705,62 @@
     </div>
   </div>
 </div>
+
+<!-- ================= NURSE REGISTER SCREEN ================= -->
+<div id="nurseRegisterScreen" class="auth-screen" style="display:none;">
+  <div class="auth-form-side">
+    <div class="auth-inner">
+      <div class="auth-logo">
+        <img src="Blue and Green Modern Charity Foundation Logo.png" alt="Logo">
+      </div>
+      <h2 class="auth-title">Nurse Portal</h2>
+      <p class="auth-subtitle">Already have an account? <button id="nurseGoToLogin" class="auth-link">Log in</button></p>
+      <div class="auth-form">
+        <div class="auth-field">
+          <input id="nurseRegFirstName" type="text" placeholder="First Name">
+        </div>
+        <div class="auth-field">
+          <input id="nurseRegMiddleName" type="text" placeholder="Middle Name (optional)">
+        </div>
+        <div class="auth-field">
+          <input id="nurseRegLastName" type="text" placeholder="Last Name">
+        </div>
+        <div class="auth-field">
+          <input id="nurseRegUsername" type="text" placeholder="Username">
+        </div>
+        <div class="auth-field">
+          <input id="nurseRegPassword" type="password" placeholder="Password">
+        </div>
+        <div class="auth-field">
+          <input id="nurseRegConfirmPassword" type="password" placeholder="Confirm Password">
+        </div>
+        <div class="auth-field">
+          <input id="nurseSecretCode" type="password" placeholder="Nurse Access Code">
+        </div>
+        <button id="nurseRegisterBtn" class="auth-btn">Register as Nurse</button>
+        <p id="nurseRegisterError" class="error-msg"></p>
+      </div>
+    </div>
+  </div>
+  <div class="auth-deco-side">
+    <div class="auth-deco-pattern">
+      <div class="deco-grid">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden nurse portal link (revealed by 5 logo taps) -->
+<button id="nursePortalLink" class="hidden" style="position:fixed;bottom:20px;right:20px;z-index:9999;padding:8px 16px;border-radius:12px;border:none;background:var(--nurse-accent);color:white;font-weight:700;cursor:pointer;">
+  🩺 Nurse Portal
+</button>
+<!-- Hidden logo tap target -->
+<div id="logoClickTarget" style="position:fixed;top:0;left:0;width:60px;height:60px;z-index:9998;cursor:default;"></div>
 
 </body>
 </html>
