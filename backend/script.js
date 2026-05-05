@@ -101,8 +101,8 @@ const logoClickTarget         = document.getElementById("logoClickTarget");
 
 const NURSE_SECRET = "NURSE2025";
 
-let currentUser    = null;
-let nurseAllRows   = [];
+let currentUser  = null;
+let nurseAllRows = [];
 
 
 /* ================= HIDDEN LOGO TAP — NURSE PORTAL ================= */
@@ -138,7 +138,6 @@ if (document.getElementById("nurseGoToLogin")) {
   });
 }
 
-/* ================= NURSE REGISTER ================= */
 
 /* ================= NURSE REGISTER ================= */
 
@@ -188,7 +187,6 @@ if (nurseRegisterBtn) {
         return;
       }
 
-      // Log in immediately and go straight to nurse dashboard
       const loginRes = await fetch(`${SERVER}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -260,7 +258,6 @@ async function startSession(userId) {
   registerScreen.style.display = "none";
 
   // Route by role
-  // Route by role
   if (currentUser.role === "nurse") {
     startNurseSession();
     return;
@@ -289,8 +286,8 @@ async function startSession(userId) {
   applyProfilePic(currentUser.profilePic);
 
   if (updateFirstName)  updateFirstName.value  = currentUser.first_name  || "";
-  if (updateMiddleName) updateMiddleName.value = currentUser.middle_name || "";
-  if (updateLastName)   updateLastName.value   = currentUser.last_name   || "";
+  if (updateMiddleName) updateMiddleName.value  = currentUser.middle_name || "";
+  if (updateLastName)   updateLastName.value    = currentUser.last_name   || "";
 
   await loadMetrics();
   await loadHistory();
@@ -364,7 +361,7 @@ function renderNurseTable(rows) {
 
     const lastRead = s.last_reading_at
       ? new Date(s.last_reading_at + 'Z').toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })
-      : "No readings";  
+      : "No readings";
 
     const fullName = [s.first_name, s.middle_name, s.last_name].filter(Boolean).join(" ");
     const avatar   = s.profilePic && s.profilePic.startsWith("http")
@@ -453,8 +450,8 @@ function applyNurseFilters() {
   renderNurseTable(filtered);
 }
 
-if (nurseSearch) nurseSearch.addEventListener("input",  applyNurseFilters);
-if (nurseFilter) nurseFilter.addEventListener("change", applyNurseFilters);
+if (nurseSearch)    nurseSearch.addEventListener("input",  applyNurseFilters);
+if (nurseFilter)    nurseFilter.addEventListener("change", applyNurseFilters);
 if (nurseRefreshBtn) nurseRefreshBtn.addEventListener("click", loadNurseDashboard);
 
 
@@ -464,9 +461,216 @@ if (nurseLogoutBtn) {
   nurseLogoutBtn.addEventListener("click", () => {
     localStorage.removeItem("pulse_user_id");
     currentUser = null;
-    nurseDashboard.style.display  = "none";
-    loginScreen.style.display     = "flex";
+    nurseDashboard.style.display = "none";
+    loginScreen.style.display    = "flex";
     nurseAllRows = [];
+  });
+}
+
+
+/* ================= ADMIN SESSION ================= */
+
+function startAdminSession() {
+  const adminDashboard = document.getElementById("adminDashboard");
+  if (adminDashboard) adminDashboard.style.display = "flex";
+  loadAdminDashboard();
+}
+
+
+/* ================= LOAD ADMIN DASHBOARD ================= */
+
+async function loadAdminDashboard() {
+  const tbody = document.getElementById("adminNurseTableBody");
+  if (!tbody) return;
+
+  tbody.innerHTML = `<tr><td colspan="4" class="nurse-loading">Loading nurses…</td></tr>`;
+
+  try {
+    const res  = await fetch(`${SERVER}/admin/nurses`);
+    const data = await res.json();
+
+    const totalEl = document.getElementById("totalNurses");
+    if (totalEl) totalEl.textContent = data.length;
+
+    if (!data.length) {
+      tbody.innerHTML = `<tr><td colspan="4" class="nurse-loading">No nurse accounts yet.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = data.map(n => {
+      const fullName = [n.first_name, n.middle_name, n.last_name].filter(Boolean).join(" ");
+      const initial  = (n.first_name || n.username || "N")[0].toUpperCase();
+      const created  = n.created_at
+        ? new Date(n.created_at).toLocaleDateString([], { year: "numeric", month: "short", day: "numeric" })
+        : "—";
+
+      return `
+        <tr class="admin-row">
+          <td>
+            <div class="admin-nurse-cell">
+              <div class="admin-nurse-avatar">${initial}</div>
+              <div>
+                <div class="admin-nurse-name">${fullName || n.username}</div>
+                <div class="admin-nurse-meta">Nurse</div>
+              </div>
+            </div>
+          </td>
+          <td>@${n.username}</td>
+          <td>${created}</td>
+          <td>
+            <button class="delete-nurse-btn" data-id="${n.user_id}" data-name="${fullName || n.username}">
+              Delete
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join("");
+
+    // Wire up delete buttons after rendering
+    tbody.querySelectorAll(".delete-nurse-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        openDeleteNurseModal(btn.dataset.id, btn.dataset.name);
+      });
+    });
+
+  } catch (err) {
+    console.error("Admin dashboard error:", err);
+    tbody.innerHTML = `<tr><td colspan="4" class="nurse-loading">Failed to load data.</td></tr>`;
+  }
+}
+
+
+/* ================= ADMIN LOGOUT ================= */
+
+const adminLogoutBtn = document.getElementById("adminLogoutBtn");
+if (adminLogoutBtn) {
+  adminLogoutBtn.addEventListener("click", () => {
+    localStorage.removeItem("pulse_user_id");
+    currentUser = null;
+    document.getElementById("adminDashboard").style.display = "none";
+    loginScreen.style.display = "flex";
+  });
+}
+
+
+/* ================= CREATE NURSE MODAL ================= */
+
+const openCreateNurseBtn    = document.getElementById("openCreateNurseBtn");
+const createNurseModal      = document.getElementById("createNurseModal");
+const cancelCreateNurseBtn  = document.getElementById("cancelCreateNurseBtn");
+const confirmCreateNurseBtn = document.getElementById("confirmCreateNurseBtn");
+
+if (openCreateNurseBtn) {
+  openCreateNurseBtn.addEventListener("click", () => {
+    createNurseModal.classList.remove("hidden");
+  });
+}
+
+if (cancelCreateNurseBtn) {
+  cancelCreateNurseBtn.addEventListener("click", () => {
+    createNurseModal.classList.add("hidden");
+    document.getElementById("createNurseError").textContent = "";
+  });
+}
+
+if (confirmCreateNurseBtn) {
+  confirmCreateNurseBtn.addEventListener("click", async () => {
+    const firstName  = document.getElementById("newNurseFirstName").value.trim();
+    const middleName = document.getElementById("newNurseMiddleName").value.trim();
+    const lastName   = document.getElementById("newNurseLastName").value.trim();
+    const username   = document.getElementById("newNurseUsername").value.trim();
+    const password   = document.getElementById("newNursePassword").value.trim();
+    const errEl      = document.getElementById("createNurseError");
+
+    if (!firstName || !lastName || !username || !password) {
+      errEl.textContent = "Please fill all required fields.";
+      return;
+    }
+
+    try {
+      const res = await fetch(`${SERVER}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username,
+          password,
+          first_name: firstName,
+          middle_name: middleName || null,
+          last_name: lastName,
+          role: "nurse"
+        })
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        errEl.textContent = data.message;
+        return;
+      }
+
+      // Clear form
+      document.getElementById("newNurseFirstName").value  = "";
+      document.getElementById("newNurseMiddleName").value = "";
+      document.getElementById("newNurseLastName").value   = "";
+      document.getElementById("newNurseUsername").value   = "";
+      document.getElementById("newNursePassword").value   = "";
+      errEl.textContent = "";
+
+      createNurseModal.classList.add("hidden");
+
+      // Show credentials
+      document.getElementById("credsUsername").textContent = username;
+      document.getElementById("credsPassword").textContent = password;
+      document.getElementById("nurseCredsModal").classList.remove("hidden");
+
+      loadAdminDashboard();
+
+    } catch {
+      errEl.textContent = "Server not reachable.";
+    }
+  });
+}
+
+const closeCreds = document.getElementById("closeCreds");
+if (closeCreds) {
+  closeCreds.addEventListener("click", () => {
+    document.getElementById("nurseCredsModal").classList.add("hidden");
+  });
+}
+
+
+/* ================= DELETE NURSE MODAL ================= */
+
+let deleteTargetId = null;
+
+function openDeleteNurseModal(id, name) {
+  deleteTargetId = id;
+  document.getElementById("deleteNurseName").textContent = `Delete "${name}"? This action cannot be undone.`;
+  document.getElementById("deleteNurseModal").classList.remove("hidden");
+}
+
+const cancelDeleteNurseBtn = document.getElementById("cancelDeleteNurseBtn");
+if (cancelDeleteNurseBtn) {
+  cancelDeleteNurseBtn.addEventListener("click", () => {
+    document.getElementById("deleteNurseModal").classList.add("hidden");
+    deleteTargetId = null;
+  });
+}
+
+const confirmDeleteNurseBtn = document.getElementById("confirmDeleteNurseBtn");
+if (confirmDeleteNurseBtn) {
+  confirmDeleteNurseBtn.addEventListener("click", async () => {
+    if (!deleteTargetId) return;
+
+    try {
+      await fetch(`${SERVER}/admin/delete-nurse/${deleteTargetId}`, { method: "DELETE" });
+    } catch (err) {
+      console.error("Delete error:", err);
+    }
+
+    document.getElementById("deleteNurseModal").classList.add("hidden");
+    deleteTargetId = null;
+    loadAdminDashboard();
   });
 }
 
@@ -1016,36 +1220,36 @@ function connectArduino() {
   ws.onopen = () => console.log('Arduino bridge connected');
 
   ws.onmessage = async (e) => {
-  try {
-    const d = JSON.parse(e.data);
+    try {
+      const d = JSON.parse(e.data);
 
-    if (d.status === 'no_finger') {
-      updateVitalCard("bpmValue",    "bpmBar",    "--", 180);
-      updateVitalCard("oxygenValue", "oxygenBar", "--", 100);
-      updateVitalCard("rrValue",     "rrBar",     "--",  30);
-      return;
+      if (d.status === 'no_finger') {
+        updateVitalCard("bpmValue",    "bpmBar",    "--", 180);
+        updateVitalCard("oxygenValue", "oxygenBar", "--", 100);
+        updateVitalCard("rrValue",     "rrBar",     "--",  30);
+        return;
+      }
+
+      const bpm  = d.valid_bpm  && d.bpm  > 20  && d.bpm  < 255  ? Math.round(d.bpm)  : null;
+      const spo2 = d.valid_spo2 && d.spo2 > 50  && d.spo2 <= 100 ? d.spo2              : null;
+      const rr   = d.rr > 0 ? d.rr : null;
+
+      if (bpm)  updateVitalCard("bpmValue",    "bpmBar",    bpm,  180);
+      if (spo2) updateVitalCard("oxygenValue", "oxygenBar", spo2, 100);
+      if (rr)   updateVitalCard("rrValue",     "rrBar",     rr,    30);
+
+      if (bpm) addLiveReading(bpm, spo2 || 0);
+
+      const now = Date.now();
+      if (bpm && currentUser && (now - lastSavedTime > 10000)) {
+        lastSavedTime = now;
+        await saveReading(bpm, spo2 || 0);
+      }
+
+    } catch (err) {
+      console.error('WebSocket parse error:', err);
     }
-
-    const bpm  = d.valid_bpm  && d.bpm  > 20  && d.bpm  < 255  ? Math.round(d.bpm)  : null;
-    const spo2 = d.valid_spo2 && d.spo2 > 50  && d.spo2 <= 100 ? d.spo2              : null;
-    const rr = d.rr > 0 ? d.rr : null;
-
-    if (bpm)  updateVitalCard("bpmValue",    "bpmBar",    bpm,  180);
-    if (spo2) updateVitalCard("oxygenValue", "oxygenBar", spo2, 100);
-    if (rr)   updateVitalCard("rrValue",     "rrBar",     rr,    30);
-
-    if (bpm) addLiveReading(bpm, spo2 || 0);
-
-    const now = Date.now();
-    if (bpm && currentUser && (now - lastSavedTime > 10000)) {
-      lastSavedTime = now;
-      await saveReading(bpm, spo2 || 0);
-    }
-
-  } catch (err) {
-    console.error('WebSocket parse error:', err);
-  }
-};
+  };
 
   ws.onclose = () => {
     console.log('Arduino bridge disconnected — retrying in 3s...');
