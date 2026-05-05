@@ -521,9 +521,7 @@ async function loadAdminDashboard() {
     tbody.innerHTML = data.map(n => {
       const fullName = [n.first_name, n.middle_name, n.last_name].filter(Boolean).join(" ");
       const initial  = (n.first_name || n.username || "N")[0].toUpperCase();
-      const created  = n.created_at
-        ? new Date(n.created_at).toLocaleDateString([], { year: "numeric", month: "short", day: "numeric" })
-        : "—";
+      const created = "—";
 
       return `
         <tr class="admin-row">
