@@ -1934,8 +1934,7 @@ button, a { -webkit-touch-callout: none; }
 
 .nurse-sidebar .logout-btn,
 .admin-sidebar .logout-btn {
-  display: block;
-  width: 100%;
-  text-align: center;
-  margin-top: auto;
+  margin: 14px 0 0 0 !important;
+  width: 100% !important;
+  text-align: center !important;
 }
