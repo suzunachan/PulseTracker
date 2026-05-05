@@ -318,26 +318,18 @@ app.get("/nurse/students", async (req, res) => {
 
 // ================= ADMIN: GET ALL NURSES =================
 app.get("/admin/nurses", async (req, res) => {
-  const adminId = req.query.adminId;
-
-  const { data: admin } = await supabase
-    .from("users")
-    .select("role")
-    .eq("user_id", adminId)
-    .single();
-
-  if (!admin || admin.role !== "admin") {
-    return res.json({ success: false, message: "Unauthorized" });
-  }
-
   const { data, error } = await supabase
     .from("users")
     .select("user_id, username, first_name, middle_name, last_name, created_at")
     .eq("role", "nurse")
     .order("first_name", { ascending: true });
 
-  if (error) return res.json([]);
-  res.json(data);
+  if (error) {
+    console.log("Admin nurses error:", error);
+    return res.json([]);
+  }
+
+  res.json(data || []);
 });
 
 
