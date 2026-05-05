@@ -450,8 +450,8 @@ function applyNurseFilters() {
   renderNurseTable(filtered);
 }
 
-if (nurseSearch)    nurseSearch.addEventListener("input",  applyNurseFilters);
-if (nurseFilter)    nurseFilter.addEventListener("change", applyNurseFilters);
+if (nurseSearch)     nurseSearch.addEventListener("input",  applyNurseFilters);
+if (nurseFilter)     nurseFilter.addEventListener("change", applyNurseFilters);
 if (nurseRefreshBtn) nurseRefreshBtn.addEventListener("click", loadNurseDashboard);
 
 
@@ -460,7 +460,7 @@ if (nurseRefreshBtn) nurseRefreshBtn.addEventListener("click", loadNurseDashboar
 if (nurseLogoutBtn) {
   nurseLogoutBtn.addEventListener("click", () => {
     localStorage.removeItem("pulse_user_id");
-    currentUser = null;
+    currentUser  = null;
     nurseDashboard.style.display = "none";
     loginScreen.style.display    = "flex";
     nurseAllRows = [];
@@ -469,15 +469,30 @@ if (nurseLogoutBtn) {
 
 
 /* ================= ADMIN SESSION ================= */
+// FIX: hide all other screens before showing admin dashboard
 
 function startAdminSession() {
+  loginScreen.style.display    = "none";
+  registerScreen.style.display = "none";
+  mainApp.style.display        = "none";
+  if (nurseDashboard) nurseDashboard.style.display = "none";
+
   const adminDashboard = document.getElementById("adminDashboard");
   if (adminDashboard) adminDashboard.style.display = "flex";
+
+  const adminGreeting = document.getElementById("adminGreeting");
+  if (adminGreeting) {
+    const fullName = [currentUser.first_name, currentUser.middle_name, currentUser.last_name]
+      .filter(Boolean).join(" ");
+    adminGreeting.textContent = "Logged in as " + (fullName || currentUser.username);
+  }
+
   loadAdminDashboard();
 }
 
 
 /* ================= LOAD ADMIN DASHBOARD ================= */
+// FIX: pass adminId in query, guard against non-array response
 
 async function loadAdminDashboard() {
   const tbody = document.getElementById("adminNurseTableBody");
@@ -486,8 +501,17 @@ async function loadAdminDashboard() {
   tbody.innerHTML = `<tr><td colspan="4" class="nurse-loading">Loading nurses…</td></tr>`;
 
   try {
-    const res  = await fetch(`${SERVER}/admin/nurses`);
-    const data = await res.json();
+    const res  = await fetch(`${SERVER}/admin/nurses?adminId=${currentUser.user_id}`);
+    const json = await res.json();
+
+    // Guard: if not an array (e.g. auth error object), bail out gracefully
+    if (!Array.isArray(json)) {
+      console.error("Admin nurses: unexpected response", json);
+      tbody.innerHTML = `<tr><td colspan="4" class="nurse-loading">Failed to load nurses.</td></tr>`;
+      return;
+    }
+
+    const data = json;
 
     const totalEl = document.getElementById("totalNurses");
     if (totalEl) totalEl.textContent = data.length;
@@ -526,7 +550,6 @@ async function loadAdminDashboard() {
       `;
     }).join("");
 
-    // Wire up delete buttons after rendering
     tbody.querySelectorAll(".delete-nurse-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         openDeleteNurseModal(btn.dataset.id, btn.dataset.name);
@@ -608,7 +631,6 @@ if (confirmCreateNurseBtn) {
         return;
       }
 
-      // Clear form
       document.getElementById("newNurseFirstName").value  = "";
       document.getElementById("newNurseMiddleName").value = "";
       document.getElementById("newNurseLastName").value   = "";
@@ -618,7 +640,6 @@ if (confirmCreateNurseBtn) {
 
       createNurseModal.classList.add("hidden");
 
-      // Show credentials
       document.getElementById("credsUsername").textContent = username;
       document.getElementById("credsPassword").textContent = password;
       document.getElementById("nurseCredsModal").classList.remove("hidden");
@@ -663,7 +684,10 @@ if (confirmDeleteNurseBtn) {
     if (!deleteTargetId) return;
 
     try {
-      await fetch(`${SERVER}/admin/delete-nurse/${deleteTargetId}`, { method: "DELETE" });
+      // FIX: pass adminId so the backend can verify the request
+      await fetch(`${SERVER}/admin/delete-nurse/${deleteTargetId}?adminId=${currentUser.user_id}`, {
+        method: "DELETE"
+      });
     } catch (err) {
       console.error("Delete error:", err);
     }
@@ -1405,7 +1429,7 @@ async function loadHistory() {
     });
 
     const days    = Object.keys(byDay).reverse();
-    const avgBpm  = days.map(d => Math.round(byDay[d].bpm.reduce((a,b) => a+b, 0)  / byDay[d].bpm.length));
+    const avgBpm  = days.map(d => Math.round(byDay[d].bpm.reduce((a,b)  => a+b, 0) / byDay[d].bpm.length));
     const avgSpo2 = days.map(d => Math.round(byDay[d].spo2.reduce((a,b) => a+b, 0) / byDay[d].spo2.length));
 
     pulseChart.data.labels           = days;
