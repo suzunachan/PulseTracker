@@ -11,7 +11,7 @@ const wss    = new WebSocketServer({ port: 8080 });
 
 wss.on('connection', (ws) => {
   console.log('Browser connected');
-  parser.on('data', (line) => {
+  parser.on('data', (line) => { 
     try {
       JSON.parse(line);
       ws.send(line.trim());
