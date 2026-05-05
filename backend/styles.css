@@ -1931,3 +1931,11 @@ button, a { -webkit-touch-callout: none; }
   text-align: center;
   width: 100%;
 }
+
+.nurse-sidebar .logout-btn,
+.admin-sidebar .logout-btn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-top: auto;
+}
